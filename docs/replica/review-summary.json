@@ -1,0 +1,110 @@
+{
+  "reviews": 153,
+  "sources": [
+    "app-store",
+    "google-play",
+    "reddit"
+  ],
+  "rated": 142,
+  "sourceCounts": {
+    "app-store": 142,
+    "google-play": 9,
+    "reddit": 2
+  },
+  "productCounts": {
+    "Spotify": 147,
+    "Belet Music": 3,
+    "Aydym": 3
+  },
+  "removed": 8,
+  "themes": [
+    {
+      "id": "shuffle-queue",
+      "label": "Unwanted repeats and queue order changes",
+      "count": 15,
+      "score": 11.2,
+      "sources": [
+        "app-store",
+        "google-play",
+        "reddit"
+      ],
+      "thin": false
+    },
+    {
+      "id": "price-gating",
+      "label": "Price or basic control restrictions",
+      "count": 11,
+      "score": 8.0,
+      "sources": [
+        "app-store",
+        "google-play"
+      ],
+      "thin": false
+    },
+    {
+      "id": "ad-fatigue",
+      "label": "Repeated or intrusive ads",
+      "count": 12,
+      "score": 7.1,
+      "sources": [
+        "app-store",
+        "google-play"
+      ],
+      "thin": false
+    },
+    {
+      "id": "playback-reliability",
+      "label": "Playback, resume or performance failures",
+      "count": 8,
+      "score": 5.8,
+      "sources": [
+        "app-store",
+        "google-play"
+      ],
+      "thin": false
+    },
+    {
+      "id": "ui-control",
+      "label": "Forced interface or recommendation changes",
+      "count": 7,
+      "score": 4.8,
+      "sources": [
+        "app-store",
+        "google-play"
+      ],
+      "thin": false
+    },
+    {
+      "id": "availability",
+      "label": "Unavailable songs or country access",
+      "count": 3,
+      "score": 2.1,
+      "sources": [
+        "app-store",
+        "google-play"
+      ],
+      "thin": false
+    },
+    {
+      "id": "playlist-search",
+      "label": "Playlist search, deletion and sorting",
+      "count": 2,
+      "score": 0.7,
+      "sources": [
+        "app-store",
+        "google-play"
+      ],
+      "thin": true
+    },
+    {
+      "id": "ringtone",
+      "label": "Choose a song excerpt as ringtone",
+      "count": 1,
+      "score": 0.6,
+      "sources": [
+        "google-play"
+      ],
+      "thin": true
+    }
+  ]
+}

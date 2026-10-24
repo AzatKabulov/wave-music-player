@@ -1,0 +1,75 @@
+{
+  "themes": [
+    {
+      "id": "ad-fatigue",
+      "label": "Repeated or intrusive ads",
+      "kind": "complaint",
+      "patterns": [
+        "(ads|adds).{0,50}(annoy|repetitive|excessive|overkill|ruin|after EVERY|after every)",
+        "(ridiculous amount|too many|more|lot of).{0,15}(ads|adds|promotions)",
+        "listen to ads|love listening to commercials|sick to death of the political ads"
+      ]
+    },
+    {
+      "id": "shuffle-queue",
+      "label": "Unwanted repeats and queue order changes",
+      "kind": "complaint",
+      "patterns": [
+        "same (?:\\d+(?:-\\d+)? )?(?:songs|tracks|shuffled)",
+        "shuffle.{0,45}(not good|trash|doesn.t work|never work|annoy|glitch)",
+        "queue.{0,25}(deletes|WHOLE)|deletes the WHOLE|doesn.t shuffle|won.t play my playlist|list opposite|Removed a bunch from your queue|downloaded changes its place"
+      ]
+    },
+    {
+      "id": "playback-reliability",
+      "label": "Playback, resume or performance failures",
+      "kind": "complaint",
+      "patterns": [
+        "buggy|Slowest|skips part|loses sound|looses sound|same issue replaying|playing in my car|gets cut off|downloaded 5 songs remove|songs time wrong"
+      ]
+    },
+    {
+      "id": "price-gating",
+      "label": "Price or basic control restrictions",
+      "kind": "complaint",
+      "patterns": [
+        "premium down|shoves.{0,20}premium|too high|more affordable|cheaper|unfair|pay to:|subscription.{0,50}annoy|limit your skips|no subscription|subscription BUT|raising prices|FAMILY SUBSCRIPTION"
+      ]
+    },
+    {
+      "id": "ui-control",
+      "label": "Forced interface or recommendation changes",
+      "kind": "complaint",
+      "patterns": [
+        "home screen is completely changed|UI if changing|bring back the old design|please dont do design|no option in settings|annoying home page recommendations|not during liked songs|no ability to remove"
+      ]
+    },
+    {
+      "id": "playlist-search",
+      "label": "Playlist search, deletion and sorting",
+      "kind": "request",
+      "patterns": [
+        "Need to be able to sort|delete option when searching"
+      ]
+    },
+    {
+      "id": "availability",
+      "label": "Unavailable songs or country access",
+      "kind": "complaint",
+      "patterns": [
+        "songs are unavailable|moved countries|can.t listen k-pop"
+      ]
+    },
+    {
+      "id": "ringtone",
+      "label": "Choose a song excerpt as ringtone",
+      "kind": "request",
+      "patterns": [
+        "on ringtone"
+      ]
+    }
+  ],
+  "request_patterns": [
+    "it would be nice|I wish|Need to be able|if only|you can add a new"
+  ]
+}
