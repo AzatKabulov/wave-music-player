@@ -68,6 +68,7 @@ export function Collection({
       <View style={s.collectionHeader}>
         <Artwork
           palette={entity.palette}
+          uri={album?.artworkUrl || playlist?.artworkUrl}
           size={t.space[192]}
           round={type === "artist"}
         />

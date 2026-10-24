@@ -9,7 +9,7 @@ test("F01-H1 account entry and validation", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Explore demo", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Join Owaryn", exact: true }).click();
+  await page.getByRole("button", { name: "Join Musify", exact: true }).click();
   await page
     .getByRole("button", { name: "Create your account", exact: true })
     .click();

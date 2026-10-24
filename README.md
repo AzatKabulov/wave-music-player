@@ -1,6 +1,8 @@
-# Owaryn — regional music app prototype
+# Musify — regional music app prototype
 
-A shared iOS/Android Expo app with an original interface and a working Fastify/Postgres backend. **Owaryn is a provisional name.** No trademark/domain clearance or store publication has been performed.
+**Personal mobile test update (2026-10-25):** the app now displays the user's working name **Musify**. Run `npm run test:phones` for the isolated Wi-Fi test API and iPhone Expo Go preview. The `personal` EAS profile builds the Android test APK. Three selected popular recordings and their covers are available only in the private PC test data, not bundled in the source. See [personal testing](replica/personal-testing.md) for connection details, checks and remaining device acceptance. The original prototype notes below describe the baseline setup.
+
+A shared iOS/Android Expo app with an original interface and a working Fastify/Postgres backend. **Musify is the selected working name.** No trademark/domain clearance or store publication has been performed.
 
 The local build includes twelve original synthesized recordings, fictional artists, geometric artwork, and an original folded-path icon. No competitor audio, artwork, branding, or private API is used. Local and international repertoire use the same catalog model; the demo recordings do not establish a commercial catalog.
 
@@ -61,7 +63,7 @@ JavaScript export is **not** an APK/IPA build or a device test. This Windows mac
 
 Put client configuration in a gitignored root `.env.local`; only `EXPO_PUBLIC_API_URL` and optional data mode belong there. Put **server** values in `apps/api/.env.local`, following its `.env.example`. Never put a Supabase secret key or database URL into an `EXPO_PUBLIC_` variable.
 
-The backend setup procedure, database login grants, storage/email configuration, import manifest, and acceptance gaps are in [backend.md](replica/backend.md). No cloud project, SMTP sender, hosted bucket, account, paid service, DNS record, or app listing was created.
+The backend setup procedure, database login grants, storage/email configuration, import manifest, and acceptance gaps are in [backend.md](replica/backend.md). An EAS build project was created using the existing Expo account for personal Android testing. No hosted backend, SMTP sender, hosted bucket, developer-account enrollment, DNS record, or app listing was created.
 
 This is a bounded pilot: catalog snapshots currently load at most 100 published tracks/artists/albums/playlists, and playlist/queue snapshots accept at most 5,000 entries. Search operates on that bounded catalog. List endpoints report truncation and reject cursors; the planned signed pagination contract is still outstanding. Expand this path before loading a large commercial catalog. The first controlled import accepts canonical 16-bit PCM WAV and JSON manifests; MP3 processing, alternate quality renditions, and artwork uploads remain extensions.
 

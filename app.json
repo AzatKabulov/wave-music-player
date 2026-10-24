@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Owaryn",
-    "slug": "owaryn-music",
+    "name": "Musify",
+    "slug": "musify-personal-test",
     "version": "0.1.0",
     "orientation": "default",
     "icon": "./assets/owaryn-icon.png",
@@ -33,8 +33,20 @@
         }
       ],
       "expo-secure-store",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-build-properties"
     ],
-    "scheme": "saz"
+    "scheme": "saz",
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "22eb6273-effb-4bb2-b6ee-3cdfe32bae7e"
+      }
+    },
+    "owner": "azatkabulov"
   }
 }

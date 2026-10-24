@@ -4,6 +4,7 @@ import {
   useAudioPlaylistStatus,
 } from "expo-audio";
 import { randomUUID } from "expo-crypto";
+import Constants from "expo-constants";
 import React, {
   createContext,
   useCallback,
@@ -36,6 +37,7 @@ const emptyQueue = (): QueueState => ({
 });
 const data: MusicData =
   process.env.EXPO_PUBLIC_DATA_MODE === "mock" ? mock : http;
+const expoGo = Boolean(Constants.expoGoConfig);
 function useMusicController() {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null),
     [loading, setLoading] = useState(true),
@@ -179,7 +181,7 @@ function useMusicController() {
         installation.current = id;
         await setAudioModeAsync({
           playsInSilentMode: true,
-          shouldPlayInBackground: true,
+          shouldPlayInBackground: !expoGo,
           interruptionMode: "doNotMix",
         });
         const account = await refresh();
@@ -224,11 +226,12 @@ function useMusicController() {
     return () => clearInterval(timer);
   }, [reconcile]);
   useEffect(() => {
-    if (Platform.OS !== "web" && track) {
+    if (Platform.OS !== "web" && !expoGo && track) {
       engine.setActiveForLockScreen(true, {
         title: track.title,
         artist: track.artist,
         albumTitle: track.album,
+        artworkUrl: track.artworkUrl,
       });
     }
   }, [track, engine]);

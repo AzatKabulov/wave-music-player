@@ -12,6 +12,7 @@ export type Track = {
   language: string;
   explicit: boolean;
   available: boolean;
+  artworkUrl?: string;
 };
 export type Album = {
   id: string;
@@ -21,6 +22,7 @@ export type Album = {
   palette: string;
   year: number;
   trackIds: string[];
+  artworkUrl?: string;
 };
 export type PlaylistItem = { id: string; trackId: string };
 export type Playlist = {
@@ -31,6 +33,7 @@ export type Playlist = {
   owner: boolean;
   revision: string;
   items: PlaylistItem[];
+  artworkUrl?: string;
 };
 export type Library = {
   tracks: string[];

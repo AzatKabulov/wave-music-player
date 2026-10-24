@@ -1,4 +1,5 @@
-import { StyleSheet, View, type ViewStyle } from "react-native";
+import { useState } from "react";
+import { Image, StyleSheet, View, type ViewStyle } from "react-native";
 import { theme as t } from "./theme";
 
 export const palettes = [
@@ -15,12 +16,39 @@ export function Artwork({
   size = t.space[160],
   round,
   style,
+  uri,
 }: {
   palette?: string;
   size?: number;
   round?: boolean;
   style?: ViewStyle;
+  uri?: string;
 }) {
+  const [failedUri, setFailedUri] = useState<string>();
+  if (uri && failedUri !== uri)
+    return (
+      <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        style={[
+          styles.frame,
+          {
+            width: size,
+            height: size,
+            borderRadius: round ? t.radius.pill : t.radius.sm,
+          },
+          style,
+        ]}
+      >
+        <Image
+          source={{ uri }}
+          resizeMode="cover"
+          style={{ width: "100%", height: "100%" }}
+          onError={() => setFailedUri(uri)}
+          accessible={false}
+        />
+      </View>
+    );
   const color =
     t.color[
       `art-${palettes.includes(palette as Palette) ? (palette as Palette) : "clay"}`

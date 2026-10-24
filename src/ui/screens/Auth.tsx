@@ -41,7 +41,7 @@ export function Auth() {
       });
   };
   return (
-    <Shell title="owaryn" eyebrow="KEEP YOUR OWN RHYTHM">
+    <Shell title="musify" eyebrow="KEEP YOUR OWN RHYTHM">
       <View style={ui.form}>
         <Artwork palette="clay" size={t.space[192]} />
         <Label type="display">Make room for{"\n"}your music.</Label>
@@ -56,7 +56,7 @@ export function Auth() {
                 x === "login"
                   ? "Sign in"
                   : x === "register"
-                    ? "Join Owaryn"
+                    ? "Join Musify"
                     : "Recover"
               }
               selected={mode === x}

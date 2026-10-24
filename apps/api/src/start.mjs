@@ -1,29 +1,21 @@
 import { createApp } from "./app.mjs";
 import { createDatabase } from "./database.mjs";
-const mode = process.env.APP_MODE || "local",
-  port = Number(process.env.PORT || 4100),
-  origin = process.env.APP_ORIGIN || "http://localhost:8081";
-if (mode === "local" && process.env.HOST && process.env.HOST !== "127.0.0.1")
-  throw Error("Local demo mode binds to IPv4 loopback only.");
-if (
-  mode === "supabase" &&
-  (!process.env.API_PUBLIC_URL?.startsWith("https://") ||
-    !origin.startsWith("https://"))
-)
-  throw Error("Production API and app origins require HTTPS.");
-const db = await createDatabase({ mode });
+import { listenerConfig } from "./listener.mjs";
+const { mode, host, port, origin, baseUrl, personalTest } = listenerConfig();
+const db = await createDatabase({ mode, personalTest });
 const app = await createApp({
   db,
   mode,
   origin,
-  baseUrl: process.env.API_PUBLIC_URL || `http://127.0.0.1:${port}`,
+  baseUrl,
+  personalTest,
 });
 await app.listen({
   port,
-  host: mode === "local" ? "127.0.0.1" : process.env.HOST || "0.0.0.0",
+  host,
 });
 process.stdout.write(
-  `Owaryn API ready at ${mode === "local" ? "http://127.0.0.1:" : ""}${port} (${mode})\n`,
+  `Musify API ready at ${baseUrl} (${personalTest ? "private Wi-Fi test" : mode})\n`,
 );
 for (const signal of ["SIGINT", "SIGTERM"])
   process.once(signal, async () => {

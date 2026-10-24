@@ -7,11 +7,15 @@ const migration = new URL("../migrations/001_music.sql", import.meta.url);
 export async function createDatabase({
   mode = "local",
   memory = false,
+  personalTest = false,
   env = process.env,
 } = {}) {
   if (mode === "local") {
     const location = fileURLToPath(
-      new URL("../data/postgres", import.meta.url),
+      new URL(
+        personalTest ? "../data/personal-postgres" : "../data/postgres",
+        import.meta.url,
+      ),
     );
     if (!memory) await mkdir(location, { recursive: true });
     const raw = new PGlite(memory ? undefined : location);

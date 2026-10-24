@@ -1,6 +1,14 @@
 {
   "cli": { "appVersionSource": "local" },
   "build": {
+    "personal": {
+      "distribution": "internal",
+      "android": { "buildType": "apk" },
+      "env": {
+        "EXPO_PUBLIC_PERSONAL_TEST": "1",
+        "EXPO_PUBLIC_API_URL": "http://192.168.0.4:4103"
+      }
+    },
     "development": { "developmentClient": true, "distribution": "internal" },
     "preview": {
       "distribution": "internal",

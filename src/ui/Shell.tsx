@@ -52,7 +52,7 @@ export function Shell({
           <View style={s.sidebar}>
             <View style={s.brand}>
               <BrandMark size={t.icon.lg} />
-              <Label type="xl">owaryn</Label>
+              <Label type="xl">musify</Label>
             </View>
             <Label type="xs" color="text-muted">
               KEEP YOUR OWN RHYTHM
@@ -176,7 +176,11 @@ export function Shell({
                 onPress={() => go("/player")}
                 style={[s.row, s.grow]}
               >
-                <Artwork palette={m.track.palette} size={t.space[48]} />
+                <Artwork
+                  palette={m.track.palette}
+                  uri={m.track.artworkUrl}
+                  size={t.space[48]}
+                />
                 <View style={s.grow}>
                   <Label numberOfLines={1}>{m.track.title} </Label>
                   <Label type="sm" color="text-muted" numberOfLines={1}>

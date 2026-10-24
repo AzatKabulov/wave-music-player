@@ -30,7 +30,7 @@ export function Home() {
   return (
     <Shell
       title="Keep your own rhythm"
-      eyebrow="OWARYN / YOUR EVERYDAY LISTENING"
+      eyebrow="MUSIFY / YOUR EVERYDAY LISTENING"
     >
       <View style={[ui.wrap, s.filters]}>
         {["For you", "Instrumental", "Electronic", "Ambient"].map((f) => (
@@ -83,7 +83,11 @@ export function Home() {
                 onPress={() => go(`/playlist/${p.id}`)}
                 style={s.shortcut}
               >
-                <Artwork palette={p.palette} size={t.space[56]} />
+                <Artwork
+                  palette={p.palette}
+                  uri={p.artworkUrl}
+                  size={t.space[56]}
+                />
                 <Label type="sm" numberOfLines={2} style={ui.grow}>
                   {p.title}
                 </Label>
@@ -132,7 +136,7 @@ export function Home() {
           <View style={s.footnote}>
             <Headphones size={t.icon.sm} color={t.color["text-muted"]} />
             <Label type="xs" color="text-muted">
-              An independent listening space. Original demo recordings.
+              An independent listening space. Personal test catalog.
             </Label>
           </View>
         </>

@@ -33,7 +33,11 @@ export function TrackRow({
         onPress={() => void m.playTracks(context || [track], index)}
         style={[ui.row, ui.grow, s.play]}
       >
-        <Artwork palette={track.palette} size={t.space[48]} />
+        <Artwork
+          palette={track.palette}
+          uri={track.artworkUrl}
+          size={t.space[48]}
+        />
         <View style={ui.grow}>
           <Label numberOfLines={1} color={active ? "accent" : "text"}>
             {track.title}

@@ -64,7 +64,7 @@ export function Cards({
           onPress={() => go(`/${type}/${item.id}`)}
           style={s.card}
         >
-          <Artwork palette={item.palette} />
+          <Artwork palette={item.palette} uri={item.artworkUrl} />
           <Label numberOfLines={2} style={s.semibold}>
             {item.title}
           </Label>

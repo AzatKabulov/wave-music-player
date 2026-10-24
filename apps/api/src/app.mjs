@@ -33,6 +33,8 @@ export async function createApp({
   origin = "http://localhost:8081",
   baseUrl = "http://127.0.0.1:4100",
   env = process.env,
+  personalTest = false,
+  personalMediaRoot = new URL("../data/personal-media/", import.meta.url),
 } = {}) {
   const app = Fastify({
     logger: false,
@@ -171,10 +173,11 @@ export async function createApp({
     });
   auth = createAuth({ db, mode, env, route, app, origin });
   const user = (req, fn) => db.user(req.identity.id, fn);
-  const getCatalog = (req) => user(req, (c) => catalog(c, req.identity.id));
+  const getCatalog = (req) =>
+    user(req, (c) => catalog(c, req.identity.id, baseUrl));
   const getPlaylist = (req, id) =>
     user(req, async (c) => {
-      const all = await catalog(c, req.identity.id),
+      const all = await catalog(c, req.identity.id, baseUrl),
         p = all.playlists.find((x) => x.id === id);
       if (!p) fail(404, "not_found", "This playlist is unavailable.");
       return p;
@@ -210,10 +213,47 @@ export async function createApp({
     "/v1/snapshot",
     null,
     async (req) => ({
-      ...(await snapshot(db, req.identity)),
+      ...(await snapshot(db, req.identity, baseUrl)),
       demoEnabled: mode === "local",
       accountProvider: mode === "local" ? "local" : "supabase",
     }),
+    { public: true },
+  );
+  route(
+    "GET",
+    "/v1/artwork/:assetId",
+    null,
+    async (req, reply) => {
+      if (!personalTest || mode !== "local")
+        fail(404, "not_found", "This artwork is unavailable.");
+      const asset = await db.admin(
+        async (c) =>
+          (
+            await c.query(
+              `select storage_key,mime_type,byte_size from music.media_assets a
+       where a.id=$1 and a.kind='image' and a.status='ready' and (
+         exists(select 1 from music.albums al where al.cover_asset_id=a.id and al.status='published') or
+         exists(select 1 from music.artists ar where ar.image_asset_id=a.id and ar.status='published'))`,
+              [req.params.assetId],
+            )
+          ).rows[0],
+      );
+      if (
+        !asset ||
+        !/^personal\/[0-9a-f-]{36}\.(jpg|png)$/.test(asset.storage_key) ||
+        !["image/jpeg", "image/png"].includes(asset.mime_type) ||
+        Number(asset.byte_size) > 10485760
+      )
+        fail(404, "not_found", "This artwork is unavailable.");
+      return reply
+        .type(asset.mime_type)
+        .header("Content-Length", asset.byte_size)
+        .send(
+          createReadStream(
+            new URL(asset.storage_key.slice(9), personalMediaRoot),
+          ),
+        );
+    },
     { public: true },
   );
   route("GET", "/v1/me", null, (req) =>
@@ -818,13 +858,21 @@ export async function createApp({
         .header("Content-Range", `bytes ${range.start}-${range.end}/${size}`);
     if (req.method === "HEAD") return reply.send();
     if (mode === "local") {
-      if (!/^[0-9a-f-]{36}\.wav$/.test(asset.storage_key))
+      const personalFile =
+        personalTest &&
+        /^personal\/[0-9a-f-]{36}\.(wav|mp3|m4a)$/.test(asset.storage_key);
+      if (!personalFile && !/^[0-9a-f-]{36}\.wav$/.test(asset.storage_key))
         fail(404, "media_missing", "The recording is unavailable.");
       return reply.send(
-        createReadStream(new URL(asset.storage_key, audioRoot), {
-          start: range.start,
-          end: range.end,
-        }),
+        createReadStream(
+          personalFile
+            ? new URL(asset.storage_key.slice(9), personalMediaRoot)
+            : new URL(asset.storage_key, audioRoot),
+          {
+            start: range.start,
+            end: range.end,
+          },
+        ),
       );
     }
     const signed = await auth.provider.storage

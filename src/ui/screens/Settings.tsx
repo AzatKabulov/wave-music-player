@@ -54,8 +54,8 @@ export function Settings() {
           onPress={() => void m.signOut()}
         />
         <Label type="sm" color="text-muted">
-          Owaryn is a working brand. This preview uses fictional artists and
-          original synthesized recordings.
+          Musify is a working name for this personal test. The demo catalog
+          includes original synthesized recordings.
         </Label>
         {confirm ? (
           <View style={ui.card}>

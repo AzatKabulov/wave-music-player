@@ -37,7 +37,7 @@ export function Player() {
           <Label type="xs" color="text-muted">
             A MOMENT, JUST FOR YOU
           </Label>
-          <Artwork palette={track.palette} size={size} />
+          <Artwork palette={track.palette} uri={track.artworkUrl} size={size} />
           <View style={[ui.row, s.playerInfo]}>
             <View style={ui.grow}>
               <Label type="xl" numberOfLines={2}>
@@ -246,7 +246,11 @@ export function Actions({
   return (
     <Shell title={picker ? "Choose a playlist" : "Track options"} back>
       <View style={[ui.row, ui.section]}>
-        <Artwork palette={track.palette} size={t.space[80]} />
+        <Artwork
+          palette={track.palette}
+          uri={track.artworkUrl}
+          size={t.space[80]}
+        />
         <View style={ui.grow}>
           <Label type="xl">{track.title}</Label>
           <Label color="text-muted">{track.artist}</Label>
