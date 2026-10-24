@@ -38,8 +38,8 @@ export default function Screens() {
     return (
       <Shell title="Connection unavailable">
         <StateView
-          title="Could not reach the service"
-          message="Check your connection and try again."
+          title="Your music is a little out of reach"
+          message="Check your connection, then try again."
           action="Retry"
           onAction={() => void m.run(m.refresh)}
         />

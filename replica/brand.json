@@ -1,0 +1,22 @@
+{
+  "name": "Owaryn",
+  "status": "working identity; clearance pending",
+  "tagline": "Keep your own rhythm.",
+  "voice": [
+    "clear",
+    "warm",
+    "steady"
+  ],
+  "avoid": [
+    "Spotify",
+    "Spotify AB"
+  ],
+  "domains": [
+    "spotify.com",
+    "scdn.co"
+  ],
+  "colors": [
+    "#1DB954",
+    "#1ED760"
+  ]
+}

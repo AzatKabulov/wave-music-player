@@ -90,8 +90,8 @@ export function Tracks({ tracks }: { tracks: Track[] }) {
     </View>
   ) : (
     <StateView
-      title="Nothing here yet"
-      message="Explore the catalog and add a track to get started."
+      title="Your next listen starts here"
+      message="Find a track you like, then bring it here."
       action="Find music"
       onAction={() => go("/search")}
     />

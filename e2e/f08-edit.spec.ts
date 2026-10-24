@@ -52,7 +52,10 @@ test("F08-E2 remove the last item, cancel deletion, then delete only the QA fixt
     .getByRole("button", { name: "Save playlist", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Nothing here yet", exact: true }),
+    page.getByRole("heading", {
+      name: "Your next listen starts here",
+      exact: true,
+    }),
   ).toBeVisible();
   await page
     .getByRole("button", { name: "Edit playlist", exact: true })

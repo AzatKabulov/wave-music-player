@@ -18,7 +18,7 @@ export function Home() {
       c.playlists[0];
   if (!c.tracks.length)
     return (
-      <Shell title="Find your rhythm">
+      <Shell title="Keep your own rhythm">
         <StateView
           title="The music is on its way"
           message="No releases are available yet. Check back soon."
@@ -28,7 +28,10 @@ export function Home() {
       </Shell>
     );
   return (
-    <Shell title="Find your rhythm" eyebrow="A LITTLE SPACE FOR MUSIC">
+    <Shell
+      title="Keep your own rhythm"
+      eyebrow="OWARYN / YOUR EVERYDAY LISTENING"
+    >
       <View style={[ui.wrap, s.filters]}>
         {["For you", "Instrumental", "Electronic", "Ambient"].map((f) => (
           <Chip
@@ -99,16 +102,16 @@ export function Home() {
             </Pressable>
           </View>
           <Section
-            title="Fresh perspectives"
+            title="Something worth hearing"
             kicker="RELEASES TO SPEND TIME WITH"
             action={() => go("/search")}
           >
             <Cards items={c.albums} type="album" />
           </Section>
-          <Section title="Made for a moment">
+          <Section title="For the way today feels">
             <Cards items={c.playlists} type="playlist" />
           </Section>
-          <Section title="Meet your next favourite">
+          <Section title="Find another favourite">
             <ScrollView horizontal contentContainerStyle={s.cards}>
               {c.artists.map((a) => (
                 <Pressable

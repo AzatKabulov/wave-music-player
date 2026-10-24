@@ -23,7 +23,7 @@ await app.listen({
   host: mode === "local" ? "127.0.0.1" : process.env.HOST || "0.0.0.0",
 });
 process.stdout.write(
-  `Saz API ready at ${mode === "local" ? "http://127.0.0.1:" : ""}${port} (${mode})\n`,
+  `Owaryn API ready at ${mode === "local" ? "http://127.0.0.1:" : ""}${port} (${mode})\n`,
 );
 for (const signal of ["SIGINT", "SIGTERM"])
   process.once(signal, async () => {

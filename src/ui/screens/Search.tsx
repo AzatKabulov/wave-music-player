@@ -101,8 +101,8 @@ export function SearchScreen() {
         </>
       ) : !any ? (
         <StateView
-          title="No matches yet"
-          message={`Try another spelling or a shorter search for “${query}”.`}
+          title="Nothing matched this time"
+          message={`Try a shorter name or a different spelling for “${query}”.`}
         />
       ) : (
         <>

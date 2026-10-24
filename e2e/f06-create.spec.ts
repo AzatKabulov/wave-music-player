@@ -8,7 +8,7 @@ test("F06-H1/E1 blank and Unicode playlist, double submit", async ({
     .getByRole("button", { name: "Save playlist", exact: true })
     .click();
   await expect(page.getByRole("alert")).toContainText(
-    "Give your playlist a name",
+    "Start with a name for your playlist",
   );
   const title = "Ýol 🌙 " + "A".repeat(130);
   await page

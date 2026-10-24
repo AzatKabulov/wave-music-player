@@ -41,12 +41,12 @@ export function Auth() {
       });
   };
   return (
-    <Shell title="saz" eyebrow="MUSIC, AT YOUR PACE">
+    <Shell title="owaryn" eyebrow="KEEP YOUR OWN RHYTHM">
       <View style={ui.form}>
         <Artwork palette="clay" size={t.space[192]} />
-        <Label type="display">A space for{"\n"}your sound.</Label>
+        <Label type="display">Make room for{"\n"}your music.</Label>
         <Label color="text-muted">
-          Discover something new. Keep what stays with you.
+          Choose a track. Keep a feeling. Make it yours.
         </Label>
         <View style={ui.wrap}>
           {(["login", "register", "recover"] as const).map((x) => (
@@ -56,7 +56,7 @@ export function Auth() {
                 x === "login"
                   ? "Sign in"
                   : x === "register"
-                    ? "Join"
+                    ? "Join Owaryn"
                     : "Recover"
               }
               selected={mode === x}
@@ -104,7 +104,7 @@ export function Auth() {
             mode === "login"
               ? "Sign in"
               : mode === "register"
-                ? "Create account"
+                ? "Create your account"
                 : "Send recovery email"
           }
           busy={m.pending}

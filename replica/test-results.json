@@ -11,181 +11,181 @@
       "scenario": "F01-H1 account entry and validation",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 8259
+      "durationMs": 23137
     },
     {
       "scenario": "F01-H1 account entry and validation",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 8479
+      "durationMs": 10461
     },
     {
       "scenario": "F02-H1 home collection, album and artist",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 10347
+      "durationMs": 24524
     },
     {
       "scenario": "F02-E1 an empty catalog offers refresh",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 12182
+      "durationMs": 16304
     },
     {
       "scenario": "F02-H1 home collection, album and artist",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 9293
+      "durationMs": 13047
     },
     {
       "scenario": "F02-E1 an empty catalog offers refresh",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 12270
+      "durationMs": 16033
     },
     {
       "scenario": "F03-H1/E1 search, no result and Unicode input",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 11934
+      "durationMs": 11083
     },
     {
       "scenario": "F03-E2 removed collections give a useful return path",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 12228
+      "durationMs": 15920
     },
     {
       "scenario": "F03-H1/E1 search, no result and Unicode input",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 10736
+      "durationMs": 11960
     },
     {
       "scenario": "F03-E2 removed collections give a useful return path",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 15856
+      "durationMs": 15967
     },
     {
       "scenario": "F04-H1 transport, seek, repeat and shuffle",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 14562
+      "durationMs": 16003
     },
     {
       "scenario": "F04-H1 transport, seek, repeat and shuffle",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 15479
+      "durationMs": 18030
     },
     {
       "scenario": "F05-H1 likes are separate from album saves",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 8394
+      "durationMs": 12406
     },
     {
       "scenario": "F05-H1 likes are separate from album saves",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 9687
+      "durationMs": 11729
     },
     {
       "scenario": "F06-H1/E1 blank and Unicode playlist, double submit",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 14090
+      "durationMs": 18259
     },
     {
       "scenario": "F06-H1/E1 blank and Unicode playlist, double submit",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 18193
+      "durationMs": 18910
     },
     {
       "scenario": "F07-H1 add and deliberately repeat a track",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 13720
+      "durationMs": 18343
     },
     {
       "scenario": "F07-H1 add and deliberately repeat a track",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 26564
+      "durationMs": 20339
     },
     {
       "scenario": "F08-H1 reorder, remove and rename",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 13250
+      "durationMs": 19625
     },
     {
       "scenario": "F08-E2 remove the last item, cancel deletion, then delete only the QA fixture",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 12931
+      "durationMs": 16797
     },
     {
       "scenario": "F08-H1 reorder, remove and rename",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 27790
+      "durationMs": 19047
     },
     {
       "scenario": "F08-E2 remove the last item, cancel deletion, then delete only the QA fixture",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 18673
+      "durationMs": 17790
     },
     {
       "scenario": "F09-E1 selecting a duplicate starts that occurrence",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 12511
+      "durationMs": 19275
     },
     {
       "scenario": "F09-H1 explicit requests can move and clear without deleting context",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 9472
+      "durationMs": 10873
     },
     {
       "scenario": "F09-E1 selecting a duplicate starts that occurrence",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 19170
+      "durationMs": 18592
     },
     {
       "scenario": "F09-H1 explicit requests can move and clear without deleting context",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 28575
+      "durationMs": 10972
     },
     {
       "scenario": "F10-H1 resume queue paused after refresh",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 19696
+      "durationMs": 25032
     },
     {
       "scenario": "F10-H1 resume queue paused after refresh",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 19578
+      "durationMs": 24248
     },
     {
       "scenario": "F12-H1 history returns to a permitted track",
       "project": "phone-web",
       "status": "passed",
-      "durationMs": 8571
+      "durationMs": 10698
     },
     {
       "scenario": "F12-H1 history returns to a permitted track",
       "project": "desktop-web",
       "status": "passed",
-      "durationMs": 10918
+      "durationMs": 10728
     }
   ],
   "passed": 30,
@@ -199,5 +199,14 @@
     "Supabase and email/Storage staging",
     "Native deferred seek completion harness"
   ],
-  "executionNote": "Full run 28/30; empty-catalog test initially forwarded its fixture request to the persistent preview instead of the QA API. Fixture corrected; both failed cases reran successfully. No failing result discarded without a rerun."
+  "executionNote": "Final post-brand single run: 30 passed, zero skipped, unexpected or flaky results; two workers. Earlier fixture and selector authoring issues were corrected before this complete run.",
+  "finalRun": {
+    "startTime": "2026-10-24T06:43:44.303Z",
+    "duration": 264555.52300000004,
+    "expected": 30,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "postBrand": true
 }

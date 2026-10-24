@@ -1,5 +1,5 @@
 {
-  "name": "saz-music",
+  "name": "owaryn-music",
   "version": "0.1.0",
   "main": "expo-router/entry",
   "dependencies": {
@@ -42,8 +42,8 @@
     "build:web": "expo export --platform web",
     "api": "npm --prefix apps/api start",
     "test": "node --experimental-strip-types --test src/data/queue.test.ts && npm --prefix apps/api test",
-    "format": "prettier --write app src apps/api/src apps/api/test scripts/*.mjs package.json app.json tsconfig.json eas.json",
-    "format:check": "prettier --check app src apps/api/src apps/api/test scripts/*.mjs package.json app.json tsconfig.json eas.json",
+    "format": "prettier --write src apps/api/src apps/api/test scripts/*.mjs package.json app.json tsconfig.json eas.json",
+    "format:check": "prettier --check src apps/api/src apps/api/test scripts/*.mjs package.json app.json tsconfig.json eas.json",
     "lint": "expo lint",
     "test:e2e": "playwright test"
   },

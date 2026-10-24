@@ -5,7 +5,7 @@ module.exports = defineConfig([
   {
     ignores: [
       "dist/**",
-      "docs/**",
+      "replica/**",
       "apps/api/node_modules/**",
       "apps/api/data/**",
       "playwright-artifacts/**",

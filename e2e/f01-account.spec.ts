@@ -9,9 +9,9 @@ test("F01-H1 account entry and validation", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Explore demo", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Join", exact: true }).click();
+  await page.getByRole("button", { name: "Join Owaryn", exact: true }).click();
   await page
-    .getByRole("button", { name: "Create account", exact: true })
+    .getByRole("button", { name: "Create your account", exact: true })
     .click();
   await expect(page.getByRole("alert")).toContainText("Enter a valid email");
   await page.getByLabel("Your name", { exact: true }).fill("QA Türkmen 🌙");
@@ -24,10 +24,10 @@ test("F01-H1 account entry and validation", async ({ page }) => {
     .filter({ visible: true })
     .fill("Test-only-password-2048!");
   await page
-    .getByRole("button", { name: "Create account", exact: true })
+    .getByRole("button", { name: "Create your account", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Find your rhythm", exact: true }),
+    page.getByRole("heading", { name: "Keep your own rhythm", exact: true }),
   ).toBeVisible();
   await a11y(page);
 });

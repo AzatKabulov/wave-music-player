@@ -11,7 +11,7 @@ export function Settings() {
     sn = m.snapshot!,
     [confirm, setConfirm] = useState(false);
   return (
-    <Shell title="Your space" back>
+    <Shell title="Your listening space" back>
       <View style={ui.form}>
         <View style={ui.card}>
           <Label type="xl">{sn.profile?.displayName || "Welcome"}</Label>
@@ -54,8 +54,8 @@ export function Settings() {
           onPress={() => void m.signOut()}
         />
         <Label type="sm" color="text-muted">
-          Saz is a working name. This build uses fictional artists and original
-          synthesized recordings.
+          Owaryn is a working brand. This preview uses fictional artists and
+          original synthesized recordings.
         </Label>
         {confirm ? (
           <View style={ui.card}>

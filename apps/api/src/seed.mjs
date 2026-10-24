@@ -12,7 +12,7 @@ export async function seedLocal(db) {
     source = "10000000-0000-4000-8000-000000000998";
   await db.query("insert into auth.users(id) values($1)", [owner]);
   await db.query(
-    "insert into music.profiles(user_id,display_name) values($1,'Saz Studio')",
+    "insert into music.profiles(user_id,display_name) values($1,'Owaryn Studio')",
     [owner],
   );
   await db.query(

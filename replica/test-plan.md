@@ -4,7 +4,7 @@ Run date: 2026-10-24. Target: the independent music app in `../music-app`, local
 
 ## Reproduce
 
-In the app directory, run `npm ci`, `npm --prefix apps/api ci`, then start `npm run web`. Run `npm run test:e2e` (installed Microsoft Edge), `npm test`, `npm run lint`, and `npm run typecheck`. Playwright starts disposable in-memory QA APIs on loopback 4101/4102 and routes the test browser's API traffic to its project's server, preserving real handlers and normal rate limits. Each test has a fresh browser context and demo account. No request uses the persistent preview library at 4100. Schema checks: `docs/replica/tests/README.md`.
+In the app directory, run `npm ci --ignore-scripts`, `npm --prefix apps/api ci --ignore-scripts`, then start `npm run web`. Run `npm run test:e2e` (installed Microsoft Edge), `npm test`, `npm run lint`, and `npm run typecheck`. Playwright starts disposable in-memory QA APIs on loopback 4101/4102 and routes the test browser's API traffic to its project's server, preserving real handlers and normal rate limits. Each test has a fresh browser context and demo account. No request uses the persistent preview library at 4100. Schema checks: `replica/tests/README.md`.
 
 Each executable spec covers one recon flow. Both 390×844 and 1440×900 projects run the same assertions. Axe scans use WCAG 2 A/AA and 2.1 A/AA tags on the screens reached by the tests; this does not establish screen-reader or native accessibility compliance. Every flow fails on JS page errors, console errors, and HTTP 5xx responses.
 

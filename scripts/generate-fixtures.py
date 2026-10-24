@@ -17,7 +17,7 @@ names = ['First Light','Open Road','Blue Current','Distant Shore','Night Windows
 catalog = {'artists':[], 'albums':[], 'tracks':[], 'playlists':[]}
 for a,(title,artist,palette,genre,lang) in enumerate(releases):
  aid, albumid = uid(100+a),uid(200+a)
- catalog['artists'].append(dict(id=aid,name=artist,palette=palette,bio=f'An imaginary studio project exploring {genre.lower()} textures. Original Saz demo recordings.'))
+ catalog['artists'].append(dict(id=aid,name=artist,palette=palette,bio=f'An imaginary studio project exploring {genre.lower()} textures. Original Owaryn demo recordings.'))
  ids=[]
  for j in range(2):
   k=a*2+j; tid=uid(300+k); ids.append(tid)

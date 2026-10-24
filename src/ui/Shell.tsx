@@ -1,6 +1,5 @@
 import { router, usePathname } from "expo-router";
 import {
-  AudioLines,
   ChevronLeft,
   Home,
   Library,
@@ -23,6 +22,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useMusic } from "../data/MusicProvider";
 import { Artwork } from "../design/Artwork";
+import { BrandMark } from "../design/BrandMark";
 import { Button, IconButton, Label } from "../design/Primitives";
 import { theme as t } from "../design/theme";
 export const go = (path: string) => router.push(path as never);
@@ -51,11 +51,11 @@ export function Shell({
         {wide ? (
           <View style={s.sidebar}>
             <View style={s.brand}>
-              <AudioLines color={t.color.accent} size={t.icon.lg} />
-              <Label type="xl">saz</Label>
+              <BrandMark size={t.icon.lg} />
+              <Label type="xl">owaryn</Label>
             </View>
             <Label type="xs" color="text-muted">
-              YOUR EVERYDAY SOUNDTRACK
+              KEEP YOUR OWN RHYTHM
             </Label>
             <View style={s.sideNav}>
               {destinations.map((d) => (
@@ -118,7 +118,7 @@ export function Shell({
                   }
                 />
               ) : (
-                <AudioLines color={t.color.accent} size={t.icon.lg} />
+                <BrandMark size={t.icon.lg} />
               )}
               <View style={s.grow}>
                 {eyebrow ? (

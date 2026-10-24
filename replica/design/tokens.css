@@ -1,0 +1,24 @@
+:root {
+  --bg: #101623;
+  --surface: #1B2434;
+  --surface-raised: #2A3548;
+  --surface-pressed: #35435B;
+  --border: #47556D;
+  --border-input: #8D9CB5;
+  --text: #FAF5EA;
+  --text-muted: #C0CADB;
+  --accent: #F5BD72;
+  --on-accent: #191C24;
+  --danger: #FF9B90;
+  --success: #ACE0B9;
+  --warning: #F2CF88;
+  --focus: #F5BD72;
+  --art-clay: #995033;
+  --art-sea: #326C72;
+  --art-night: #344E79;
+  --art-sand: #9A7F4C;
+  --art-berry: #713F58;
+  --art-forest: #356353;
+  --art-ink: #17243A;
+  --art-light: #F6E7C8;
+}

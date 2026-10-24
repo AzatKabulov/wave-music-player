@@ -2,7 +2,7 @@ import { Play, Plus, Search } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Artwork, palettes } from "../src/design/Artwork";
+import { Artwork, palettes } from "../design/Artwork";
 import {
   Button,
   Chip,
@@ -11,8 +11,8 @@ import {
   Label,
   Skeleton,
   StateView,
-} from "../src/design/Primitives";
-import { theme as t } from "../src/design/theme";
+} from "../design/Primitives";
+import { theme as t } from "../design/theme";
 export default function Design() {
   const [selected, setSelected] = useState(true);
   const [query, setQuery] = useState("");
@@ -20,7 +20,7 @@ export default function Design() {
     <SafeAreaView style={styles.page}>
       <ScrollView contentContainerStyle={styles.content}>
         <Label type="sm" color="text-muted">
-          SAZ / COMPONENT LIBRARY
+          OWARYN / COMPONENT LIBRARY
         </Label>
         <Label type="display" accessibilityRole="header">
           A space for your sound.

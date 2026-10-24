@@ -3,180 +3,180 @@
     "fg": "text",
     "bg": "bg",
     "size": "normal",
-    "ratio": 17.06,
+    "ratio": 16.63,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#F4F5EF",
-    "bg_hex": "#101310"
+    "fg_hex": "#FAF5EA",
+    "bg_hex": "#101623"
   },
   {
     "fg": "text",
     "bg": "surface",
     "size": "normal",
-    "ratio": 14.95,
+    "ratio": 14.32,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#F4F5EF",
-    "bg_hex": "#1B211C"
+    "fg_hex": "#FAF5EA",
+    "bg_hex": "#1B2434"
   },
   {
     "fg": "text",
     "bg": "surface-raised",
     "size": "normal",
-    "ratio": 12.27,
+    "ratio": 11.35,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#F4F5EF",
-    "bg_hex": "#283129"
+    "fg_hex": "#FAF5EA",
+    "bg_hex": "#2A3548"
   },
   {
     "fg": "text",
     "bg": "surface-pressed",
     "size": "normal",
-    "ratio": 9.89,
+    "ratio": 9.17,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#F4F5EF",
-    "bg_hex": "#354035"
+    "fg_hex": "#FAF5EA",
+    "bg_hex": "#35435B"
   },
   {
     "fg": "text-muted",
     "bg": "bg",
     "size": "normal",
-    "ratio": 9.97,
+    "ratio": 10.95,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#B6C0B5",
-    "bg_hex": "#101310"
+    "fg_hex": "#C0CADB",
+    "bg_hex": "#101623"
   },
   {
     "fg": "text-muted",
     "bg": "surface",
     "size": "normal",
-    "ratio": 8.74,
+    "ratio": 9.43,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#B6C0B5",
-    "bg_hex": "#1B211C"
+    "fg_hex": "#C0CADB",
+    "bg_hex": "#1B2434"
   },
   {
     "fg": "text-muted",
     "bg": "surface-raised",
     "size": "normal",
-    "ratio": 7.17,
+    "ratio": 7.47,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#B6C0B5",
-    "bg_hex": "#283129"
+    "fg_hex": "#C0CADB",
+    "bg_hex": "#2A3548"
   },
   {
     "fg": "on-accent",
     "bg": "accent",
     "size": "normal",
-    "ratio": 12.43,
+    "ratio": 10.06,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#182019",
-    "bg_hex": "#E2DFCC"
+    "fg_hex": "#191C24",
+    "bg_hex": "#F5BD72"
   },
   {
     "fg": "danger",
     "bg": "surface",
     "size": "normal",
-    "ratio": 8.07,
+    "ratio": 7.67,
     "aa": true,
     "aaa": true,
     "fg_hex": "#FF9B90",
-    "bg_hex": "#1B211C"
+    "bg_hex": "#1B2434"
   },
   {
     "fg": "success",
     "bg": "surface",
     "size": "normal",
-    "ratio": 11.02,
+    "ratio": 10.47,
     "aa": true,
     "aaa": true,
     "fg_hex": "#ACE0B9",
-    "bg_hex": "#1B211C"
+    "bg_hex": "#1B2434"
   },
   {
     "fg": "warning",
     "bg": "surface",
     "size": "normal",
-    "ratio": 10.97,
+    "ratio": 10.42,
     "aa": true,
     "aaa": true,
     "fg_hex": "#F2CF88",
-    "bg_hex": "#1B211C"
+    "bg_hex": "#1B2434"
   },
   {
     "fg": "border-input",
     "bg": "bg",
     "size": "ui",
-    "ratio": 5.09,
+    "ratio": 6.51,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#7B897D",
-    "bg_hex": "#101310"
+    "fg_hex": "#8D9CB5",
+    "bg_hex": "#101623"
   },
   {
     "fg": "border-input",
     "bg": "surface",
     "size": "ui",
-    "ratio": 4.46,
+    "ratio": 5.6,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#7B897D",
-    "bg_hex": "#1B211C"
+    "fg_hex": "#8D9CB5",
+    "bg_hex": "#1B2434"
   },
   {
     "fg": "focus",
     "bg": "surface",
     "size": "ui",
-    "ratio": 12.23,
+    "ratio": 9.2,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#E2DFCC",
-    "bg_hex": "#1B211C"
+    "fg_hex": "#F5BD72",
+    "bg_hex": "#1B2434"
   },
   {
     "fg": "text",
     "bg": "art-clay",
     "size": "normal",
-    "ratio": 4.58,
+    "ratio": 5.44,
     "aa": true,
     "aaa": false,
-    "fg_hex": "#F4F5EF",
-    "bg_hex": "#AC573D"
+    "fg_hex": "#FAF5EA",
+    "bg_hex": "#995033"
   },
   {
     "fg": "text",
     "bg": "art-night",
     "size": "normal",
-    "ratio": 7.07,
+    "ratio": 7.69,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#F4F5EF",
-    "bg_hex": "#3F527C"
+    "fg_hex": "#FAF5EA",
+    "bg_hex": "#344E79"
   },
   {
     "fg": "text",
     "bg": "art-forest",
     "size": "normal",
-    "ratio": 6.26,
+    "ratio": 6.31,
     "aa": true,
     "aaa": false,
-    "fg_hex": "#F4F5EF",
+    "fg_hex": "#FAF5EA",
     "bg_hex": "#356353"
   },
   {
     "fg": "text",
     "bg": "art-berry",
     "size": "normal",
-    "ratio": 7.5,
+    "ratio": 7.56,
     "aa": true,
     "aaa": true,
-    "fg_hex": "#F4F5EF",
+    "fg_hex": "#FAF5EA",
     "bg_hex": "#713F58"
   }
 ]

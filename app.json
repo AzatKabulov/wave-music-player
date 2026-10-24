@@ -1,25 +1,25 @@
 {
   "expo": {
-    "name": "Saz",
-    "slug": "saz-music",
+    "name": "Owaryn",
+    "slug": "owaryn-music",
     "version": "0.1.0",
     "orientation": "default",
-    "icon": "./assets/saz-icon.png",
+    "icon": "./assets/owaryn-icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.sazmusic"
+      "bundleIdentifier": "com.example.owarynmusic"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#14251D",
-        "foregroundImage": "./assets/saz-icon.png"
+        "backgroundColor": "#101623",
+        "foregroundImage": "./assets/owaryn-adaptive.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.example.sazmusic"
+      "package": "com.example.owarynmusic"
     },
     "web": {
-      "favicon": "./assets/saz-icon.png"
+      "favicon": "./assets/owaryn-icon.png"
     },
     "plugins": [
       "expo-router",

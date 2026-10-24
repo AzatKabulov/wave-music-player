@@ -1,0 +1,61 @@
+name,check,status,date,where
+Yelvra,Web/category screening,No exact music-app match identified in returned search results; unrelated OCR results. .com record exists.,2026-10-24,https://www.google.com/search?q=%22Yelvra%22+music+app
+Yelvra,US App Store exact-name screening,"Read official search response; 0 exact returned names among 49 results. Other countries, phonetic/substring/category screening to run.",2026-10-24,https://itunes.apple.com/search?term=Yelvra&entity=software&country=us&limit=50
+Yelvra,Google Play,Indexed exact-name query returned no result; native store/category/phonetic search to run,2026-10-24,https://play.google.com/store/search?q=Yelvra&c=apps
+Yelvra,.com registry record,record returned; registrar purchase check and other suffixes to run,2026-10-24,https://rdap.verisign.com/com/v1/domain/YELVRA.COM
+Yelvra,US trademark,to run,,https://tmsearch.uspto.gov/
+Yelvra,EU trademark,to run,,https://www.tmdn.org/tmview/#/tmview
+Yelvra,Canada trademark,to run,,https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng
+Yelvra,WIPO global trademark,to run,,https://branddb.wipo.int/
+Yelvra,X exact handle,to run,,https://x.com/yelvra
+Yelvra,Instagram exact handle,to run,,https://www.instagram.com/yelvra
+Yelvra,TikTok exact handle,to run,,https://www.tiktok.com/@yelvra
+Yelvra,GitHub exact handle,to run,,https://github.com/yelvra
+Owaryn,Web/category screening,No music-app match identified; unrelated nickname and fictional-character uses found. Not an exclusive-use finding.,2026-10-24,https://www.google.com/search?q=%22Owaryn%22+music+app
+Owaryn,US App Store exact-name screening,"Read official search response; 0 exact returned names among 2 results. Other countries, phonetic/substring/category screening to run.",2026-10-24,https://itunes.apple.com/search?term=Owaryn&entity=software&country=us&limit=50
+Owaryn,Google Play,Indexed exact-name query returned no result; native store/category/phonetic search to run,2026-10-24,https://play.google.com/store/search?q=Owaryn&c=apps
+Owaryn,.com registry record,no RDAP record returned; registrar purchase check and other suffixes to run,2026-10-24,https://rdap.verisign.com/com/v1/domain/OWARYN.COM
+Owaryn,US trademark,to run,,https://tmsearch.uspto.gov/
+Owaryn,EU trademark,to run,,https://www.tmdn.org/tmview/#/tmview
+Owaryn,Canada trademark,to run,,https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng
+Owaryn,WIPO global trademark,to run,,https://branddb.wipo.int/
+Owaryn,X exact handle,to run,,https://x.com/owaryn
+Owaryn,Instagram exact handle,to run,,https://www.instagram.com/owaryn
+Owaryn,TikTok exact handle,to run,,https://www.tiktok.com/@owaryn
+Owaryn,GitHub exact handle,to run,,https://github.com/owaryn
+Rovaly,Web/category screening,Existing UK company name and surname uses; .com record exists. Not selected.,2026-10-24,https://www.google.com/search?q=%22Rovaly%22+music+app
+Rovaly,US App Store exact-name screening,"Read official search response; 0 exact returned names among 2 results. Other countries, phonetic/substring/category screening to run.",2026-10-24,https://itunes.apple.com/search?term=Rovaly&entity=software&country=us&limit=50
+Rovaly,Google Play,Indexed exact-name query returned no result; native store/category/phonetic search to run,2026-10-24,https://play.google.com/store/search?q=Rovaly&c=apps
+Rovaly,.com registry record,record returned; registrar purchase check and other suffixes to run,2026-10-24,https://rdap.verisign.com/com/v1/domain/ROVALY.COM
+Rovaly,US trademark,to run,,https://tmsearch.uspto.gov/
+Rovaly,EU trademark,to run,,https://www.tmdn.org/tmview/#/tmview
+Rovaly,Canada trademark,to run,,https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng
+Rovaly,WIPO global trademark,to run,,https://branddb.wipo.int/
+Rovaly,X exact handle,to run,,https://x.com/rovaly
+Rovaly,Instagram exact handle,to run,,https://www.instagram.com/rovaly
+Rovaly,TikTok exact handle,to run,,https://www.tiktok.com/@rovaly
+Rovaly,GitHub exact handle,to run,,https://github.com/rovaly
+Seyora,Web/category screening,Existing Android app Seyora – Chat & Connect found. Rejected.,2026-10-24,https://www.google.com/search?q=%22Seyora%22+music+app
+Seyora,US App Store exact-name screening,"Read official search response; 0 exact returned names among 2 results. Other countries, phonetic/substring/category screening to run.",2026-10-24,https://itunes.apple.com/search?term=Seyora&entity=software&country=us&limit=50
+Seyora,Google Play,Existing exact-prefix app result; reject,2026-10-24,https://play.google.com/store/search?q=Seyora&c=apps
+Seyora,.com registry record,record returned; registrar purchase check and other suffixes to run,2026-10-24,https://rdap.verisign.com/com/v1/domain/SEYORA.COM
+Seyora,US trademark,to run,,https://tmsearch.uspto.gov/
+Seyora,EU trademark,to run,,https://www.tmdn.org/tmview/#/tmview
+Seyora,Canada trademark,to run,,https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng
+Seyora,WIPO global trademark,to run,,https://branddb.wipo.int/
+Seyora,X exact handle,to run,,https://x.com/seyora
+Seyora,Instagram exact handle,to run,,https://www.instagram.com/seyora
+Seyora,TikTok exact handle,to run,,https://www.tiktok.com/@seyora
+Seyora,GitHub exact handle,to run,,https://github.com/seyora
+Nuvaryn,Web/category screening,Existing software-company name and music-track uses; .com record exists. Rejected.,2026-10-24,https://www.google.com/search?q=%22Nuvaryn%22+music+app
+Nuvaryn,US App Store exact-name screening,"Read official search response; 0 exact returned names among 40 results. Other countries, phonetic/substring/category screening to run.",2026-10-24,https://itunes.apple.com/search?term=Nuvaryn&entity=software&country=us&limit=50
+Nuvaryn,Google Play,Indexed exact-name query returned no result; native store/category/phonetic search to run,2026-10-24,https://play.google.com/store/search?q=Nuvaryn&c=apps
+Nuvaryn,.com registry record,record returned; registrar purchase check and other suffixes to run,2026-10-24,https://rdap.verisign.com/com/v1/domain/NUVARYN.COM
+Nuvaryn,US trademark,to run,,https://tmsearch.uspto.gov/
+Nuvaryn,EU trademark,to run,,https://www.tmdn.org/tmview/#/tmview
+Nuvaryn,Canada trademark,to run,,https://ised-isde.canada.ca/cipo/trademark-search/srch?lang=eng
+Nuvaryn,WIPO global trademark,to run,,https://branddb.wipo.int/
+Nuvaryn,X exact handle,to run,,https://x.com/nuvaryn
+Nuvaryn,Instagram exact handle,to run,,https://www.instagram.com/nuvaryn
+Nuvaryn,TikTok exact handle,to run,,https://www.tiktok.com/@nuvaryn
+Nuvaryn,GitHub exact handle,to run,,https://github.com/nuvaryn

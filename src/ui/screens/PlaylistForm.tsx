@@ -32,7 +32,7 @@ export function PlaylistForm({
     [key] = useState(randomUUID);
   const save = async () => {
     if (!title.trim()) {
-      setValidation("Give your playlist a name.");
+      setValidation("Start with a name for your playlist.");
       return;
     }
     const value = await m.run(async () => {
@@ -58,7 +58,7 @@ export function PlaylistForm({
           [{ id: randomUUID(), trackId }],
         );
       return created;
-    }, "Playlist saved");
+    }, "Playlist changes saved.");
     if (value) go(`/playlist/${value.id}`);
   };
   if (id && !p)
@@ -83,7 +83,7 @@ export function PlaylistForm({
           }}
           maxLength={160}
           error={validation}
-          placeholder="A name for this feeling"
+          placeholder="Name your next listening moment"
         />
         <Input
           label="Description (optional)"

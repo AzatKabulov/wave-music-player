@@ -16,7 +16,10 @@ test("F03-H1/E1 search, no result and Unicode input", async ({ page }) => {
     .getByRole("textbox", { name: "Search music", exact: true })
     .fill("Ýol 🌙 ".repeat(30));
   await expect(
-    page.getByRole("heading", { name: "No matches yet", exact: true }),
+    page.getByRole("heading", {
+      name: "Nothing matched this time",
+      exact: true,
+    }),
   ).toBeVisible();
   await a11y(page);
   await page

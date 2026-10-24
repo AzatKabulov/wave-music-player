@@ -389,7 +389,57 @@
       "notes": "D22; user premise unverified; individual rights assessment remains open"
     }
   ],
-  "extras": [],
+  "extras": [
+    {
+      "feature": "N01 Explicit durable shuffle and queue modes",
+      "area": "queue",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence"
+    },
+    {
+      "feature": "N02 Acknowledged seek and interruption resume",
+      "area": "persistence",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence"
+    },
+    {
+      "feature": "N03 Actionable stalled-audio recovery",
+      "area": "player",
+      "priority": "must",
+      "clone": "no",
+      "notes": "Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence"
+    },
+    {
+      "feature": "N04 Filtered playlist removal with undo",
+      "area": "playlists",
+      "priority": "should",
+      "clone": "no",
+      "notes": "Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence"
+    },
+    {
+      "feature": "N05 Visible unavailable saved-item explanations",
+      "area": "catalog",
+      "priority": "should",
+      "clone": "no",
+      "notes": "Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence"
+    },
+    {
+      "feature": "N06 Measured low-data playback options",
+      "area": "regional",
+      "priority": "should",
+      "clone": "no",
+      "notes": "Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence"
+    },
+    {
+      "feature": "N07 Stable localized personal music surface",
+      "area": "regional",
+      "priority": "should",
+      "clone": "no",
+      "notes": "Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence"
+    }
+  ],
   "problems": [],
   "overall": 71.0,
   "visual_comparison": {

@@ -2,7 +2,7 @@
 
 **71.0/100 weighted feature coverage; 19/32 must-haves complete. Not ready to ship.** Local QA fixes are committed at `23a200c`. Passing tests verify implemented behavior; they do not turn missing or unverified requirements into complete features.
 
-This score covers the agreed recon matrix, not every capability of Spotify. Its weights are must=3, should=2, could=1; partial earns half credit; twelve explicit exclusions are not scored. The tool counts `original=unknown` target requirements as well as documented original features: these are independent product requirements, not observed facts about the original. The documented-original-only subset scores **77.0/100 across 31 features**; must-only scope scores **79.7/100**. New research-derived product additions will use `original=no` and remain outside parity.
+This score covers the agreed recon matrix, not every capability of Spotify. Its weights are must=3, should=2, could=1; partial earns half credit; twelve explicit exclusions are not scored. The tool counts `original=unknown` target requirements as well as documented original features: these are independent product requirements, not observed facts about the original. The documented-original-only subset scores **77.0/100 across 31 features**; must-only scope scores **79.7/100**. The seven research-derived product proposals use `original=no` and remain outside parity; this label excludes them from the score, rather than asserting the original lacks them.
 
 ## Visual comparison boundary
 
@@ -105,3 +105,12 @@ Not shippable yet: 13 must-have features are not done.
 - X10 Ad delivery and ad-sales platform: D15; monetization unselected
 - X11 Review-specific catalog and misleading local-only listing: D20/D21; actual functionality and catalog must be accurately disclosed
 - X12 Unverified regional exemption as music permission: D22; user premise unverified; individual rights assessment remains open
+
+## Yours, not in the original (not scored)
+- N01 Explicit durable shuffle and queue modes
+- N02 Acknowledged seek and interruption resume
+- N03 Actionable stalled-audio recovery
+- N04 Filtered playlist removal with undo
+- N05 Visible unavailable saved-item explanations
+- N06 Measured low-data playback options
+- N07 Stable localized personal music surface

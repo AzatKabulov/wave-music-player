@@ -39,7 +39,10 @@ export const test = base.extend<{ listener: void }>({
       ).toBeTruthy();
       await page.goto("/home");
       await expect(
-        page.getByRole("heading", { name: "Find your rhythm", exact: true }),
+        page.getByRole("heading", {
+          name: "Keep your own rhythm",
+          exact: true,
+        }),
       ).toBeVisible();
       await use();
       expect(failures).toEqual([]);
