@@ -35,7 +35,7 @@ yarn-error.*
 .env
 .env.*
 !.env.example
-data/
+/apps/api/data/
 coverage/
 playwright-artifacts/
 

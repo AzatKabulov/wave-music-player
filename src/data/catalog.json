@@ -1,0 +1,376 @@
+{
+  "artists": [
+    {
+      "id": "10000000-0000-4000-8000-000000000100",
+      "name": "Meridian Ensemble",
+      "palette": "clay",
+      "bio": "An imaginary studio project exploring ambient textures. Original Saz demo recordings."
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000101",
+      "name": "Tide Assembly",
+      "palette": "sea",
+      "bio": "An imaginary studio project exploring electronic textures. Original Saz demo recordings."
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000102",
+      "name": "Evening Arcade",
+      "palette": "night",
+      "bio": "An imaginary studio project exploring electronic textures. Original Saz demo recordings."
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000103",
+      "name": "Apricot Radio",
+      "palette": "sand",
+      "bio": "An imaginary studio project exploring instrumental textures. Original Saz demo recordings."
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000104",
+      "name": "Velvet Atlas",
+      "palette": "berry",
+      "bio": "An imaginary studio project exploring jazz textures. Original Saz demo recordings."
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000105",
+      "name": "Field Notes",
+      "palette": "forest",
+      "bio": "An imaginary studio project exploring ambient textures. Original Saz demo recordings."
+    }
+  ],
+  "albums": [
+    {
+      "id": "10000000-0000-4000-8000-000000000200",
+      "title": "Desert Hours",
+      "artist": "Meridian Ensemble",
+      "artistId": "10000000-0000-4000-8000-000000000100",
+      "palette": "clay",
+      "year": 2026,
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000300",
+        "10000000-0000-4000-8000-000000000301"
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000201",
+      "title": "Caspian Blue",
+      "artist": "Tide Assembly",
+      "artistId": "10000000-0000-4000-8000-000000000101",
+      "palette": "sea",
+      "year": 2026,
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000302",
+        "10000000-0000-4000-8000-000000000303"
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000202",
+      "title": "After the City",
+      "artist": "Evening Arcade",
+      "artistId": "10000000-0000-4000-8000-000000000102",
+      "palette": "night",
+      "year": 2026,
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000304",
+        "10000000-0000-4000-8000-000000000305"
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000203",
+      "title": "Golden Courtyard",
+      "artist": "Apricot Radio",
+      "artistId": "10000000-0000-4000-8000-000000000103",
+      "palette": "sand",
+      "year": 2026,
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000306",
+        "10000000-0000-4000-8000-000000000307"
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000204",
+      "title": "A Slower Sunday",
+      "artist": "Velvet Atlas",
+      "artistId": "10000000-0000-4000-8000-000000000104",
+      "palette": "berry",
+      "year": 2026,
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000308",
+        "10000000-0000-4000-8000-000000000309"
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000205",
+      "title": "Green Horizon",
+      "artist": "Field Notes",
+      "artistId": "10000000-0000-4000-8000-000000000105",
+      "palette": "forest",
+      "year": 2026,
+      "trackIds": [
+        "10000000-0000-4000-8000-000000000310",
+        "10000000-0000-4000-8000-000000000311"
+      ]
+    }
+  ],
+  "tracks": [
+    {
+      "id": "10000000-0000-4000-8000-000000000300",
+      "title": "First Light",
+      "artistId": "10000000-0000-4000-8000-000000000100",
+      "artist": "Meridian Ensemble",
+      "albumId": "10000000-0000-4000-8000-000000000200",
+      "album": "Desert Hours",
+      "palette": "clay",
+      "durationMs": 24000,
+      "genre": "Ambient",
+      "language": "tk",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000301",
+      "title": "Open Road",
+      "artistId": "10000000-0000-4000-8000-000000000100",
+      "artist": "Meridian Ensemble",
+      "albumId": "10000000-0000-4000-8000-000000000200",
+      "album": "Desert Hours",
+      "palette": "clay",
+      "durationMs": 24000,
+      "genre": "Ambient",
+      "language": "tk",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000302",
+      "title": "Blue Current",
+      "artistId": "10000000-0000-4000-8000-000000000101",
+      "artist": "Tide Assembly",
+      "albumId": "10000000-0000-4000-8000-000000000201",
+      "album": "Caspian Blue",
+      "palette": "sea",
+      "durationMs": 24000,
+      "genre": "Electronic",
+      "language": "en",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000303",
+      "title": "Distant Shore",
+      "artistId": "10000000-0000-4000-8000-000000000101",
+      "artist": "Tide Assembly",
+      "albumId": "10000000-0000-4000-8000-000000000201",
+      "album": "Caspian Blue",
+      "palette": "sea",
+      "durationMs": 24000,
+      "genre": "Electronic",
+      "language": "en",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000304",
+      "title": "Night Windows",
+      "artistId": "10000000-0000-4000-8000-000000000102",
+      "artist": "Evening Arcade",
+      "albumId": "10000000-0000-4000-8000-000000000202",
+      "album": "After the City",
+      "palette": "night",
+      "durationMs": 24000,
+      "genre": "Electronic",
+      "language": "ru",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000305",
+      "title": "Late Connection",
+      "artistId": "10000000-0000-4000-8000-000000000102",
+      "artist": "Evening Arcade",
+      "albumId": "10000000-0000-4000-8000-000000000202",
+      "album": "After the City",
+      "palette": "night",
+      "durationMs": 24000,
+      "genre": "Electronic",
+      "language": "ru",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000306",
+      "title": "Warm Stone",
+      "artistId": "10000000-0000-4000-8000-000000000103",
+      "artist": "Apricot Radio",
+      "albumId": "10000000-0000-4000-8000-000000000203",
+      "album": "Golden Courtyard",
+      "palette": "sand",
+      "durationMs": 24000,
+      "genre": "Instrumental",
+      "language": "tk",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000307",
+      "title": "Apricot Sky",
+      "artistId": "10000000-0000-4000-8000-000000000103",
+      "artist": "Apricot Radio",
+      "albumId": "10000000-0000-4000-8000-000000000203",
+      "album": "Golden Courtyard",
+      "palette": "sand",
+      "durationMs": 24000,
+      "genre": "Instrumental",
+      "language": "tk",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000308",
+      "title": "Sunday Steps",
+      "artistId": "10000000-0000-4000-8000-000000000104",
+      "artist": "Velvet Atlas",
+      "albumId": "10000000-0000-4000-8000-000000000204",
+      "album": "A Slower Sunday",
+      "palette": "berry",
+      "durationMs": 24000,
+      "genre": "Jazz",
+      "language": "en",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000309",
+      "title": "Soft Corners",
+      "artistId": "10000000-0000-4000-8000-000000000104",
+      "artist": "Velvet Atlas",
+      "albumId": "10000000-0000-4000-8000-000000000204",
+      "album": "A Slower Sunday",
+      "palette": "berry",
+      "durationMs": 24000,
+      "genre": "Jazz",
+      "language": "en",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000310",
+      "title": "New Leaves",
+      "artistId": "10000000-0000-4000-8000-000000000105",
+      "artist": "Field Notes",
+      "albumId": "10000000-0000-4000-8000-000000000205",
+      "album": "Green Horizon",
+      "palette": "forest",
+      "durationMs": 24000,
+      "genre": "Ambient",
+      "language": "en",
+      "explicit": false,
+      "available": true
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000311",
+      "title": "Small Hours",
+      "artistId": "10000000-0000-4000-8000-000000000105",
+      "artist": "Field Notes",
+      "albumId": "10000000-0000-4000-8000-000000000205",
+      "album": "Green Horizon",
+      "palette": "forest",
+      "durationMs": 24000,
+      "genre": "Ambient",
+      "language": "en",
+      "explicit": false,
+      "available": true
+    }
+  ],
+  "playlists": [
+    {
+      "id": "10000000-0000-4000-8000-000000000400",
+      "title": "The long way home",
+      "description": "Room to breathe. Instrumentals for the journey.",
+      "palette": "clay",
+      "owner": false,
+      "revision": "0",
+      "items": [
+        {
+          "id": "10000000-0000-4000-8000-000000000500",
+          "trackId": "10000000-0000-4000-8000-000000000300"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000501",
+          "trackId": "10000000-0000-4000-8000-000000000303"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000502",
+          "trackId": "10000000-0000-4000-8000-000000000306"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000503",
+          "trackId": "10000000-0000-4000-8000-000000000310"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000504",
+          "trackId": "10000000-0000-4000-8000-000000000301"
+        }
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000401",
+      "title": "After dark",
+      "description": "Soft electronics, city lights, and a little space.",
+      "palette": "night",
+      "owner": false,
+      "revision": "0",
+      "items": [
+        {
+          "id": "10000000-0000-4000-8000-000000000520",
+          "trackId": "10000000-0000-4000-8000-000000000304"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000521",
+          "trackId": "10000000-0000-4000-8000-000000000305"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000522",
+          "trackId": "10000000-0000-4000-8000-000000000302"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000523",
+          "trackId": "10000000-0000-4000-8000-000000000308"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000524",
+          "trackId": "10000000-0000-4000-8000-000000000311"
+        }
+      ]
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000402",
+      "title": "Slow mornings",
+      "description": "Start gently. Leave the rush outside.",
+      "palette": "forest",
+      "owner": false,
+      "revision": "0",
+      "items": [
+        {
+          "id": "10000000-0000-4000-8000-000000000540",
+          "trackId": "10000000-0000-4000-8000-000000000310"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000541",
+          "trackId": "10000000-0000-4000-8000-000000000308"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000542",
+          "trackId": "10000000-0000-4000-8000-000000000306"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000543",
+          "trackId": "10000000-0000-4000-8000-000000000309"
+        },
+        {
+          "id": "10000000-0000-4000-8000-000000000544",
+          "trackId": "10000000-0000-4000-8000-000000000300"
+        }
+      ]
+    }
+  ]
+}

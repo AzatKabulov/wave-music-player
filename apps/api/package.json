@@ -1,0 +1,22 @@
+{
+  "name": "saz-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.8.0",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env.local src/start.mjs",
+    "test": "node --test test/*.test.mjs",
+    "migrate": "node --env-file-if-exists=.env.local src/migrate.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.11",
+    "@fastify/cookie": "11.1.3",
+    "@fastify/cors": "11.3.1",
+    "@fastify/helmet": "13.2.0",
+    "@supabase/supabase-js": "2.118.0",
+    "fastify": "5.12.7",
+    "pg": "8.23.1",
+    "zod": "4.6.7"
+  }
+}
