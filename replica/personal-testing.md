@@ -29,6 +29,10 @@ Build project: https://expo.dev/accounts/azatkabulov/projects/musify-personal-te
 
 Initial build: https://expo.dev/accounts/azatkabulov/projects/musify-personal-test/builds/ae3e57de-0600-416a-9c8a-bf99fdeaa823
 
+**Build completed successfully.** [Download the Android APK](https://expo.dev/artifacts/eas/XDol7xcHr96wNPPmquUeCHQ1Y6X7gkjDclNzR-z-ihE.apk). The local output is `outputs/musify-android-test.apk`, 107,584,493 bytes (about 108 MB), SHA-256 `049ad2bb2edb5c69291aa08c8d0a75b5e0e46c455427b14bbc3a5b74aed604ea`.
+
+The downloaded binary passed ZIP CRC checks. Its parsed manifest confirms package `com.local.musifytest`, version 0.1.0, min SDK 24, target SDK 36, personal-test cleartext HTTP and foreground media playback permission, with no microphone permission. It includes arm64-v8a, armeabi-v7a, x86 and x86_64 libraries. The embedded bundle contains the correct private API URL and no personal M4A/MP3 files. An APK signing block is present; full signature validation and physical installation were not executed by these file checks.
+
 Download/install instructions and final artifact verification are recorded in the output handoff. No Google Play enrollment is required to install the private APK directly. No store submission was performed.
 
 ## Personal music library
