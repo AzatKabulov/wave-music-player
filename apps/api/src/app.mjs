@@ -570,7 +570,15 @@ export async function createApp({
     ).rows,
   });
   route("GET", "/v1/playback-sessions/:installationId", null, (req) =>
-    user(req, async (c) => sessionDto(c, await readSession(req, c))),
+    user(req, async (c) => {
+      const s = (
+        await c.query(
+          "select id,revision,current_queue_entry_id,position_ms,repeat_mode,shuffle from music.playback_sessions where installation_id=$1 and user_id=$2",
+          [req.params.installationId, req.identity.id],
+        )
+      ).rows[0];
+      return s ? sessionDto(c, s) : null;
+    }),
   );
   const putSession = async (req) =>
     user(req, async (c) => {

@@ -172,13 +172,13 @@ export function Shell({
             <View style={s.mini}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`Open player for ${m.track.title}`}
+                accessibilityLabel={`Open player for ${m.track.title} ${m.track.artist}`}
                 onPress={() => go("/player")}
                 style={[s.row, s.grow]}
               >
                 <Artwork palette={m.track.palette} size={t.space[48]} />
                 <View style={s.grow}>
-                  <Label numberOfLines={1}>{m.track.title}</Label>
+                  <Label numberOfLines={1}>{m.track.title} </Label>
                   <Label type="sm" color="text-muted" numberOfLines={1}>
                     {m.track.artist}
                   </Label>

@@ -228,3 +228,7 @@ The operator tool can initially be a local CLI calling these routes; no extra we
 Webhooks in/out: **none initially**. Provider auth operations are SDK calls, not custom inbound webhooks. A future supplier notification must use its official signature/replay protocol and durable deduplication before changing the catalog; a future billing provider must get its own verified event ledger. Do not add unverified placeholder webhook handlers.
 
 The same API deployment runs a bounded worker loop against music.jobs with row locks, leases, and SKIP LOCKED. Schedules, failure recovery, retention, and media delivery tradeoffs are specified in architecture.md.
+
+## QA contract correction — 2026-10-24
+
+The implemented `GET /v1/playback-sessions/:installationId` returns HTTP 200 JSON `null` when this listener has no saved session for that installation. An existing own session returns the unchanged queue DTO. This treats normal first-run absence without an HTTP resource error and discloses no foreign queue. Authentication remains mandatory. Mutation, ownership and revision checks remain enforced; a nullable read is not permission to mutate another listener's session. Seek checkpoints now write a debounced cursor update through the same revision-controlled queue pipeline.

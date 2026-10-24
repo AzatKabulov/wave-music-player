@@ -14,6 +14,7 @@ import React, {
 } from "react";
 import { AppState, Platform } from "react-native";
 import { http } from "./http";
+import { setRepeat } from "./audioCommands";
 import { mock } from "./mock";
 import { insertExplicit, moveEntry, shuffleEntries } from "./queue";
 import { deviceStorage } from "./storage";
@@ -48,6 +49,12 @@ function useMusicController() {
     leaseMinted = useRef(0),
     pipeline = useRef<Promise<unknown>>(Promise.resolve()),
     canonical = useRef<QueueEntry[]>([]);
+  const seekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const seekVersion = useRef(0);
+  const cancelSeek = useCallback(() => {
+    seekVersion.current++;
+    if (seekTimer.current) clearTimeout(seekTimer.current);
+  }, []);
   const mounted = useRef(true),
     generation = useRef(0);
   const engine = useAudioPlaylist({
@@ -57,7 +64,9 @@ function useMusicController() {
     }),
     status = useAudioPlaylistStatus(engine);
   const statusRef = useRef(status);
-  statusRef.current = status;
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
   const activeEntry = queue.entries[status.currentIndex],
     track = snapshot?.catalog.tracks.find((t) => t.id === activeEntry?.trackId);
   const refresh = useCallback(async () => {
@@ -89,7 +98,7 @@ function useMusicController() {
     },
     [refresh],
   );
-  const ensureLease = async () => {
+  const ensureLease = useCallback(async () => {
     if (
       !lease.current ||
       Date.now() - leaseMinted.current > 23 * 60 * 60 * 1000
@@ -98,63 +107,66 @@ function useMusicController() {
       leaseMinted.current = Date.now();
     }
     return lease.current;
-  };
-  const install = (state: QueueState, play: boolean, token: string) => {
-    engine.pause();
-    engine.clear();
-    state.entries.forEach((entry) =>
-      engine.add({ uri: data.media(token, entry) }),
-    );
-    const index = state.entries.findIndex((e) => e.id === state.currentId);
-    if (index >= 0) engine.skipTo(index);
-    engine.loop = state.repeat;
-    queueRef.current = state;
-    setQueue(state);
-    if (state.positionMs > 0)
-      void engine
-        .seekTo(state.positionMs / 1000)
-        .catch(() => setError("Could not restore this position."));
-    if (play && state.entries.length) engine.play();
-  };
-  const reconcile = async () => {
+  }, []);
+  const install = useCallback(
+    (state: QueueState, play: boolean, token: string) => {
+      engine.pause();
+      engine.clear();
+      state.entries.forEach((entry) =>
+        engine.add({ uri: data.media(token, entry) }),
+      );
+      const index = state.entries.findIndex((e) => e.id === state.currentId);
+      if (index >= 0) engine.skipTo(index);
+      setRepeat(engine, state.repeat);
+      queueRef.current = state;
+      setQueue(state);
+      if (state.positionMs > 0)
+        void engine
+          .seekTo(state.positionMs / 1000)
+          .catch(() => setError("Could not restore this position."));
+      if (play && state.entries.length) engine.play();
+    },
+    [engine],
+  );
+  const reconcile = useCallback(async () => {
     const restored = await data.restoreQueue(installation.current);
     if (restored) {
       canonical.current = restored.entries;
       await ensureLease();
       install(restored, false, lease.current);
     }
-  };
-  const command = (
-    change: (current: QueueState) => QueueState,
-    play?: boolean,
-  ) => {
-    setPending((p) => p + 1);
-    const next = pipeline.current
-      .catch(() => {})
-      .then(async () => {
-        const old = queueRef.current,
-          s = statusRef.current;
-        const state = change({
-          ...old,
-          currentId: old.entries[s.currentIndex]?.id || old.currentId,
-          positionMs: Math.floor(s.currentTime * 1000),
-        });
-        const committed = await data.queue(installation.current, state);
-        await ensureLease();
-        install(committed, play ?? s.playing, lease.current);
-        return true;
-      })
-      .catch(async (e) => {
-        setError(
-          e instanceof Error ? e.message : "Could not update the queue.",
-        );
-        await reconcile().catch(() => {});
-        return false;
-      })
-      .finally(() => setPending((p) => p - 1));
-    pipeline.current = next;
-    return next;
-  };
+  }, [ensureLease, install]);
+  const command = useCallback(
+    (change: (current: QueueState) => QueueState, play?: boolean) => {
+      setPending((p) => p + 1);
+      const next = pipeline.current
+        .catch(() => {})
+        .then(async () => {
+          const old = queueRef.current,
+            s = statusRef.current;
+          const state = change({
+            ...old,
+            currentId: old.entries[s.currentIndex]?.id || old.currentId,
+            positionMs: Math.floor(s.currentTime * 1000),
+          });
+          const committed = await data.queue(installation.current, state);
+          await ensureLease();
+          install(committed, play ?? s.playing, lease.current);
+          return true;
+        })
+        .catch(async (e) => {
+          setError(
+            e instanceof Error ? e.message : "Could not update the queue.",
+          );
+          await reconcile().catch(() => {});
+          return false;
+        })
+        .finally(() => setPending((p) => p - 1));
+      pipeline.current = next;
+      return next;
+    },
+    [ensureLease, install, reconcile],
+  );
   useEffect(() => {
     mounted.current = true;
     void (async () => {
@@ -187,8 +199,9 @@ function useMusicController() {
     })();
     return () => {
       mounted.current = false;
+      cancelSeek();
     };
-  }, []);
+  }, [ensureLease, install, refresh, cancelSeek]);
   useEffect(() => {
     const timer = setInterval(() => {
       if (!queueRef.current.entries.length || !installation.current) return;
@@ -209,7 +222,7 @@ function useMusicController() {
         .catch(() => reconcile().catch(() => {}));
     }, 10000);
     return () => clearInterval(timer);
-  }, []);
+  }, [reconcile]);
   useEffect(() => {
     if (Platform.OS !== "web" && track) {
       engine.setActiveForLockScreen(true, {
@@ -218,14 +231,15 @@ function useMusicController() {
         albumTitle: track.album,
       });
     }
-  }, [track?.id]);
+  }, [track, engine]);
+  const trackId = track?.id;
   useEffect(() => {
-    if (track && status.playing)
+    if (trackId && status.playing)
       void data
-        .recent(track.id)
+        .recent(trackId)
         .then(refresh)
         .catch(() => {});
-  }, [track?.id, status.playing]);
+  }, [trackId, status.playing, refresh]);
   useEffect(() => {
     if (notice) {
       const timer = setTimeout(() => setNotice(""), 4500);
@@ -247,37 +261,87 @@ function useMusicController() {
           .catch(() => {});
     });
     return () => listener.remove();
-  }, [refresh]);
+  }, [refresh, command]);
   const playTracks = (tracks: Track[], start = 0) =>
     command((current) => {
-      const entries = tracks
+      const eligible = tracks
+        .map((track, index) => ({ track, index }))
         .filter(
-          (t) =>
-            t.available &&
-            (snapshot?.preferences.explicitAllowed || !t.explicit),
-        )
-        .map((t) => ({
-          id: randomUUID(),
-          trackId: t.id,
-          origin: "context" as const,
-        }));
+          ({ track }) =>
+            track.available &&
+            (snapshot?.preferences.explicitAllowed || !track.explicit),
+        );
+      const entries = eligible.map(({ track }) => ({
+        id: randomUUID(),
+        trackId: track.id,
+        origin: "context" as const,
+      }));
       canonical.current = entries;
       return {
         ...emptyQueue(),
         revision: current.revision,
         entries,
         currentId:
-          entries.find((e) => e.trackId === tracks[start]?.id)?.id ||
+          entries[eligible.findIndex((item) => item.index === start)]?.id ||
           entries[0]?.id ||
           null,
       };
     }, true);
   const stop = () => {
+    cancelSeek();
     engine.pause();
     engine.clear();
     lease.current = "";
     queueRef.current = emptyQueue();
     setQueue(emptyQueue());
+  };
+  const seek = (seconds: number) => {
+    const version = ++seekVersion.current;
+    const positionMs = Math.floor(
+      Math.max(
+        0,
+        Math.min(status.duration || (track?.durationMs ?? 0) / 1000, seconds),
+      ) * 1000,
+    );
+    const currentId = queueRef.current.entries[engine.currentIndex]?.id;
+    if (seekTimer.current) clearTimeout(seekTimer.current);
+    void engine
+      .seekTo(positionMs / 1000)
+      .then(() => {
+        if (!mounted.current || version !== seekVersion.current) return;
+        seekTimer.current = setTimeout(() => {
+          // Serialize cursor writes with membership edits; do not apply an old seek to a new track.
+          pipeline.current = pipeline.current
+            .catch(() => {})
+            .then(async () => {
+              const old = queueRef.current;
+              if (
+                !mounted.current ||
+                version !== seekVersion.current ||
+                !currentId ||
+                old.entries[engine.currentIndex]?.id !== currentId
+              )
+                return;
+              const committed = await data.queue(installation.current, {
+                ...old,
+                currentId,
+                positionMs,
+              });
+              queueRef.current = committed;
+              if (mounted.current) setQueue(committed);
+            })
+            .catch(() => {
+              if (mounted.current && version === seekVersion.current)
+                setError(
+                  "Could not save this playback position. Try seeking again.",
+                );
+            });
+        }, 250);
+      })
+      .catch(() => {
+        if (mounted.current && version === seekVersion.current)
+          setError("Could not seek.");
+      });
   };
   return {
     data,
@@ -297,19 +361,15 @@ function useMusicController() {
     playTracks,
     toggle: () => {
       try {
-        status.playing ? engine.pause() : engine.play();
+        if (status.playing) engine.pause();
+        else engine.play();
       } catch {
         setError("Playback could not start. Try another track.");
       }
     },
     next: () => engine.next(),
-    previous: () =>
-      status.currentTime > 3 ? void engine.seekTo(0) : engine.previous(),
-    seek: (seconds: number) => {
-      void engine
-        .seekTo(Math.max(0, Math.min(status.duration, seconds)))
-        .catch(() => setError("Could not seek."));
-    },
+    previous: () => (status.currentTime > 3 ? seek(0) : engine.previous()),
+    seek,
     enqueue: (track: Track) =>
       command((q) => {
         const entry = {

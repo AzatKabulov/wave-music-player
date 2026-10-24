@@ -27,7 +27,7 @@ export function TrackRow({
     <View style={[s.row, blocked && { opacity: t.opacity.disabled }]}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Play ${track.title} by ${track.artist}`}
+        accessibilityLabel={`Play ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? "Unavailable for playback" : track.artist) : ""}`}
         accessibilityState={{ disabled: blocked }}
         disabled={blocked}
         onPress={() => void m.playTracks(context || [track], index)}
@@ -37,7 +37,7 @@ export function TrackRow({
         <View style={ui.grow}>
           <Label numberOfLines={1} color={active ? "accent" : "text"}>
             {track.title}
-            {track.explicit ? " · E" : ""}
+            {track.explicit ? " · E" : ""}{" "}
           </Label>
           {subtitle ? (
             <Label type="sm" color="text-muted" numberOfLines={1}>

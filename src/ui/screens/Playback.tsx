@@ -169,7 +169,6 @@ export function QueueScreen() {
                 <Artwork palette={track.palette} size={t.space[48]} />
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={`Play queue entry ${i + 1}: ${track.title}`}
                   onPress={() => m.jumpQueue(entry.id)}
                   style={ui.grow}
                 >

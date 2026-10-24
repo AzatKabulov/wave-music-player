@@ -43,7 +43,6 @@ export function Home() {
         <>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`Explore ${featured?.title || "music"}`}
             onPress={() =>
               go(featured ? `/playlist/${featured.id}` : "/search")
             }
@@ -89,7 +88,7 @@ export function Home() {
             ))}
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Open liked tracks"
+              accessibilityLabel="Your liked tracks"
               onPress={() => go("/liked")}
               style={s.shortcut}
             >

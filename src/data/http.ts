@@ -147,7 +147,8 @@ export const http: MusicData = {
   },
   async restoreQueue(id) {
     try {
-      const value = fromWire(await request(`/v1/playback-sessions/${id}`));
+      const raw = await request(`/v1/playback-sessions/${id}`);
+      const value = raw ? fromWire(raw) : null;
       acknowledged.set(id, value);
       return value;
     } catch (e) {

@@ -79,7 +79,6 @@ export function LibraryScreen() {
       {filter === "All" ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Open liked tracks"
           onPress={() => go("/liked")}
           style={[ui.card, ui.row, s.liked]}
         >

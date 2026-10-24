@@ -27,11 +27,16 @@ export function Auth() {
     }
     void m
       .run(
-        () => m.data.auth(mode, email, password, name),
+        async () => ({
+          message: await m.data.auth(mode, email, password, name),
+        }),
         mode === "recover" ? "Check your email for the next step." : undefined,
       )
       .then((value) => {
-        if (typeof value === "string") m.setNotice(value);
+        if (value) {
+          if (typeof value.message === "string") m.setNotice(value.message);
+          if (mode !== "recover") router.replace("/home");
+        }
         setPassword("");
       });
   };

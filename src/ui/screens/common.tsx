@@ -61,7 +61,6 @@ export function Cards({
         <Pressable
           key={item.id}
           accessibilityRole="button"
-          accessibilityLabel={`Open ${item.title}`}
           onPress={() => go(`/${type}/${item.id}`)}
           style={s.card}
         >

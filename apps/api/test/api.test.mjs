@@ -37,6 +37,20 @@ after(async () => {
   await app?.close();
   await db?.close();
 });
+test("a new installation has no saved queue without an HTTP error or user leak", async () => {
+  const installation = randomUUID();
+  const first = await call("GET", `/v1/playback-sessions/${installation}`);
+  assert.equal(first.statusCode, 200);
+  assert.equal(first.json(), null);
+  const other = await call(
+    "GET",
+    `/v1/playback-sessions/${installation}`,
+    undefined,
+    b,
+  );
+  assert.equal(other.statusCode, 200);
+  assert.equal(other.json(), null);
+});
 test("anonymous writes and unknown/oversize input are rejected", async () => {
   assert.equal(
     (await call("POST", "/v1/playlists", { title: "x" }, null)).statusCode,
@@ -131,11 +145,14 @@ test("queue CAS, single ranges, bad leases, and signout revocation", async () =>
     (await call("PUT", `/v1/playback-sessions/${device}`, state)).statusCode,
     409,
   );
-  assert.equal(
-    (await call("GET", `/v1/playback-sessions/${device}`, undefined, b))
-      .statusCode,
-    404,
+  const foreignQueue = await call(
+    "GET",
+    `/v1/playback-sessions/${device}`,
+    undefined,
+    b,
   );
+  assert.equal(foreignQueue.statusCode, 200);
+  assert.equal(foreignQueue.json(), null);
   const grant = await call(
     "POST",
     `/v1/playback-sessions/${device}/grants`,

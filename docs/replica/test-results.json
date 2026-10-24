@@ -1,0 +1,203 @@
+{
+  "date": "2026-10-24",
+  "baseline": "5b99a2d",
+  "browser": "Microsoft Edge via Playwright",
+  "projects": {
+    "phone-web": "390x844",
+    "desktop-web": "1440x900"
+  },
+  "browserCases": [
+    {
+      "scenario": "F01-H1 account entry and validation",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 8259
+    },
+    {
+      "scenario": "F01-H1 account entry and validation",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 8479
+    },
+    {
+      "scenario": "F02-H1 home collection, album and artist",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 10347
+    },
+    {
+      "scenario": "F02-E1 an empty catalog offers refresh",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 12182
+    },
+    {
+      "scenario": "F02-H1 home collection, album and artist",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 9293
+    },
+    {
+      "scenario": "F02-E1 an empty catalog offers refresh",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 12270
+    },
+    {
+      "scenario": "F03-H1/E1 search, no result and Unicode input",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 11934
+    },
+    {
+      "scenario": "F03-E2 removed collections give a useful return path",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 12228
+    },
+    {
+      "scenario": "F03-H1/E1 search, no result and Unicode input",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 10736
+    },
+    {
+      "scenario": "F03-E2 removed collections give a useful return path",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 15856
+    },
+    {
+      "scenario": "F04-H1 transport, seek, repeat and shuffle",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 14562
+    },
+    {
+      "scenario": "F04-H1 transport, seek, repeat and shuffle",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 15479
+    },
+    {
+      "scenario": "F05-H1 likes are separate from album saves",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 8394
+    },
+    {
+      "scenario": "F05-H1 likes are separate from album saves",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 9687
+    },
+    {
+      "scenario": "F06-H1/E1 blank and Unicode playlist, double submit",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 14090
+    },
+    {
+      "scenario": "F06-H1/E1 blank and Unicode playlist, double submit",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 18193
+    },
+    {
+      "scenario": "F07-H1 add and deliberately repeat a track",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 13720
+    },
+    {
+      "scenario": "F07-H1 add and deliberately repeat a track",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 26564
+    },
+    {
+      "scenario": "F08-H1 reorder, remove and rename",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 13250
+    },
+    {
+      "scenario": "F08-E2 remove the last item, cancel deletion, then delete only the QA fixture",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 12931
+    },
+    {
+      "scenario": "F08-H1 reorder, remove and rename",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 27790
+    },
+    {
+      "scenario": "F08-E2 remove the last item, cancel deletion, then delete only the QA fixture",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 18673
+    },
+    {
+      "scenario": "F09-E1 selecting a duplicate starts that occurrence",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 12511
+    },
+    {
+      "scenario": "F09-H1 explicit requests can move and clear without deleting context",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 9472
+    },
+    {
+      "scenario": "F09-E1 selecting a duplicate starts that occurrence",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 19170
+    },
+    {
+      "scenario": "F09-H1 explicit requests can move and clear without deleting context",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 28575
+    },
+    {
+      "scenario": "F10-H1 resume queue paused after refresh",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 19696
+    },
+    {
+      "scenario": "F10-H1 resume queue paused after refresh",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 19578
+    },
+    {
+      "scenario": "F12-H1 history returns to a permitted track",
+      "project": "phone-web",
+      "status": "passed",
+      "durationMs": 8571
+    },
+    {
+      "scenario": "F12-H1 history returns to a permitted track",
+      "project": "desktop-web",
+      "status": "passed",
+      "durationMs": 10918
+    }
+  ],
+  "passed": 30,
+  "failed": 0,
+  "apiTests": 14,
+  "queueTests": 3,
+  "schemaTests": 27,
+  "bugsFixed": 6,
+  "pending": [
+    "Physical iOS/Android acceptance",
+    "Supabase and email/Storage staging",
+    "Native deferred seek completion harness"
+  ],
+  "executionNote": "Full run 28/30; empty-catalog test initially forwarded its fixture request to the persistent preview instead of the QA API. Fixture corrected; both failed cases reran successfully. No failing result discarded without a rerun."
+}
