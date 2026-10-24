@@ -61,3 +61,10 @@ X09 AI DJ and generated playlists,excluded,could,yes,skip,D10/D11; outside core
 X10 Ad delivery and ad-sales platform,excluded,could,yes,skip,D15; monetization unselected
 X11 Review-specific catalog and misleading local-only listing,excluded,could,unknown,skip,D20/D21; actual functionality and catalog must be accurately disclosed
 X12 Unverified regional exemption as music permission,excluded,could,unknown,skip,D22; user premise unverified; individual rights assessment remains open
+N01 Explicit durable shuffle and queue modes,queue,should,no,partial,Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence
+N02 Acknowledged seek and interruption resume,persistence,must,no,partial,Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence
+N03 Actionable stalled-audio recovery,player,must,no,no,Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence
+N04 Filtered playlist removal with undo,playlists,should,no,no,Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence
+N05 Visible unavailable saved-item explanations,catalog,should,no,no,Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence
+N06 Measured low-data playback options,regional,should,no,no,Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence
+N07 Stable localized personal music surface,regional,should,no,no,Independent research proposal; 2026-10-24; see fixes.md; original=no excludes from parity and does not assert competitor absence
