@@ -1,0 +1,406 @@
+{
+  "feature_score": 71.0,
+  "counted": 50,
+  "must_have_done": 19,
+  "must_have_total": 32,
+  "by_area": [
+    {
+      "area": "sharing",
+      "score": 0.0,
+      "features": 1
+    },
+    {
+      "area": "monetization",
+      "score": 0.0,
+      "features": 1
+    },
+    {
+      "area": "offline",
+      "score": 0.0,
+      "features": 1
+    },
+    {
+      "area": "catalog operations",
+      "score": 41.7,
+      "features": 3
+    },
+    {
+      "area": "account",
+      "score": 50.0,
+      "features": 3
+    },
+    {
+      "area": "search",
+      "score": 50.0,
+      "features": 3
+    },
+    {
+      "area": "queue",
+      "score": 50.0,
+      "features": 1
+    },
+    {
+      "area": "mobile",
+      "score": 50.0,
+      "features": 2
+    },
+    {
+      "area": "accessibility",
+      "score": 50.0,
+      "features": 1
+    },
+    {
+      "area": "settings",
+      "score": 50.0,
+      "features": 2
+    },
+    {
+      "area": "regional",
+      "score": 50.0,
+      "features": 1
+    },
+    {
+      "area": "resilience",
+      "score": 50.0,
+      "features": 1
+    },
+    {
+      "area": "player",
+      "score": 78.6,
+      "features": 7
+    },
+    {
+      "area": "persistence",
+      "score": 80.0,
+      "features": 2
+    },
+    {
+      "area": "discovery",
+      "score": 83.3,
+      "features": 3
+    },
+    {
+      "area": "playlists",
+      "score": 84.2,
+      "features": 7
+    },
+    {
+      "area": "library",
+      "score": 85.7,
+      "features": 6
+    },
+    {
+      "area": "navigation",
+      "score": 100.0,
+      "features": 1
+    },
+    {
+      "area": "catalog",
+      "score": 100.0,
+      "features": 3
+    },
+    {
+      "area": "access",
+      "score": 100.0,
+      "features": 1
+    }
+  ],
+  "missing": [
+    {
+      "feature": "M30 Accessible labels scaling and long-text layouts",
+      "area": "accessibility",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "All core surfaces; target requirement; not original audit; Build 2026-10-24: 48dp targets and labels; 18 contrast pairs pass; VoiceOver/TalkBack and large-text acceptance pending"
+    },
+    {
+      "feature": "M01 Register an account",
+      "area": "account",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S01-S03; F01; D01; independent auth; Build 2026-10-24: Local registration tested; provider confirmation not staged"
+    },
+    {
+      "feature": "M02 Sign in recover access and sign out",
+      "area": "account",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S03/S18; F01; D23; exact native forms unobserved; Build 2026-10-24: Local login/global sign-out tested; provider email recovery pending"
+    },
+    {
+      "feature": "M31 Account deletion entry and support access",
+      "area": "account",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S18; D20/D23; new product launch requirement; Build 2026-10-24: Real deletion job and UI entry; production support details missing"
+    },
+    {
+      "feature": "M29 Gate media by recorded content permissions",
+      "area": "catalog operations",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "E13/E14; independent launch requirement; catalog not acquired; Build 2026-10-24: Local media lease reads recheck permission and withdrawal; managed Storage/territory resolver pending"
+    },
+    {
+      "feature": "M25 Continue audio in background and on lock screen",
+      "area": "mobile",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S20; F11; target requirement; not device observed; Build 2026-10-24: Native background plugin and lock-screen metadata configured; no physical phone test"
+    },
+    {
+      "feature": "M27 Handle audio interruptions and route changes",
+      "area": "mobile",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S20; F11; real iOS and Android tests required; Build 2026-10-24: Playback-only interruption configuration; headset/Bluetooth/call testing pending"
+    },
+    {
+      "feature": "M14 Seek within a track",
+      "area": "player",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S12; F04; target behavior; device validation needed; Build 2026-10-24: Browser seek control and API ranges tested; native seek needs device evidence"
+    },
+    {
+      "feature": "M15 Shuffle and repeat modes",
+      "area": "player",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S12; F04; D06; define state transitions; Build 2026-10-24: Shuffle/repeat code and shuffle-order tests; complete native engine transition matrix pending"
+    },
+    {
+      "feature": "M26 Recover from buffering and playback failure",
+      "area": "player",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S12; F02/F04; target requirement; Build 2026-10-24: Buffering indication and generic operation errors; unavailable-track skipping and native network recovery incomplete"
+    },
+    {
+      "feature": "M16 Display and manage upcoming queue",
+      "area": "queue",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S13/S14; F09; D07; queue reorder and clear explicit additions; Build 2026-10-24: Queue entry movement/removal and CAS implemented; all queue UI edge cases not exhaustively tested"
+    },
+    {
+      "feature": "M05 Search tracks artists albums and playlists",
+      "area": "search",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S05/S06; F03; D02; Build 2026-10-24: All four types over a bounded 100-item catalog; full-catalog server search/pagination outstanding"
+    },
+    {
+      "feature": "M06 Handle pending empty and failed search",
+      "area": "search",
+      "priority": "must",
+      "clone": "partial",
+      "notes": "S05/S06; F03; target acceptance states; Build 2026-10-24: Empty state and root connection retry implemented; exhaustive pending/failure search acceptance outstanding"
+    },
+    {
+      "feature": "S03 Search within an owned playlist",
+      "area": "playlists",
+      "priority": "should",
+      "clone": "no",
+      "notes": "S09; D08; mobile scope only"
+    },
+    {
+      "feature": "S10 Network-aware audio settings",
+      "area": "settings",
+      "priority": "should",
+      "clone": "no",
+      "notes": "S18; target design; measure local connections"
+    },
+    {
+      "feature": "S11 Independent catalog import and unpublish tools",
+      "area": "catalog operations",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "Operational surface outside listener screen count; permitted sources only; Build 2026-10-24: Guarded WAV/JSON import and publish/withdraw handlers implemented; hosted intake unverified"
+    },
+    {
+      "feature": "S02 Library filters sorting and list grid modes",
+      "area": "library",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "S10; D08; Build 2026-10-24: Filters and three sort choices implemented; grid mode absent"
+    },
+    {
+      "feature": "S06 Restore last playback position and queue",
+      "area": "persistence",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "F10; define restart behavior; no cross-device control promise; Build 2026-10-24: Server queue/cursor restore implemented; offline SQLite queue checkpoint absent"
+    },
+    {
+      "feature": "S07 Playlist description and custom cover",
+      "area": "playlists",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "S16; D05/D23; permitted user assets; Build 2026-10-24: Descriptions implemented; custom cover upload absent"
+    },
+    {
+      "feature": "S09 Localized UI and Turkmen-character search",
+      "area": "regional",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "User target Turkmenistan; languages and scripts to confirm; Build 2026-10-24: Unicode storage/search works; current UI is English only"
+    },
+    {
+      "feature": "S12 Retry and undo for collection edits",
+      "area": "resilience",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "S10-S17; define safe retry and conflict behavior; Build 2026-10-24: Create receipts and revision conflict checks implemented; undo/outbox absent"
+    },
+    {
+      "feature": "S04 Search suggestions and recent queries",
+      "area": "search",
+      "priority": "should",
+      "clone": "partial",
+      "notes": "S05; D03; store only own users history; Build 2026-10-24: Bounded suggestions API exists; suggestions/recent-query UI not completed"
+    },
+    {
+      "feature": "C06 Verified artist and label release submissions",
+      "area": "catalog operations",
+      "priority": "could",
+      "clone": "no",
+      "notes": "D29; regional benchmark Belet Music Studio; later operational workflow outside listener screen count"
+    },
+    {
+      "feature": "C05 Rule-based related music",
+      "area": "discovery",
+      "priority": "could",
+      "clone": "no",
+      "notes": "Independent recommendations over own catalog; no model parity"
+    },
+    {
+      "feature": "C04 Playlist folders",
+      "area": "library",
+      "priority": "could",
+      "clone": "no",
+      "notes": "D16; later organization feature"
+    },
+    {
+      "feature": "C02 Paid plan and entitlement management",
+      "area": "monetization",
+      "priority": "could",
+      "clone": "no",
+      "notes": "S21; F13; D11; business model provider and market availability unresolved"
+    },
+    {
+      "feature": "C03 Offline album and playlist downloads",
+      "area": "offline",
+      "priority": "could",
+      "clone": "no",
+      "notes": "S22; F14; D12; permission and technical design pending"
+    },
+    {
+      "feature": "C01 Public playlist links and native sharing",
+      "area": "sharing",
+      "priority": "could",
+      "clone": "no",
+      "notes": "D14; deferred; MVP playlists private by proposal"
+    }
+  ],
+  "skipped": [
+    {
+      "feature": "X01 Spotify audio catalog and cached files",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "No catalog rights conveyed by recon; use permitted audio supply"
+    },
+    {
+      "feature": "X02 Spotify covers lyrics and editorial content",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "Reference only; not shipped or copied into catalog"
+    },
+    {
+      "feature": "X03 Spotify name marks and proprietary code",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "Original brand and fresh implementation"
+    },
+    {
+      "feature": "X04 Spotify APIs or SDKs as replacement backend",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D19 section III.11; no permission assumed for replacement experience"
+    },
+    {
+      "feature": "X05 Spotify recommendation models and listener data",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "Independent curation; their private models and network not available"
+    },
+    {
+      "feature": "X06 Podcasts audiobooks and music video",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D14/D15; outside user-selected music slice"
+    },
+    {
+      "feature": "X07 Jam and collaborative social listening",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D11/D14; beyond MVP"
+    },
+    {
+      "feature": "X08 Connect handoff car TV and watch apps",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D11/D14; native phone playback only"
+    },
+    {
+      "feature": "X09 AI DJ and generated playlists",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D10/D11; outside core"
+    },
+    {
+      "feature": "X10 Ad delivery and ad-sales platform",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D15; monetization unselected"
+    },
+    {
+      "feature": "X11 Review-specific catalog and misleading local-only listing",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D20/D21; actual functionality and catalog must be accurately disclosed"
+    },
+    {
+      "feature": "X12 Unverified regional exemption as music permission",
+      "area": "excluded",
+      "priority": "could",
+      "clone": "skip",
+      "notes": "D22; user premise unverified; individual rights assessment remains open"
+    }
+  ],
+  "extras": [],
+  "problems": [],
+  "overall": 71.0,
+  "visual_comparison": {
+    "status": "unavailable",
+    "reason": "No same-viewport same-state reference screenshots or original native session; a numerical image diff would be misleading."
+  },
+  "confirmed_original_subset": {
+    "score": 77.0,
+    "counted": 31
+  },
+  "must_only_score": 79.7,
+  "date": "2026-10-24",
+  "qa_commit": "23a200c"
+}
