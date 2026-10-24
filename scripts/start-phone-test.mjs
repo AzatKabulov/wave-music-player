@@ -19,6 +19,17 @@ const host =
 if (!host)
   throw Error("Set MUSIFY_PERSONAL_TEST_HOST to your PC's Wi-Fi IPv4 address.");
 const config = listenerConfig({ MUSIFY_PERSONAL_TEST_HOST: host });
+if (process.argv.includes("--connection-json")) {
+  console.log(
+    JSON.stringify({
+      api: config.baseUrl,
+      expo: `http://${host}:8082`,
+      expoGo: `exp://${host}:8082`,
+      androidApk: `${config.baseUrl}/test/android.apk`,
+    }),
+  );
+  process.exit(0);
+}
 const env = {
   ...process.env,
   APP_MODE: "local",
@@ -30,6 +41,7 @@ const env = {
   EXPO_PUBLIC_API_URL: config.baseUrl,
   EXPO_PUBLIC_PERSONAL_TEST: "1",
   EXPO_NO_TELEMETRY: "1",
+  CI: "1",
   NODE_OPTIONS: `${process.env.NODE_OPTIONS || ""} --dns-result-order=ipv4first`,
 };
 console.log(

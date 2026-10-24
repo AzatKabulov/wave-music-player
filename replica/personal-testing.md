@@ -2,7 +2,7 @@
 
 ## Start the PC services
 
-From the app directory, run `npm run test:phones` and leave the terminal and PC running. The launcher selects the single private IPv4 interface. If there are multiple adapters, set `MUSIFY_PERSONAL_TEST_HOST` to the PC's Wi-Fi IPv4 address first.
+On Windows, run `node scripts/launch-phone-test.mjs` or double-click the output `start-musify-testing.cmd`. It starts the test controller as a persistent hidden Windows process, checks API/Expo readiness, and exits without stopping them. Logs and process metadata are under `apps/api/data/phone-test`. The previous temporary execution servers had stopped; this launcher fixes that lifecycle issue. For foreground debugging, `npm run test:phones` still works while its terminal remains open. Keep the PC awake. The controller selects the single private IPv4 interface; with multiple adapters set `MUSIFY_PERSONAL_TEST_HOST` first.
 
 Current connection:
 
@@ -15,7 +15,7 @@ The launcher does not modify firewall rules, create a public tunnel or provision
 
 ## iPhone
 
-Install the current Expo Go from the App Store. This project serves SDK 58. Scan the supplied QR code with the iPhone Camera and open it in Expo Go. Choose **Explore demo**, then **Popular picks**.
+Install the current Expo Go and sign in as **azatkabulov**, matching this PC's Expo account. [Current Expo instructions](https://docs.expo.dev/get-started/start-developing/) require matching accounts on physical iOS devices. Enable Expo Go in **Settings → Privacy & Security → Local Network** ([Apple instructions](https://support.apple.com/en-us/102229)). This project serves SDK 58. Scan the QR with iPhone Camera, open in Expo Go, then choose **Explore demo → Popular picks**.
 
 This preview uses foreground playback. It deliberately avoids activating the app's own background audio and lock-screen configuration inside Expo Go. Test those behaviors later in Musify's own iOS binary.
 
@@ -30,6 +30,8 @@ Build project: https://expo.dev/accounts/azatkabulov/projects/musify-personal-te
 Initial build: https://expo.dev/accounts/azatkabulov/projects/musify-personal-test/builds/ae3e57de-0600-416a-9c8a-bf99fdeaa823
 
 **Build completed successfully.** [Download the Android APK](https://expo.dev/artifacts/eas/XDol7xcHr96wNPPmquUeCHQ1Y6X7gkjDclNzR-z-ihE.apk). The local output is `outputs/musify-android-test.apk`, 107,584,493 bytes (about 108 MB), SHA-256 `049ad2bb2edb5c69291aa08c8d0a75b5e0e46c455427b14bbc3a5b74aed604ea`.
+
+The same validated file is also provided as `outputs/Musify.apk`. The personal API's `GET/HEAD /test/android.apk` serves it as `application/vnd.android.package-archive`, with `attachment; filename="Musify.apk"` and byte-range/resume support. This route is absent in ordinary local and production configurations. A full HTTP download matched the build's size and SHA-256. No native rebuild was needed for these server/launcher fixes.
 
 The downloaded binary passed ZIP CRC checks. Its parsed manifest confirms package `com.local.musifytest`, version 0.1.0, min SDK 24, target SDK 36, personal-test cleartext HTTP and foreground media playback permission, with no microphone permission. It includes arm64-v8a, armeabi-v7a, x86 and x86_64 libraries. The embedded bundle contains the correct private API URL and no personal M4A/MP3 files. An APK signing block is present; full signature validation and physical installation were not executed by these file checks.
 

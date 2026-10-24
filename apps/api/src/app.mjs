@@ -26,6 +26,7 @@ import {
 import { createJobs } from "./jobs.mjs";
 import { registerOperators } from "./operators.mjs";
 import { audioRoot } from "./seed.mjs";
+import { registerPersonalDownload } from "./personal-download.mjs";
 
 export async function createApp({
   db,
@@ -41,6 +42,10 @@ export async function createApp({
     bodyLimit: 32768,
     requestTimeout: 30000,
     trustProxy: false,
+  });
+  registerPersonalDownload(app, {
+    enabled: personalTest && mode === "local",
+    apkFile: new URL("../../../../musify-android-test.apk", import.meta.url),
   });
   await app.register(cookie);
   await app.register(cors, {
