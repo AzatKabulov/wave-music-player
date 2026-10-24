@@ -2,9 +2,9 @@
   "expo": {
     "name": "Saz",
     "slug": "saz-music",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "default",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/saz-icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
@@ -12,16 +12,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "backgroundColor": "#14251D",
+        "foregroundImage": "./assets/saz-icon.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.example.sazmusic"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/saz-icon.png"
     },
     "plugins": [
       "expo-router",

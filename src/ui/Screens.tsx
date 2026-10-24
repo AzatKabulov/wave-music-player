@@ -1,124 +1,100 @@
-import React,{useEffect,useState} from 'react';
-import {Pressable,ScrollView,StyleSheet,Switch,View,useWindowDimensions} from 'react-native';
-import {usePathname} from 'expo-router';
-import {randomUUID} from 'expo-crypto';
-import {ArrowRight,ArrowUp,ArrowDown,ChevronDown,Heart,ListMusic,MoreHorizontal,Play,Pause,Plus,Repeat,Shuffle,SkipBack,SkipForward,Trash2,Check,Music2,LogOut,Clock3,Headphones} from 'lucide-react-native';
-import {useMusic} from '../data/MusicProvider';
-import type {Album,Artist,Playlist,PlaylistItem,Track} from '../data/types';
-import {moveEntry} from '../data/queue';
-import {Artwork} from '../design/Artwork';
-import {Label,Button,IconButton,Chip,Input,Skeleton,StateView} from '../design/Primitives';
-import {theme as t} from '../design/theme';
-import {Shell,go,ui} from './Shell';
-import {TrackRow} from './TrackRow';
-import {Seek} from './Seek';
+import { useLocalSearchParams, usePathname } from "expo-router";
+import { View } from "react-native";
+import { useMusic } from "../data/MusicProvider";
+import type { Track } from "../data/types";
+import { Skeleton, StateView } from "../design/Primitives";
+import { theme as t } from "../design/theme";
+import { Shell, go, ui } from "./Shell";
 
-function Section({title,kicker,action,children}:{title:string;kicker?:string;action?:()=>void;children:React.ReactNode}){return <View style={ui.section}><View style={ui.h}><View style={ui.grow}>{kicker?<Label type="xs" color="text-muted">{kicker}</Label>:null}<Label type="xl" accessibilityRole="header">{title}</Label></View>{action?<IconButton icon={ArrowRight} label={`Explore ${title}`} onPress={action}/>:null}</View>{children}</View>;}
-function Cards({items,type}:{items:(Album|Playlist)[];type:'album'|'playlist'}){return <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.cards}>{items.map(item=><Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`Open ${item.title}`} onPress={()=>go(`/${type}/${item.id}`)} style={s.card}>
- <Artwork palette={item.palette}/><Label numberOfLines={2} style={s.semibold}>{item.title}</Label><Label type="sm" color="text-muted" numberOfLines={2}>{'artist'in item?item.artist:item.description}</Label></Pressable>)}</ScrollView>;}
-function Tracks({tracks}:{tracks:Track[]}){return tracks.length?<View style={ui.list}>{tracks.map((track,index)=><TrackRow key={`${track.id}-${index}`} track={track} context={tracks} index={index}/>)}</View>:<StateView title="Nothing here yet" message="Explore the catalog and add a track to get started." action="Find music" onAction={()=>go('/search')}/>;}
-function Home(){const m=useMusic(),c=m.snapshot!.catalog,[filter,setFilter]=useState('For you'),wide=useWindowDimensions().width>=t.space[640];return <Shell title="Find your rhythm" eyebrow="A LITTLE SPACE FOR MUSIC">
- <View style={[ui.wrap,s.filters]}>{['For you','Instrumental','Electronic','Ambient'].map(f=><Chip key={f} title={f} selected={f===filter} onPress={()=>setFilter(f)}/>)}</View>
- {filter==='For you'?<>
- <Pressable accessibilityRole="button" accessibilityLabel="Explore The long way home" onPress={()=>go(`/playlist/${c.playlists[0]?.id}`)} style={s.hero}>
-  <View style={s.heroCopy}><Label type="xs" style={s.heroEyebrow}>THE DAILY SELECTION</Label><Label type="display" style={s.heroTitle}>Take the{ '\n' }long way home.</Label><Label style={s.heroDescription}>A little less rush.{ '\n' }A little more music.</Label><View style={s.heroLink}><Label style={s.heroTitle}>Explore the mix</Label><ArrowRight size={t.icon.sm} color={t.color['art-light']}/></View></View>{wide?<Artwork palette="clay" size={t.space[192]} style={s.heroArt}/>:null}
- </Pressable>
- <View style={s.shortcuts}>{c.playlists.map(p=><Pressable key={p.id} accessibilityRole="button" accessibilityLabel={`Open ${p.title}`} onPress={()=>go(`/playlist/${p.id}`)} style={s.shortcut}><Artwork palette={p.palette} size={t.space[56]}/><Label type="sm" numberOfLines={2} style={ui.grow}>{p.title}</Label></Pressable>)}
-  <Pressable accessibilityRole="button" accessibilityLabel="Open liked tracks" onPress={()=>go('/liked')} style={s.shortcut}><View style={s.heartTile}><Heart size={t.icon.base} color={t.color.accent}/></View><Label type="sm">Your liked tracks</Label></Pressable></View>
- <Section title="Fresh perspectives" kicker="RELEASES TO SPEND TIME WITH" action={()=>go('/search')}><Cards items={c.albums} type="album"/></Section>
- <Section title="Made for a moment"><Cards items={c.playlists} type="playlist"/></Section>
- <Section title="Meet your next favourite"><ScrollView horizontal contentContainerStyle={s.cards}>{c.artists.map(a=><Pressable key={a.id} accessibilityRole="button" accessibilityLabel={`Open ${a.name}`} onPress={()=>go(`/artist/${a.id}`)} style={s.artistCard}><Artwork palette={a.palette} size={t.space[112]} round/><Label type="sm" numberOfLines={2} style={s.center}>{a.name}</Label></Pressable>)}</ScrollView></Section>
- <View style={s.footnote}><Headphones size={t.icon.sm} color={t.color['text-muted']}/><Label type="xs" color="text-muted">An independent listening space. Original demo recordings.</Label></View>
- </>:<Section title={filter}><Tracks tracks={c.tracks.filter(x=>x.genre===filter)}/></Section>}
- </Shell>;}
-function SearchScreen(){const m=useMusic(),[query,setQuery]=useState(''),[kind,setKind]=useState('All'),[category,setCategory]=useState('');const c=m.snapshot!.catalog;
- const q=query.trim().normalize('NFKC').toLocaleLowerCase();const matches=(text:string)=>text.normalize('NFKC').toLocaleLowerCase().includes(q);
- const tracks=c.tracks.filter(x=>matches(`${x.title} ${x.artist} ${x.album}`)&&(!category||x.genre===category));const albums=c.albums.filter(x=>matches(`${x.title} ${x.artist}`));const artists=c.artists.filter(x=>matches(x.name));const playlists=[...c.playlists,...m.snapshot!.playlists].filter(x=>matches(x.title));
- const any=tracks.length+albums.length+artists.length+playlists.length;
- return <Shell title="Search" eyebrow="FOLLOW YOUR CURIOSITY"><View style={ui.section}><Input label="Search music" placeholder="Tracks, artists, albums…" value={query} onChangeText={v=>{setQuery(v);setCategory('');}} autoCorrect={false} returnKeyType="search"/>
- {q||category?<><View style={ui.wrap}>{['All','Tracks','Albums','Artists','Playlists'].map(k=><Chip key={k} title={k} selected={k===kind} onPress={()=>setKind(k)}/>)}</View>{category?<Button title={`Clear ${category} filter`} variant="quiet" onPress={()=>setCategory('')}/>:null}</>:null}</View>
- {!q&&!category?<><Section title="Find your mood"><View style={s.browse}>{['Ambient','Electronic','Instrumental','Jazz'].map((genre,i)=><Pressable key={genre} accessibilityRole="button" accessibilityLabel={`Browse ${genre}`} onPress={()=>setCategory(genre)} style={[s.browseTile,{backgroundColor:[t.color['art-forest'],t.color['art-night'],t.color['art-clay'],t.color['art-berry']][i]}]}><Label type="lg" style={{color:t.color['art-light']}}>{genre}</Label><Music2 size={t.icon.hero} color={t.color['art-light']}/></Pressable>)}</View></Section><Section title="Start somewhere new"><Cards items={c.albums.slice(2)} type="album"/></Section></>:
- !any?<StateView title="No matches yet" message={`Try another spelling or a shorter search for “${query}”.`}/>:
- <>{(kind==='All'||kind==='Tracks')?<Section title={category||'Tracks'}><Tracks tracks={tracks}/></Section>:null}
- {(kind==='All'||kind==='Albums')&&albums.length?<Section title="Albums"><Cards items={albums} type="album"/></Section>:null}
- {(kind==='All'||kind==='Artists')&&artists.length?<Section title="Artists">{artists.map(a=><Button key={a.id} title={a.name} variant="secondary" onPress={()=>go(`/artist/${a.id}`)}/>)}</Section>:null}
- {(kind==='All'||kind==='Playlists')&&playlists.length?<Section title="Playlists"><Cards items={playlists} type="playlist"/></Section>:null}</>}
- </Shell>;
+import { Auth, Recovery } from "./screens/Auth";
+import { Collection } from "./screens/Collection";
+import { Home } from "./screens/Home";
+import { LibraryScreen } from "./screens/Library";
+import { Actions, Player, QueueScreen } from "./screens/Playback";
+import { PlaylistForm } from "./screens/PlaylistForm";
+import { SearchScreen } from "./screens/Search";
+import { Settings } from "./screens/Settings";
+import { Tracks } from "./screens/common";
+export default function Screens() {
+  const path = usePathname(),
+    parts = path.split("/").filter(Boolean),
+    m = useMusic(),
+    params = useLocalSearchParams<{
+      track?: string;
+      token_hash?: string;
+      type?: string;
+    }>();
+  if (m.loading)
+    return (
+      <Shell title="Opening your space">
+        <View style={ui.section}>
+          <Skeleton height={t.space[240]} />
+          <Skeleton />
+          <Skeleton />
+        </View>
+      </Shell>
+    );
+  if (!m.snapshot)
+    return (
+      <Shell title="Connection unavailable">
+        <StateView
+          title="Could not reach the service"
+          message="Check your connection and try again."
+          action="Retry"
+          onAction={() => void m.run(m.refresh)}
+        />
+      </Shell>
+    );
+  if (parts[0] === "callback" || parts[0] === "reset")
+    return <Recovery tokenHash={params.token_hash} type={params.type} />;
+  if (!m.snapshot.profile) return <Auth />;
+  const [screen, id] = parts;
+  if (screen === "home") return <Home />;
+  if (screen === "search") return <SearchScreen />;
+  if (screen === "library") return <LibraryScreen />;
+  if (screen === "liked")
+    return (
+      <Shell title="Liked tracks" back>
+        <Tracks
+          tracks={m.snapshot.library.tracks
+            .map((id) => m.snapshot!.catalog.tracks.find((t) => t.id === id))
+            .filter((x): x is Track => !!x)}
+        />
+      </Shell>
+    );
+  if (screen === "recents")
+    return (
+      <Shell title="Recently played" back>
+        <Tracks
+          tracks={m.snapshot.recents
+            .map((id) => m.snapshot!.catalog.tracks.find((t) => t.id === id))
+            .filter((x): x is Track => !!x)}
+        />
+      </Shell>
+    );
+  if (screen === "album" || screen === "artist" || screen === "playlist")
+    return <Collection key={id} type={screen} id={id} />;
+  if (screen === "player") return <Player />;
+  if (screen === "queue") return <QueueScreen />;
+  if (screen === "actions" || screen === "add")
+    return <Actions id={id} picker={screen === "add"} />;
+  if (screen === "create" || screen === "edit")
+    return (
+      <PlaylistForm
+        key={id || "new"}
+        id={screen === "edit" ? id : undefined}
+        trackId={params.track}
+      />
+    );
+  if (screen === "settings") return <Settings />;
+  return (
+    <Shell title="Page unavailable" back>
+      <StateView
+        title="Find your way back"
+        message="This page is not part of your listening space."
+        action="Home"
+        onAction={() => go("/home")}
+      />
+    </Shell>
+  );
 }
-function LibraryScreen(){const m=useMusic(),sn=m.snapshot!,[filter,setFilter]=useState('All'),[sort,setSort]=useState<'recent'|'title'|'creator'>(sn.preferences.librarySort);const sortItems=<T extends {title?:string;name?:string;artist?:string}>(items:T[])=>sort==='recent'?items:[...items].sort((a,b)=>(sort==='creator'?a.artist||a.name||'':a.title||a.name||'').localeCompare(sort==='creator'?b.artist||b.name||'':b.title||b.name||''));
- const playlists=sortItems([...sn.playlists,...sn.catalog.playlists.filter(p=>sn.library.playlists.includes(p.id))]);
- return <Shell title="Your library" eyebrow="KEEP WHAT MOVES YOU"><View style={ui.section}><View style={ui.h}><Label color="text-muted">A collection that sounds like you.</Label><IconButton icon={Plus} label="Create playlist" onPress={()=>go('/create')}/></View><View style={ui.wrap}>{['All','Playlists','Albums','Artists'].map(x=><Chip key={x} title={x} selected={filter===x} onPress={()=>setFilter(x)}/>)}</View><View style={ui.wrap}><Label type="sm" color="text-muted">Sort:</Label>{(['recent','title','creator'] as const).map(x=><Button key={x} title={x} variant={sort===x?'secondary':'quiet'} onPress={()=>setSort(x)}/>)}</View></View>
- {filter==='All'?<Pressable accessibilityRole="button" accessibilityLabel="Open liked tracks" onPress={()=>go('/liked')} style={[ui.card,ui.row,s.liked]}><Heart size={t.icon.lg} color={t.color.accent}/><View style={ui.grow}><Label type="lg">Liked tracks</Label><Label color="text-muted" type="sm">{sn.library.tracks.length} tracks kept close</Label></View><ArrowRight color={t.color.text} size={t.icon.sm}/></Pressable>:null}
- {(filter==='All'||filter==='Playlists')?<Section title="Playlists">{playlists.length?<Cards items={playlists} type="playlist"/>:<StateView title="Make room for your favourites" message="Create a playlist for a place, a person, or a feeling." action="Create a playlist" onAction={()=>go('/create')}/>}</Section>:null}
- {(filter==='All'||filter==='Albums')?<Section title="Saved albums">{sn.library.albums.length?<Cards items={sortItems(sn.catalog.albums.filter(a=>sn.library.albums.includes(a.id)))} type="album"/>:<Label color="text-muted">Save an album from its release page.</Label>}</Section>:null}
- {(filter==='All'||filter==='Artists')?<Section title="Following">{sn.catalog.artists.filter(a=>sn.library.artists.includes(a.id)).map(a=><Button key={a.id} title={a.name} variant="secondary" onPress={()=>go(`/artist/${a.id}`)}/>)}{!sn.library.artists.length?<Label color="text-muted">Follow an artist to keep them here.</Label>:null}</Section>:null}
- </Shell>;
-}
-function Collection({type,id}:{type:'album'|'playlist'|'artist';id:string}){const m=useMusic(),sn=m.snapshot!,c=sn.catalog;const entity=type==='album'?c.albums.find(x=>x.id===id):type==='artist'?c.artists.find(x=>x.id===id):[...c.playlists,...sn.playlists].find(x=>x.id===id);
- if(!entity)return <Shell title="Collection" back><StateView title="This collection is unavailable" message="It may have been removed or belong to another listener." action="Return to library" onAction={()=>go('/library')}/></Shell>;
- const title='name'in entity?entity.name:entity.title,artist=type==='artist'?entity as Artist:null,album=type==='album'?entity as Album:null,playlist=type==='playlist'?entity as Playlist:null;
- const tracks=album?album.trackIds.map(id=>c.tracks.find(t=>t.id===id)).filter((x):x is Track=>!!x):playlist?playlist.items.map(i=>c.tracks.find(t=>t.id===i.trackId)).filter((x):x is Track=>!!x):c.tracks.filter(t=>t.artistId===id);
- const saved=sn.library[type==='album'?'albums':type==='artist'?'artists':'playlists'].includes(id),kind=type==='album'?'albums':type==='artist'?'artists':'playlists';
- return <Shell title={type==='artist'?'Artist':type==='album'?'Album':'Playlist'} back><View style={s.collectionHeader}><Artwork palette={entity.palette} size={t.space[192]} round={type==='artist'}/><View style={s.collectionCopy}><Label type="xs" color="text-muted">{playlist?.owner?'YOUR PLAYLIST':type.toUpperCase()}</Label><Label type="display" accessibilityRole="header">{title}</Label><Label color="text-muted">{artist?artist.bio:album?`${album.artist} · ${album.year}`:playlist?.description}</Label><Label type="sm" color="text-muted">{tracks.length} tracks · {formatTime(tracks.reduce((sum,x)=>sum+x.durationMs,0)/1000)}</Label><View style={ui.wrap}><Button title="Play" icon={Play} disabled={!tracks.length||m.pending} onPress={()=>void m.playTracks(tracks)}/>{!playlist?.owner?<Button title={saved?(artist?'Following':'Saved'):(artist?'Follow':'Save')} icon={saved?Check:Plus} variant="secondary" onPress={()=>void m.run(()=>m.data.save(kind,id,!saved))}/>:<Button title="Edit playlist" variant="secondary" onPress={()=>go(`/edit/${id}`)}/>}</View></View></View>
- <Section title={artist?'Popular tracks':'Tracks'}><Tracks tracks={tracks}/></Section>
- {artist?<Section title="Releases"><Cards items={c.albums.filter(x=>x.artistId===id)} type="album"/></Section>:null}
- {album?<Button title={`Visit ${album.artist}`} variant="quiet" onPress={()=>go(`/artist/${album.artistId}`)}/>:null}
- </Shell>;
-}
-export const formatTime=(seconds:number)=>`${Math.floor((Number.isFinite(seconds)?seconds:0)/60)}:${String(Math.floor((Number.isFinite(seconds)?seconds:0)%60)).padStart(2,'0')}`;
-function Player(){const m=useMusic(),track=m.track,w=useWindowDimensions().width;const size=Math.min(t.space[320],Math.max(t.space[192],w-t.space[80]));const saved=!!track&&m.snapshot!.library.tracks.includes(track.id);
- return <Shell title="Now playing" back>{track?<View style={s.player}><Label type="xs" color="text-muted">A MOMENT, JUST FOR YOU</Label><Artwork palette={track.palette} size={size}/><View style={[ui.row,s.playerInfo]}><View style={ui.grow}><Label type="xl" numberOfLines={2}>{track.title}</Label><Pressable accessibilityRole="button" onPress={()=>go(`/artist/${track.artistId}`)}><Label color="text-muted">{track.artist}</Label></Pressable></View><IconButton icon={Heart} label={saved?'Unsave current track':'Save current track'} selected={saved} onPress={()=>void m.run(()=>m.data.save('tracks',track.id,!saved))}/></View>
- <View style={s.fullWidth}><Seek value={m.status.currentTime} max={m.status.duration||track.durationMs/1000} onChange={m.seek}/><View style={ui.h}><Label type="xs" color="text-muted">{formatTime(m.status.currentTime)}</Label><Label type="xs" color="text-muted">{formatTime(m.status.duration||track.durationMs/1000)}</Label></View></View>
- <View style={[ui.row,s.transport]}><IconButton icon={Shuffle} label={m.queue.shuffle?'Disable shuffle':'Enable shuffle'} selected={m.queue.shuffle} onPress={()=>void m.shuffle()}/><IconButton icon={SkipBack} label="Previous track" onPress={m.previous}/><Button title={m.status.playing?'Pause':'Play'} icon={m.status.playing?Pause:Play} onPress={m.toggle}/><IconButton icon={SkipForward} label="Next track" onPress={m.next}/><IconButton icon={Repeat} label={`Repeat: ${m.queue.repeat}`} selected={m.queue.repeat!=='none'} onPress={()=>void m.repeat()}/></View>
- <View style={[ui.h,s.fullWidth]}><Button title="Queue" icon={ListMusic} variant="quiet" onPress={()=>go('/queue')}/><IconButton icon={MoreHorizontal} label={`Actions for ${track.title}`} onPress={()=>go(`/actions/${track.id}`)}/></View><Label type="xs" color="text-muted">{m.status.isBuffering?'Loading audio…':m.status.playing?'Playing':'Paused'} · {m.queue.repeat==='single'?'Repeat one':m.queue.repeat==='all'?'Repeat all':'Repeat off'}</Label>
- </View>:<StateView title="Choose your first track" message="Start a track from Home, Search, or your library." action="Find music" onAction={()=>go('/search')}/>}</Shell>;
-}
-function QueueScreen(){const m=useMusic(),tracks=m.snapshot!.catalog.tracks;return <Shell title="Your queue" back><View style={ui.section}><View style={ui.h}><Label type="xl">Up next</Label><Button title="Clear requests" variant="quiet" disabled={m.pending} onPress={()=>void m.clearExplicit()}/></View><Label color="text-muted">Move tracks with the arrows. Each entry has its own place.</Label></View>
- {m.queue.entries.length?m.queue.entries.map((entry,i)=>{const track=tracks.find(t=>t.id===entry.trackId);return track?<View key={entry.id} style={[ui.card,s.queueEntry]}><View style={ui.row}><Artwork palette={track.palette} size={t.space[48]}/><Pressable accessibilityRole="button" accessibilityLabel={`Play queue entry ${i+1}: ${track.title}`} onPress={()=>m.jumpQueue(entry.id)} style={ui.grow}><Label>{track.title}</Label><Label type="sm" color="text-muted">{m.activeEntry?.id===entry.id?'Playing now':entry.origin==='explicit'?'Your request':track.artist}</Label></Pressable></View><View style={ui.wrap}><IconButton icon={ArrowUp} label={`Move ${track.title} up`} disabled={i===0||m.pending} onPress={()=>void m.moveQueue(entry.id,-1)}/><IconButton icon={ArrowDown} label={`Move ${track.title} down`} disabled={i===m.queue.entries.length-1||m.pending} onPress={()=>void m.moveQueue(entry.id,1)}/><IconButton icon={Trash2} label={`Remove queue entry ${i+1}`} disabled={entry.id===m.activeEntry?.id||m.pending} onPress={()=>void m.removeQueue(entry.id)}/></View></View>:null;}):<StateView title="A clear queue" message="Pick a track to start, or add something to play next."/>}
- </Shell>;}
-function Actions({id,picker=false}:{id:string;picker?:boolean}){const m=useMusic(),track=m.snapshot!.catalog.tracks.find(t=>t.id===id);if(!track)return <Shell title="Track" back><StateView title="Track unavailable" message="Try another track from the catalog."/></Shell>;
- const add=async(p:Playlist)=>{const saved=await m.run(()=>m.data.editPlaylist(p.id,p.revision,p.title,p.description,[...p.items,{id:randomUUID(),trackId:id}]),`Added to ${p.title}`);if(saved)go(`/playlist/${p.id}`);};
- return <Shell title={picker?'Choose a playlist':'Track options'} back><View style={[ui.row,ui.section]}><Artwork palette={track.palette} size={t.space[80]}/><View style={ui.grow}><Label type="xl">{track.title}</Label><Label color="text-muted">{track.artist}</Label></View></View>
- {picker?<View style={ui.form}><Button title="Create a playlist" icon={Plus} onPress={()=>go(`/create?track=${id}`)}/>{m.snapshot!.playlists.map(p=><Button key={p.id} title={`${p.title}${p.items.some(i=>i.trackId===id)?' · add another copy':''}`} variant="secondary" disabled={m.pending} onPress={()=>void add(p)}/>)}{!m.snapshot!.playlists.length?<Label color="text-muted">Your playlists will appear here.</Label>:null}</View>:<View style={ui.form}><Button title="Add to playlist" icon={Plus} variant="secondary" onPress={()=>go(`/add/${id}`)}/><Button title="Play next" icon={ListMusic} disabled={m.pending} variant="secondary" onPress={()=>{void m.enqueue(track).then(()=>m.setNotice('Added to your queue'));}}/><Button title={`Artist · ${track.artist}`} variant="quiet" onPress={()=>go(`/artist/${track.artistId}`)}/><Button title={`Album · ${track.album}`} variant="quiet" onPress={()=>go(`/album/${track.albumId}`)}/></View>}</Shell>;
-}
-function PlaylistForm({id,trackId}:{id?:string;trackId?:string}){const m=useMusic(),p=m.snapshot!.playlists.find(p=>p.id===id),[title,setTitle]=useState(p?.title||''),[description,setDescription]=useState(p?.description||''),[items,setItems]=useState(p?.items||[]),[validation,setValidation]=useState(''),[confirm,setConfirm]=useState(false),[key]=useState(randomUUID);
- const save=async()=>{if(!title.trim()){setValidation('Give your playlist a name.');return;}const value=await m.run(async()=>{if(p)return m.data.editPlaylist(p.id,p.revision,title.trim(),description,items);const created=await m.data.createPlaylist(title.trim(),description,key);if(trackId)return m.data.editPlaylist(created.id,created.revision,created.title,created.description,[{id:randomUUID(),trackId}]);return created;},'Playlist saved');if(value)go(`/playlist/${value.id}`);};
- if(id&&!p)return <Shell title="Edit playlist" back><StateView title="You cannot edit this playlist" message="Only its owner can make changes."/></Shell>;
- return <Shell title={p?'Edit playlist':'Create a playlist'} back><View style={ui.form}><Artwork palette={p?.palette||'sea'} size={t.space[128]}/><Input label="Playlist name" value={title} onChangeText={v=>{setTitle(v);setValidation('');}} maxLength={160} error={validation} placeholder="A name for this feeling"/><Input label="Description (optional)" value={description} onChangeText={setDescription} maxLength={2000} multiline/><Button title="Save playlist" busy={m.pending} onPress={()=>void save()}/>
- {p?<><Label type="lg">Track order</Label>{items.map((item,i)=>{const track=m.snapshot!.catalog.tracks.find(t=>t.id===item.trackId);return <View key={item.id} style={ui.card}><Label>{i+1}. {track?.title||'Unavailable track'}</Label><View style={ui.wrap}><IconButton icon={ArrowUp} label={`Move item ${i+1} up`} disabled={i===0} onPress={()=>setItems(moveEntry(items,item.id,-1))}/><IconButton icon={ArrowDown} label={`Move item ${i+1} down`} disabled={i===items.length-1} onPress={()=>setItems(moveEntry(items,item.id,1))}/><IconButton icon={Trash2} label={`Remove item ${i+1}`} onPress={()=>setItems(items.filter(x=>x.id!==item.id))}/></View></View>;})}
- {!items.length?<Label color="text-muted">This playlist is empty. Add music from track options.</Label>:null}
- {confirm?<View style={ui.card}><Label>Delete “{p.title}” and its track list?</Label><Button title="Delete this playlist" variant="danger" busy={m.pending} onPress={()=>void m.run(()=>m.data.deletePlaylist(p.id,p.revision)).then(()=>go('/library'))}/><Button title="Keep playlist" variant="quiet" onPress={()=>setConfirm(false)}/></View>:<Button title="Delete playlist" variant="danger" onPress={()=>setConfirm(true)}/>}</>:null}</View></Shell>;
-}
-function Settings(){const m=useMusic(),sn=m.snapshot!,[confirm,setConfirm]=useState(false);return <Shell title="Your space" back><View style={ui.form}><View style={ui.card}><Label type="xl">{sn.profile?.displayName||'Welcome'}</Label><Label color="text-muted">{sn.profile?.email||'Your personal listening space'}</Label></View><Button title="Recently played" icon={Clock3} variant="secondary" onPress={()=>go('/recents')}/><View style={[ui.card,ui.row]}><View style={ui.grow}><Label>Allow explicit tracks</Label><Label type="sm" color="text-muted">Applies when starting music and to media access.</Label></View><Switch accessibilityLabel="Allow explicit tracks" value={sn.preferences.explicitAllowed} onValueChange={value=>void m.run(()=>m.data.preferences({...sn.preferences,explicitAllowed:value}))} trackColor={{false:t.color.border,true:t.color.accent}} thumbColor={t.color['on-accent']}/></View><Button title="Sign out everywhere" icon={LogOut} variant="secondary" onPress={()=>void m.signOut()}/><Label type="sm" color="text-muted">Saz is a working name. This build uses fictional artists and original synthesized recordings.</Label>{confirm?<View style={ui.card}><Label>Delete your account and personal library? This cannot be undone.</Label><Button title="Confirm account deletion" variant="danger" busy={m.pending} onPress={()=>void m.deleteAccount()}/><Button title="Keep my account" variant="quiet" onPress={()=>setConfirm(false)}/></View>:<Button title="Delete account" variant="danger" onPress={()=>setConfirm(true)}/>}</View></Shell>;}
-function Auth(){const m=useMusic(),[mode,setMode]=useState<'login'|'register'|'recover'>('login'),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[name,setName]=useState(''),[validation,setValidation]=useState('');
- const submit=()=>{if(!/^\S+@\S+\.\S+$/.test(email)||mode!=='recover'&&password.length<10||mode==='register'&&!name.trim()){setValidation('Enter a valid email, a password of at least 10 characters, and your name when registering.');return;}void m.run(()=>m.data.auth(mode,email,password,name),mode==='recover'?'Check your email for the next step.':undefined).then(value=>{if(typeof value==='string')m.setNotice(value);setPassword('');});};
- return <Shell title="saz" eyebrow="MUSIC, AT YOUR PACE"><View style={ui.form}><Artwork palette="clay" size={t.space[192]}/><Label type="display">A space for{ '\n' }your sound.</Label><Label color="text-muted">Discover something new. Keep what stays with you.</Label><View style={ui.wrap}>{(['login','register','recover'] as const).map(x=><Chip key={x} title={x==='login'?'Sign in':x==='register'?'Join':'Recover'} selected={mode===x} onPress={()=>{setMode(x);setValidation('');}}/>)}</View>{mode==='register'?<Input label="Your name" value={name} onChangeText={setName} maxLength={80}/>:null}<Input label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email"/>{mode!=='recover'?<Input label="Password" value={password} onChangeText={setPassword} secureTextEntry autoComplete={mode==='register'?'new-password':'current-password'}/>:null}{validation?<Label accessibilityRole="alert" color="danger">{validation}</Label>:null}<Button title={mode==='login'?'Sign in':mode==='register'?'Create account':'Send recovery email'} busy={m.pending} onPress={submit}/><Button title="Explore demo" variant="secondary" busy={m.pending} onPress={()=>void m.run(()=>m.data.auth('login','','',''))}/></View></Shell>;
-}
-export default function Screens(){const path=usePathname(),parts=path.split('/').filter(Boolean),m=useMusic();
- if(m.loading)return <Shell title="Opening your space"><View style={ui.section}><Skeleton height={t.space[240]}/><Skeleton/><Skeleton/></View></Shell>;
- if(!m.snapshot)return <Shell title="Connection unavailable"><StateView title="Could not reach the service" message="Check your connection and try again." action="Retry" onAction={()=>void m.run(m.refresh)}/></Shell>;
- if(!m.snapshot.profile)return <Auth/>;
- const [screen,id]=parts;
- if(screen==='home')return <Home/>;
- if(screen==='search')return <SearchScreen/>;
- if(screen==='library')return <LibraryScreen/>;
- if(screen==='liked')return <Shell title="Liked tracks" back><Tracks tracks={m.snapshot.library.tracks.map(id=>m.snapshot!.catalog.tracks.find(t=>t.id===id)).filter((x):x is Track=>!!x)}/></Shell>;
- if(screen==='recents')return <Shell title="Recently played" back><Tracks tracks={m.snapshot.recents.map(id=>m.snapshot!.catalog.tracks.find(t=>t.id===id)).filter((x):x is Track=>!!x)}/></Shell>;
- if(screen==='album'||screen==='artist'||screen==='playlist')return <Collection key={id} type={screen} id={id}/>;
- if(screen==='player')return <Player/>;
- if(screen==='queue')return <QueueScreen/>;
- if(screen==='actions'||screen==='add')return <Actions id={id} picker={screen==='add'}/>;
- if(screen==='create'||screen==='edit')return <PlaylistForm key={id||'new'} id={screen==='edit'?id:undefined}/>;
- if(screen==='settings')return <Settings/>;
- return <Shell title="Page unavailable" back><StateView title="Find your way back" message="This page is not part of your listening space." action="Home" onAction={()=>go('/home')}/></Shell>;
-}
-const s=StyleSheet.create({
- filters:{marginBottom:t.space[24]},cards:{gap:t.space[20],paddingBottom:t.space[8]},card:{width:t.space[160],gap:t.space[8]},semibold:{fontWeight:'600'},center:{textAlign:'center'},
- hero:{backgroundColor:t.color['art-clay'],borderRadius:t.radius.lg,overflow:'hidden',flexDirection:'row',minHeight:t.space[280],marginBottom:t.space[24]},heroCopy:{flex:1,minWidth:t.space[192],padding:t.space[24],gap:t.space[12],zIndex:1},
- heroEyebrow:{color:t.color['art-light']},heroTitle:{color:t.color['art-light']},heroDescription:{color:t.color['art-light']},heroLink:{flexDirection:'row',alignItems:'center',gap:t.space[12],marginTop:t.space[16]},heroArt:{alignSelf:'center',marginRight:t.space[24]},
- shortcuts:{flexDirection:'row',flexWrap:'wrap',gap:t.space[8],marginBottom:t.space[40]},shortcut:{flexDirection:'row',alignItems:'center',gap:t.space[12],backgroundColor:t.color.surface,borderRadius:t.radius.sm,overflow:'hidden',minWidth:t.space[160],flexBasis:'45%',flexGrow:1,paddingRight:t.space[12]},heartTile:{width:t.space[56],height:t.space[56],alignItems:'center',justifyContent:'center',backgroundColor:t.color['surface-raised']},
- artistCard:{width:t.space[128],gap:t.space[12],alignItems:'center'},footnote:{flexDirection:'row',gap:t.space[8],paddingVertical:t.space[24],alignItems:'center'},
- browse:{flexDirection:'row',flexWrap:'wrap',gap:t.space[12]},browseTile:{flexBasis:'45%',flexGrow:1,minWidth:t.space[128],minHeight:t.space[128],padding:t.space[20],borderRadius:t.radius.md,justifyContent:'space-between',gap:t.space[16]},
- liked:{marginBottom:t.space[32]},collectionHeader:{flexDirection:'row',flexWrap:'wrap',gap:t.space[24],alignItems:'center',marginBottom:t.space[40]},collectionCopy:{flexGrow:1,flexBasis:t.space[280],gap:t.space[16]},
- player:{maxWidth:t.space[480],width:'100%',alignSelf:'center',alignItems:'center',gap:t.space[20]},playerInfo:{width:'100%',marginTop:t.space[8]},fullWidth:{width:'100%'},transport:{justifyContent:'space-between',width:'100%',gap:t.space[2]},queueEntry:{marginBottom:t.space[12]},
-});

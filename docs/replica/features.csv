@@ -1,0 +1,63 @@
+feature,area,priority,original,clone,notes
+M01 Register an account,account,must,yes,partial,S01-S03; F01; D01; independent auth; Build 2026-10-24: Local registration tested; provider confirmation not staged
+M02 Sign in recover access and sign out,account,must,yes,partial,S03/S18; F01; D23; exact native forms unobserved; Build 2026-10-24: Local login/global sign-out tested; provider email recovery pending
+M03 Stable Home Search Library navigation,navigation,must,unknown,yes,S04/S05/S10; proposed three-destination shell; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M04 Curated music collections,discovery,must,yes,yes,S04; F02; D14/D15; own curation and assets; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M05 Search tracks artists albums and playlists,search,must,yes,partial,S05/S06; F03; D02; Build 2026-10-24: All four types over a bounded 100-item catalog; full-catalog server search/pagination outstanding
+M06 Handle pending empty and failed search,search,must,unknown,partial,S05/S06; F03; target acceptance states; Build 2026-10-24: Empty state and root connection retry implemented; exhaustive pending/failure search acceptance outstanding
+M07 Artist detail and release navigation,catalog,must,unknown,yes,S07; F02/F03; inferred screen decomposition from D02/D04; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M08 Album detail with ordered tracks,catalog,must,unknown,yes,S08; F02; inferred screen decomposition; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M09 Playlist detail and empty state,playlists,must,yes,yes,S09; F02/F06; D05; layout unobserved; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M10 On-demand playback of permitted audio,player,must,yes,yes,S06/S08/S09/S12; F02/F03; D10; no Spotify streams; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M11 Persistent mini player,player,must,yes,yes,S12 entry; F04; D06; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M12 Expanded player with track metadata,player,must,yes,yes,S12; F04; D06; independent artwork; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M13 Play pause and skip,player,must,yes,yes,S12; F04; D06; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M14 Seek within a track,player,must,unknown,partial,S12; F04; target behavior; device validation needed; Build 2026-10-24: Browser seek control and API ranges tested; native seek needs device evidence
+M15 Shuffle and repeat modes,player,must,yes,partial,S12; F04; D06; define state transitions; Build 2026-10-24: Shuffle/repeat code and shuffle-order tests; complete native engine transition matrix pending
+M16 Display and manage upcoming queue,queue,must,yes,partial,S13/S14; F09; D07; queue reorder and clear explicit additions; Build 2026-10-24: Queue entry movement/removal and CAS implemented; all queue UI edge cases not exhaustively tested
+M17 Save and unsave individual tracks,library,must,yes,yes,S11/S12; F05; D04; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M18 Dedicated liked tracks collection,library,must,yes,yes,S11; F05; D04; no automatic album save; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M19 Save albums and playlists independently,library,must,yes,yes,S08-S10; F05; D04; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M20 Create and name a playlist,playlists,must,yes,yes,S10/S16; F06; D05; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M21 Add a track to an owned playlist,playlists,must,yes,yes,S14/S15; F07; D05; decide duplicate behavior; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M22 Remove and reorder playlist entries,playlists,must,yes,yes,S17; F08; D05; new app need not copy Premium gating; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M23 Rename and delete owned playlists,playlists,must,yes,yes,S09/S16/S17; F08; D05; confirm destructive actions; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M24 Persist account library and playlists,persistence,must,unknown,yes,F01/F05-F08; independent target requirement; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M25 Continue audio in background and on lock screen,mobile,must,unknown,partial,S20; F11; target requirement; not device observed; Build 2026-10-24: Native background plugin and lock-screen metadata configured; no physical phone test
+M26 Recover from buffering and playback failure,player,must,unknown,partial,S12; F02/F04; target requirement; Build 2026-10-24: Buffering indication and generic operation errors; unavailable-track skipping and native network recovery incomplete
+M27 Handle audio interruptions and route changes,mobile,must,unknown,partial,S20; F11; real iOS and Android tests required; Build 2026-10-24: Playback-only interruption configuration; headset/Bluetooth/call testing pending
+M28 Enforce playlist ownership,access,must,unknown,yes,S09/S17; F08; proposed private-default MVP policy; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+M29 Gate media by recorded content permissions,catalog operations,must,unknown,partial,E13/E14; independent launch requirement; catalog not acquired; Build 2026-10-24: Local media lease reads recheck permission and withdrawal; managed Storage/territory resolver pending
+M30 Accessible labels scaling and long-text layouts,accessibility,must,unknown,partial,All core surfaces; target requirement; not original audit; Build 2026-10-24: 48dp targets and labels; 18 contrast pairs pass; VoiceOver/TalkBack and large-text acceptance pending
+M31 Account deletion entry and support access,account,must,unknown,partial,S18; D20/D23; new product launch requirement; Build 2026-10-24: Real deletion job and UI entry; production support details missing
+M32 Support local and international music across genres and languages,catalog,must,yes,yes,S04-S08; D02/D24; user-confirmed broad catalog target; actual supply coverage separate; Build 2026-10-24: Unicode metadata plus arbitrary genre/language fields; twelve fictional demos are not acquired repertoire
+S01 Follow and unfollow artists,library,should,yes,yes,S07/S10; D04; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+S02 Library filters sorting and list grid modes,library,should,yes,partial,S10; D08; Build 2026-10-24: Filters and three sort choices implemented; grid mode absent
+S03 Search within an owned playlist,playlists,should,yes,no,S09; D08; mobile scope only
+S04 Search suggestions and recent queries,search,should,yes,partial,S05; D03; store only own users history; Build 2026-10-24: Bounded suggestions API exists; suggestions/recent-query UI not completed
+S05 Listening history and Recents,discovery,should,yes,yes,S19; F12; D09; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+S06 Restore last playback position and queue,persistence,should,unknown,partial,F10; define restart behavior; no cross-device control promise; Build 2026-10-24: Server queue/cursor restore implemented; offline SQLite queue checkpoint absent
+S07 Playlist description and custom cover,playlists,should,yes,partial,S16; D05/D23; permitted user assets; Build 2026-10-24: Descriptions implemented; custom cover upload absent
+S08 Explicit labels and playback preference,settings,should,yes,yes,S18; D13; Build 2026-10-24: Implemented in the local API-backed prototype; native/provider acceptance separate
+S09 Localized UI and Turkmen-character search,regional,should,unknown,partial,User target Turkmenistan; languages and scripts to confirm; Build 2026-10-24: Unicode storage/search works; current UI is English only
+S10 Network-aware audio settings,settings,should,unknown,no,S18; target design; measure local connections
+S11 Independent catalog import and unpublish tools,catalog operations,should,unknown,partial,Operational surface outside listener screen count; permitted sources only; Build 2026-10-24: Guarded WAV/JSON import and publish/withdraw handlers implemented; hosted intake unverified
+S12 Retry and undo for collection edits,resilience,should,unknown,partial,S10-S17; define safe retry and conflict behavior; Build 2026-10-24: Create receipts and revision conflict checks implemented; undo/outbox absent
+C01 Public playlist links and native sharing,sharing,could,yes,no,D14; deferred; MVP playlists private by proposal
+C02 Paid plan and entitlement management,monetization,could,yes,no,S21; F13; D11; business model provider and market availability unresolved
+C03 Offline album and playlist downloads,offline,could,yes,no,S22; F14; D12; permission and technical design pending
+C04 Playlist folders,library,could,yes,no,D16; later organization feature
+C05 Rule-based related music,discovery,could,unknown,no,Independent recommendations over own catalog; no model parity
+C06 Verified artist and label release submissions,catalog operations,could,yes,no,D29; regional benchmark Belet Music Studio; later operational workflow outside listener screen count
+X01 Spotify audio catalog and cached files,excluded,could,yes,skip,No catalog rights conveyed by recon; use permitted audio supply
+X02 Spotify covers lyrics and editorial content,excluded,could,yes,skip,Reference only; not shipped or copied into catalog
+X03 Spotify name marks and proprietary code,excluded,could,yes,skip,Original brand and fresh implementation
+X04 Spotify APIs or SDKs as replacement backend,excluded,could,yes,skip,D19 section III.11; no permission assumed for replacement experience
+X05 Spotify recommendation models and listener data,excluded,could,yes,skip,Independent curation; their private models and network not available
+X06 Podcasts audiobooks and music video,excluded,could,yes,skip,D14/D15; outside user-selected music slice
+X07 Jam and collaborative social listening,excluded,could,yes,skip,D11/D14; beyond MVP
+X08 Connect handoff car TV and watch apps,excluded,could,yes,skip,D11/D14; native phone playback only
+X09 AI DJ and generated playlists,excluded,could,yes,skip,D10/D11; outside core
+X10 Ad delivery and ad-sales platform,excluded,could,yes,skip,D15; monetization unselected
+X11 Review-specific catalog and misleading local-only listing,excluded,could,unknown,skip,D20/D21; actual functionality and catalog must be accurately disclosed
+X12 Unverified regional exemption as music permission,excluded,could,unknown,skip,D22; user premise unverified; individual rights assessment remains open

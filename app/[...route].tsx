@@ -1,1 +1,1 @@
-export {default} from '../src/ui/Screens';
+export { default } from "../src/ui/Screens";

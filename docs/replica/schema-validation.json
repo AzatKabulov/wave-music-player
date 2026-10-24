@@ -1,0 +1,40 @@
+{
+  "engine": "PGlite 0.5.11 (PostgreSQL WASM)",
+  "postgresVersion": "PostgreSQL 18.6 (PGlite 0.5.11) on wasm32-unknown-emscripten, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+  "schemaSha256": "8225f0e2649f867dcce0431c2a573e03d5671a32c294f2c7ee3be266641684ac",
+  "testsSha256": "cde450d5180a257fc4efaceefdd2af99d399ab0f548c18fe6651d8bb609ffe0b",
+  "passed": 27,
+  "tests": [
+    "Turkmen and Cyrillic display text preserved",
+    "account removal cascades owned playlists and playback state",
+    "active territory permission allows catalog playback",
+    "all application tables enforce row policies",
+    "catalog supply records inaccessible to listener role",
+    "current queue entry must belong to same session and owner",
+    "existing playlist entry cannot silently change track identity",
+    "expired permission blocks fresh playback",
+    "failed replacement does not consume revision",
+    "failed replacement preserves previous playlist",
+    "foreign key lookup columns have covering index prefixes",
+    "idempotency intent has database uniqueness",
+    "intentional duplicate tracks have distinct playlist item identities",
+    "listener cannot change protected account state",
+    "listener cannot update another user playlist",
+    "listener sees only own private playlists",
+    "missing permission defaults to no playback",
+    "native publishable-key role cannot bypass application API",
+    "paused supplier blocks fresh playback",
+    "permission does not spill into other territories",
+    "playlist item ownership cannot cross users",
+    "playlist reorder preserves identity and original addition time",
+    "playlist replacement advances revision",
+    "raw storage keys inaccessible to listener role",
+    "revoked permission blocks fresh playback",
+    "stale playlist revision rejected",
+    "withdrawn track blocks playback despite permission"
+  ],
+  "limitations": [
+    "Provider auth.users and anon/authenticated roles are a minimal local fixture; real authentication is not exercised.",
+    "No Supabase deployment, storage, network, concurrent clients, or native playback was exercised."
+  ]
+}

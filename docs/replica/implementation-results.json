@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-24",
+  "scope": "local prototype; provider/native device acceptance outstanding",
+  "tests": {
+    "queue": 3,
+    "api": 13,
+    "schema": 27,
+    "total": 43
+  },
+  "contrast": {
+    "pairs": 18,
+    "failed": 0
+  },
+  "exports": [
+    "web",
+    "android-hermes",
+    "ios-hermes"
+  ],
+  "screenshots": {
+    "viewports": [
+      "390x844",
+      "1440x900"
+    ],
+    "listenerSurfaces": 16
+  },
+  "audits": {
+    "api": 0,
+    "mobileHighPackageEntries": 5
+  },
+  "featureMust": {
+    "yes": 19,
+    "partial": 13
+  },
+  "preview": "http://localhost:8081/home"
+}
