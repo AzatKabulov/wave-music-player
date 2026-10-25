@@ -1,61 +1,38 @@
-# Musify personal mobile test — 2026-10-25
+# Musify personal mobile test — 2026-10-26
 
-## Start the PC services
+The current candidate is **0.2.0 (versionCode 2)**, package `com.local.musifytest`, Expo SDK 58. The owner uses an iPhone 15 Pro and a Redmi described as “10 Pro” (exact model unconfirmed). Both phones use the Windows PC's Wi-Fi; the PC and test services stay on.
 
-On Windows, run `node scripts/launch-phone-test.mjs` or double-click the output `start-musify-testing.cmd`. It starts the test controller as a persistent hidden Windows process, checks API/Expo readiness, and exits without stopping them. Logs and process metadata are under `apps/api/data/phone-test`. The previous temporary execution servers had stopped; this launcher fixes that lifecycle issue. For foreground debugging, `npm run test:phones` still works while its terminal remains open. Keep the PC awake. The controller selects the single private IPv4 interface; with multiple adapters set `MUSIFY_PERSONAL_TEST_HOST` first.
+## Running services
 
-Current connection:
+Use `node scripts/launch-phone-test.mjs` or the sibling output `start-musify-testing.cmd`. The launcher starts persistent hidden Windows services, checks readiness and exits without stopping them. Logs/process metadata: `apps/api/data/phone-test/`. Foreground alternative: `npm run test:phones` with the terminal left open.
 
-- iPhone Expo Go: `exp://192.168.0.4:8082`.
-- API diagnostic in the phone browser: `http://192.168.0.4:4103/health/ready` (expect `{"ok":true,"mode":"local"}`).
-- Metro: port 8082. Personal API: port 4103.
-- Both phones must use the same trusted Wi-Fi as this PC. Allow Expo Go local-network access on iOS if prompted. If Windows asks about Node network access, allow the trusted private network.
+- iPhone Expo Go: `exp://192.168.0.4:8082`
+- Personal API: `http://192.168.0.4:4103`
+- Health: `http://192.168.0.4:4103/health/ready`
+- APK: `http://192.168.0.4:4103/test/android.apk`
 
-The launcher does not modify firewall rules, create a public tunnel or provision a hosted service. It preserves the ordinary loopback-only server and uses a separate database at `apps/api/data/personal-postgres`. Personal media and provenance live in `apps/api/data/personal-media`; both directories are gitignored.
+The launcher selects the private IPv4 interface; use `MUSIFY_PERSONAL_TEST_HOST` if multiple adapters require an explicit choice. No firewall rule, public tunnel or hosted service was added. Local personal data is separate from the ordinary local database. Browser QA uses the existing localhost workflow; an arbitrary HTTP LAN browser preview is not a supported replacement for native testing because browser crypto requires a secure context.
+
+## Android
+
+[Download the signed 0.2.0 APK](https://expo.dev/artifacts/eas/WXbrAA3zJi8-DojbZ1tP1N1UwxP6c_ONJtDmmJILRA0.apk). Local outputs: `../Musify-0.2.0.apk`, `../Musify.apk`, and `../musify-android-test.apk`, all the same binary. Size 115,618,236 bytes. SHA-256 `adeb170ff9a84f34071ce86d9e09ce54360da19f09cba9358f31f7ab82147b0a`.
+
+[Completed EAS build](https://expo.dev/accounts/azatkabulov/projects/musify-personal-test/builds/f0de680d-82a2-48fc-bc18-260be5bc39b6). The 0.1.0 build is retained at `../Musify-0.1.0-rollback.apk`. The new APK shares the existing package/signing certificate. It embeds the explicit personal HTTP API address; an address change requires rebuilding this profile.
+
+Verification: full APK signature with apksigner (v2), ZIP CRC, package/version, min SDK 24, target SDK 36, four CPU architectures, personal cleartext setting, background media permission, no microphone permission, correct embedded URL and absence of popular audio assets. Full HTTP download hash matched. Emulator install returned Success; package version 0.2.0 and MainActivity resumed; inspected startup logs contained Running main and no Android/React Native exception. These checks do not cover the complete native main flow. Details: `tasks/evidence/candidate/android-apk-0.2.0.json`.
 
 ## iPhone
 
-Install the current Expo Go and sign in as **azatkabulov**, matching this PC's Expo account. [Current Expo instructions](https://docs.expo.dev/get-started/start-developing/) require matching accounts on physical iOS devices. Enable Expo Go in **Settings → Privacy & Security → Local Network** ([Apple instructions](https://support.apple.com/en-us/102229)). This project serves SDK 58. Scan the QR with iPhone Camera, open in Expo Go, then choose **Explore demo → Popular picks**.
+Use Expo Go signed into **azatkabulov**, allow Local Network access, and scan the saved iPhone QR in `../musify-testing-qr-fixed.png`. Manifest `exposdk:58.0.0` and a 13,924,075-byte bundle served over Wi-Fi after the catalog restart. The owner confirmed an earlier Expo Go launch on 2026-10-25; physical acceptance of this redesigned candidate remains open. Expo Go previews foreground playback. Own-build iOS background/lock-screen behavior requires a separate Musify iOS binary.
 
-This preview uses foreground playback. It deliberately avoids activating the app's own background audio and lock-screen configuration inside Expo Go. Test those behaviors later in Musify's own iOS binary.
+## Catalog and data safety
 
-The iOS manifest and a 10.6 MB JavaScript bundle were successfully served on the Wi-Fi interface. On 2026-10-25 the user confirmed Musify opens in Expo Go on the iPhone. Playback and Android installation remain unconfirmed by that launch report.
+30 popular full-length recordings across 12 artists and 27 album entries, plus 12 engineering fixtures. Popular picks (30), Pop essentials (16), Rap rotation (6), After dark (8). All 30 tracks passed search, cover/audio hash checks and initial/final range streaming. The first import changed 15 → 42; repeating it kept 42 → 42. See `tasks/catalog-expansion.md` and `tasks/evidence/candidate/catalog-verification.json`.
 
-## Android APK
-
-The `personal` EAS profile builds an installable APK with package `com.local.musifytest`. It embeds `http://192.168.0.4:4103` as the test API address and enables cleartext HTTP only for this explicit personal build. Other builds retain the default HTTPS policy. If the PC's address changes, update `eas.json` and rebuild the APK; Expo Go can use the launcher's newly detected address.
-
-Build project: https://expo.dev/accounts/azatkabulov/projects/musify-personal-test
-
-Initial build: https://expo.dev/accounts/azatkabulov/projects/musify-personal-test/builds/ae3e57de-0600-416a-9c8a-bf99fdeaa823
-
-**Build completed successfully.** [Download the Android APK](https://expo.dev/artifacts/eas/XDol7xcHr96wNPPmquUeCHQ1Y6X7gkjDclNzR-z-ihE.apk). The local output is `outputs/musify-android-test.apk`, 107,584,493 bytes (about 108 MB), SHA-256 `049ad2bb2edb5c69291aa08c8d0a75b5e0e46c455427b14bbc3a5b74aed604ea`.
-
-The same validated file is also provided as `outputs/Musify.apk`. The personal API's `GET/HEAD /test/android.apk` serves it as `application/vnd.android.package-archive`, with `attachment; filename="Musify.apk"` and byte-range/resume support. This route is absent in ordinary local and production configurations. A full HTTP download matched the build's size and SHA-256. No native rebuild was needed for these server/launcher fixes.
-
-The downloaded binary passed ZIP CRC checks. Its parsed manifest confirms package `com.local.musifytest`, version 0.1.0, min SDK 24, target SDK 36, personal-test cleartext HTTP and foreground media playback permission, with no microphone permission. It includes arm64-v8a, armeabi-v7a, x86 and x86_64 libraries. The embedded bundle contains the correct private API URL and no personal M4A/MP3 files. An APK signing block is present; full signature validation and physical installation were not executed by these file checks.
-
-Download/install instructions and final artifact verification are recorded in the output handoff. No Google Play enrollment is required to install the private APK directly. No store submission was performed.
-
-## Personal music library
-
-The isolated personal test library contains the 12 original engineering recordings plus:
-
-| Artist | Track | Inspected duration | Album cover |
-| --- | --- | --- | --- |
-| The Weeknd | Blinding Lights | 201.583 seconds | After Hours, 600×600 JPEG |
-| Shawn Mendes | Treat You Better | 187.976 seconds | Illuminate, 600×600 JPEG |
-| Eminem | Mockingbird | 250.762 seconds | Encore (Deluxe Version), 600×600 JPEG |
-
-The site's download labels said MP3, but inspection identified AAC in M4A containers, with audio and no video. Those files are stored/served as `audio/mp4`. Metadata/duration checks, file hashes, image decoding and byte-range requests at both ends of every file passed. The source labels were not independently fingerprinted against a rightsholder master. Eminem's recording is conservatively marked explicit because the exact clean/explicit edition was not independently established.
-
-These were selected normal public downloads from imusic.fm. Musify.club's tested download links redirected to login; no login gate was bypassed. Source pages, metadata/artwork URLs, hashes and scope are retained in the private provenance manifest. No general search/download resolver was built, and the managed-provider importer still requires canonical WAV. The active personal database access records describe the user's private test instruction, not an artist/label commercial grant. Personal media are excluded from the EAS source archive and the source repository.
+Database: `apps/api/data/personal-postgres`; media/provenance: `apps/api/data/personal-media`; pre-import backup: `apps/api/data/catalog-backups/before-expansion-20261026-070549/`. All are gitignored and excluded from EAS uploads. Stop the personal API before opening the embedded PGlite database from any other process. Never reuse the private personal manifest as a production artist/label grant. The managed-provider importer remains WAV-only. No broad automatic download resolver was added.
 
 ## Checks and remaining acceptance
 
-- Queue: 3/3; API: 18/18, including private-interface and artwork isolation checks.
-- Strict TypeScript and Expo lint passed after the mobile/artwork changes. The subsequent browser-origin adjustment passed the focused listener tests.
-- Wi-Fi API checks: all 3 recordings returned correct MIME types and 206 responses for initial/final ranges; all 3 cover hashes matched.
-- Ordinary PC browser QA remains the previously documented localhost workflow. Raw HTTP LAN browser previews are not a supported acceptance route: browser crypto APIs require a secure context. This does not affect native Expo Go/Android crypto.
-- Test on each physical phone: open app, Explore demo, Popular picks, play/seek/skip, open full player, save tracks, create/reorder a playlist, close/reopen and restore the queue. Test Android background/lock-screen, interruptions and headset behavior using the APK.
-- The current interface is English. Turkmen/Russian localization and language selection remain pending. Musify is a working name; public name clearance and all production release gates remain open.
+40/40 browser E2E, 24/24 client/data/locale tests, 23/23 API tests and candidate export/check evidence are recorded in `tasks/implementation-status.md`. Fresh lint/typecheck passed. EN/RU/TK dictionaries and device-language/Settings selection are included; native language, accessibility and layout acceptance remain open.
+
+On both physical phones: login/Explore demo, search/play/seek/skip, full player, queue reorder/undo, save, create/edit playlists, close/reopen and queue restoration. Android own-build checks: background/lock-screen, interruptions and headphones. Measure the planned frame/memory/audio budgets and 30-minute listening session on actual devices. No release-device performance or physical playback claim follows from emulator startup or HTTP checks. Public name, catalog, infrastructure, payment and store gates remain open.

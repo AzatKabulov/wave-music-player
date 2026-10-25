@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-26",
+  "before": 42,
+  "after": 42,
+  "popularTracks": 30,
+  "popularArtists": 12,
+  "popularAlbums": 27,
+  "curatedMixes": 3,
+  "scope": "Isolated local personal test database only"
+}

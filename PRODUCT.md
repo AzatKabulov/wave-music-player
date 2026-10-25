@@ -18,7 +18,7 @@ Find music, play it, manage the listening queue, save favourites, and organize p
 
 ## Operating Context
 
-Windows development PC; phones initially use the same Wi-Fi with the PC awake. iPhone uses Expo Go; Android has a signed installable personal-test APK. On 2026-10-25 the owner confirmed Musify opens in Expo Go. Playback, Android installation, and native performance are not confirmed by that launch report.
+Windows development PC; phones initially use the same Wi-Fi with the PC awake. iPhone uses Expo Go; Android has a signed installable personal-test APK. On 2026-10-25 the owner confirmed Musify opens in Expo Go. That earlier launch report did not confirm playback or performance. The current 0.2.0 APK passed emulator installation/startup; physical Android installation and main-flow acceptance remain open.
 
 ## Capabilities and Constraints
 
@@ -36,7 +36,7 @@ Musify is the owner-selected working name. The old navy/amber design is explicit
 
 ## Evidence on Hand
 
-Source implementation; earlier browser screenshots in `replica/clone-screens`; API/QA reports under `replica` and sibling `../replica`; personal-test APK; three imported popular tracks with covers plus synthesized fixtures. Historical screenshots predate some branding/artwork changes and are not current native captures. No release-device performance measurements exist yet.
+Source implementation; earlier browser screenshots in `replica/clone-screens`; API/QA reports under `replica` and sibling `../replica`; personal-test APK; 30 imported popular tracks across 12 artists with covers, plus 12 synthesized fixtures. Historical screenshots predate some branding/artwork changes and are not current native captures. No release-device performance measurements exist yet.
 
 ## Product Principles
 
@@ -48,4 +48,4 @@ Source implementation; earlier browser screenshots in `replica/clone-screens`; A
 
 ## Current Work
 
-The redesign is implemented as a personal-test candidate. `DESIGN.md` records the current source-backed visual system; `tasks/plan.md` and `tasks/todo.md` track the broader work. The six scored finish-review fixes are resolved in `tasks/finish-verdict.md`, scoped to the web/source candidate. The 16 current `.impeccable/review` frames are web layout captures, not native phone evidence; no approved bitmap comp exists and no detector ran for this native project. Native APK/emulator validation is being prepared; physical-device accessibility, gestures, audio continuity and release-device performance remain unmeasured. Earlier unfinished production work in `replica/tasks/todo.md` remains intact.
+The redesign is implemented as a personal-test candidate. `DESIGN.md` records the current source-backed visual system; `tasks/plan.md` and `tasks/todo.md` track the broader work. The six scored finish-review fixes are resolved in `tasks/finish-verdict.md`, scoped to the web/source candidate. The 16 current `.impeccable/review` frames are web layout captures, not native phone evidence; no approved bitmap comp exists and no detector ran for this native project. The signed 0.2.0 APK passed signature/hash checks and emulator installation/startup; the SDK-58 iPhone manifest and bundle served after the catalog update; physical-device accessibility, gestures, audio continuity and release-device performance remain unmeasured. Earlier unfinished production work in `replica/tasks/todo.md` remains intact.

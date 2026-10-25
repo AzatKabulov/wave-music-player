@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-26",
+  "package": "com.local.musifytest",
+  "version": "0.2.0",
+  "versionCode": 2,
+  "buildId": "f0de680d-82a2-48fc-bc18-260be5bc39b6",
+  "artifactUrl": "https://expo.dev/artifacts/eas/WXbrAA3zJi8-DojbZ1tP1N1UwxP6c_ONJtDmmJILRA0.apk",
+  "bytes": 115618236,
+  "sha256": "adeb170ff9a84f34071ce86d9e09ce54360da19f09cba9358f31f7ab82147b0a",
+  "minSdk": 24,
+  "targetSdk": 36,
+  "architectures": ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"],
+  "zipCrcPassed": true,
+  "apksignerVerificationPassed": true,
+  "signatureScheme": "v2",
+  "signerCertificateSha256": "75e19913b15a5bff72f5cdc58f41b1fafd2e5e6f243f0a576c265e3fc3e362c4",
+  "sameSignerAsPreviousApk": true,
+  "embeddedApi": "http://192.168.0.4:4103",
+  "popularAudioEmbedded": false,
+  "backgroundMediaPermission": true,
+  "microphonePermission": false,
+  "httpDownloadHashVerified": true,
+  "emulator": {
+    "device": "API 36 x86_64",
+    "install": "Success",
+    "installedVersion": "0.2.0",
+    "launch": "MainActivity resumed; ReactNativeJS Running main",
+    "startupRuntimeExceptionObserved": false,
+    "scope": "Installation and startup only; no complete native flow or performance assessment"
+  },
+  "physicalPhoneAcceptance": "Pending",
+  "rollback": "Musify-0.1.0-rollback.apk"
+}

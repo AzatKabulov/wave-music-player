@@ -1,0 +1,336 @@
+{
+  "date": "2026-10-26",
+  "api": "http://192.168.0.4:4103",
+  "catalogTracks": 42,
+  "popularTracks": 30,
+  "popularArtists": 12,
+  "tracks": [
+    {
+      "artist": "The Weeknd",
+      "title": "Blinding Lights",
+      "durationMs": 201583,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "Treat You Better",
+      "durationMs": 187976,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Eminem",
+      "title": "Mockingbird",
+      "durationMs": 250762,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "The Weeknd",
+      "title": "Save Your Tears",
+      "durationMs": 215663,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "The Weeknd",
+      "title": "Starboy (feat. Daft Punk)",
+      "durationMs": 230490,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "The Weeknd",
+      "title": "Can't Feel My Face",
+      "durationMs": 213541,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Eminem",
+      "title": "Lose Yourself",
+      "durationMs": 322263,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Eminem",
+      "title": "Without Me",
+      "durationMs": 290329,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Eminem",
+      "title": "The Real Slim Shady",
+      "durationMs": 284501,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "Stitches",
+      "durationMs": 206900,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "There's Nothing Holdin' Me Back",
+      "durationMs": 199446,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "Señorita",
+      "durationMs": 190996,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Billie Eilish",
+      "title": "bad guy",
+      "durationMs": 194106,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Billie Eilish",
+      "title": "lovely",
+      "durationMs": 200222,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Ed Sheeran",
+      "title": "Shape of You",
+      "durationMs": 233719,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Ed Sheeran",
+      "title": "Perfect",
+      "durationMs": 263417,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Taylor Swift",
+      "title": "Cruel Summer",
+      "durationMs": 178432,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Taylor Swift",
+      "title": "Blank Space",
+      "durationMs": 231863,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Bruno Mars",
+      "title": "Just the Way You Are",
+      "durationMs": 220739,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Bruno Mars",
+      "title": "Locked Out of Heaven",
+      "durationMs": 233487,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Sabrina Carpenter",
+      "title": "Espresso",
+      "durationMs": 175460,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Harry Styles",
+      "title": "As It Was",
+      "durationMs": 167310,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Harry Styles",
+      "title": "Watermelon Sugar",
+      "durationMs": 174020,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Post Malone",
+      "title": "Sunflower (Spider-Man: Into the Spider-Verse)",
+      "durationMs": 158045,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Adele",
+      "title": "Rolling in the Deep",
+      "durationMs": 228100,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Dua Lipa",
+      "title": "New Rules",
+      "durationMs": 209338,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Sabrina Carpenter",
+      "title": "Nonsense",
+      "durationMs": 163664,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Post Malone",
+      "title": "Better Now",
+      "durationMs": 231281,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Adele",
+      "title": "Someone Like You",
+      "durationMs": 285244,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    },
+    {
+      "artist": "Dua Lipa",
+      "title": "Physical (feat. Troye Sivan)",
+      "durationMs": 192805,
+      "search": true,
+      "artworkSha256Verified": true,
+      "audioSha256Verified": true,
+      "rangeStart": 206,
+      "rangeEnd": 206
+    }
+  ],
+  "mixes": [
+    {
+      "title": "Pop essentials",
+      "tracks": 16
+    },
+    {
+      "title": "Rap rotation",
+      "tracks": 6
+    },
+    {
+      "title": "After dark",
+      "tracks": 8
+    }
+  ],
+  "ios": {
+    "runtimeVersion": "exposdk:58.0.0",
+    "manifestStatus": 200,
+    "bundleStatus": 200,
+    "bundleBytes": 13924075
+  },
+  "apk": {
+    "version": "0.2.0",
+    "bytes": 115618236,
+    "sha256": "adeb170ff9a84f34071ce86d9e09ce54360da19f09cba9358f31f7ab82147b0a",
+    "status": 200
+  },
+  "scope": "PC requests to the private Wi-Fi interface; these checks do not establish physical phone playback or performance."
+}

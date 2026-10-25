@@ -294,3 +294,7 @@ Common verification: run lint/typecheck for source changes, focused behavior tes
 - [ ] All scoped tasks have evidence; visual and speed goals assessed separately.
 - [ ] Improved APK and iPhone preview supplied; first test build remains recoverable.
 - [ ] Deferred production, catalog, monetization and own-iOS-build work remains tracked without implying launch approval.
+
+## Candidate handoff update — 2026-10-26
+
+T30 packaging is now available: signed 0.2.0 APK with verified hash, emulator install/startup, working private HTTP download, validated SDK-58 iPhone manifest/bundle and retained 0.1.0 rollback. Physical Android and redesigned-iPhone main-flow acceptance remain open, so T30 is not marked fully accepted. See `implementation-status.md` for the current implemented scope and device limitations. The catalog additionally contains 30 popular recordings plus 12 engineering fixtures; `catalog-expansion.md` records the import and all-track checks.
