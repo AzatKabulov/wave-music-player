@@ -19,7 +19,7 @@ Install the current Expo Go and sign in as **azatkabulov**, matching this PC's E
 
 This preview uses foreground playback. It deliberately avoids activating the app's own background audio and lock-screen configuration inside Expo Go. Test those behaviors later in Musify's own iOS binary.
 
-The iOS manifest and a 10.6 MB JavaScript bundle were successfully served on the Wi-Fi interface. This is a server-side readiness check; an actual iPhone run is still required.
+The iOS manifest and a 10.6 MB JavaScript bundle were successfully served on the Wi-Fi interface. On 2026-10-25 the user confirmed Musify opens in Expo Go on the iPhone. Playback and Android installation remain unconfirmed by that launch report.
 
 ## Android APK
 
