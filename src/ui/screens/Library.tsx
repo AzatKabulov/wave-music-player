@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleProvider";
 import {
   ArrowDownUp,
   Heart,
@@ -22,6 +23,7 @@ import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
 
 export function LibraryScreen() {
+  const { tx } = useLocale();
   const m = useMusic(),
     sn = m.snapshot!;
   const [filter, setFilter] = useState("All");
@@ -37,7 +39,7 @@ export function LibraryScreen() {
     ...sn.playlists.map((p) => ({
       id: p.id,
       title: p.title,
-      subtitle: `Playlist · ${p.items.length} tracks`,
+      subtitle: `${tx("Playlist")} · ${tx("Tracks: {count}", { count: p.items.length })}`,
       palette: p.palette,
       artworkUrl: p.artworkUrl,
       kind: "Playlists",
@@ -50,7 +52,7 @@ export function LibraryScreen() {
       .map((p) => ({
         id: p.id,
         title: p.title,
-        subtitle: "Playlist",
+        subtitle: tx("Playlist"),
         palette: p.palette,
         artworkUrl: p.artworkUrl,
         kind: "Playlists",
@@ -63,7 +65,7 @@ export function LibraryScreen() {
       .map((a) => ({
         id: a.id,
         title: a.title,
-        subtitle: `Album · ${a.artist}`,
+        subtitle: `${tx("Album")} · ${a.artist}`,
         palette: a.palette,
         artworkUrl: a.artworkUrl,
         kind: "Albums",
@@ -76,7 +78,7 @@ export function LibraryScreen() {
       .map((a) => ({
         id: a.id,
         title: a.name,
-        subtitle: "Artist",
+        subtitle: tx("Artist"),
         palette: a.palette,
         artworkUrl: undefined,
         kind: "Artists",
@@ -119,6 +121,7 @@ export function LibraryScreen() {
       </ScrollView>
       <View style={ui.h}>
         <Button
+          i18n
           title={
             sort === "recent"
               ? "Recently added"
@@ -143,6 +146,7 @@ export function LibraryScreen() {
         <View style={s.sort}>
           {(["recent", "title", "creator"] as const).map((value) => (
             <Button
+              i18n
               key={value}
               title={
                 value === "recent"
@@ -172,7 +176,7 @@ export function LibraryScreen() {
           filter === "All" ? (
             <Touch
               accessibilityRole="button"
-              accessibilityLabel={`Liked tracks ${sn.library.tracks.length} tracks`}
+              accessibilityLabel={`${tx("Liked tracks")} ${tx("Tracks: {count}", { count: sn.library.tracks.length })}`}
               onPress={() => go("/liked")}
               style={s.row}
             >
@@ -180,9 +184,11 @@ export function LibraryScreen() {
                 <Heart color={t.color.text} fill={t.color.text} size={26} />
               </View>
               <View style={ui.grow}>
-                <Label style={s.title}>Liked tracks </Label>
+                <Label i18n style={s.title}>
+                  Liked tracks{" "}
+                </Label>
                 <Label type="sm" color="text-muted">
-                  {sn.library.tracks.length} tracks
+                  {tx("Tracks: {count}", { count: sn.library.tracks.length })}
                 </Label>
               </View>
             </Touch>
@@ -216,7 +222,7 @@ export function LibraryScreen() {
             title={
               filter === "All"
                 ? "Build your library"
-                : `No saved ${filter.toLowerCase()}`
+                : tx("No saved {kind}", { kind: tx(filter) })
             }
             message="Keep the music you love here, ready for your next listen."
             action="Find music"

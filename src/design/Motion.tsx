@@ -15,6 +15,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { deviceStorage } from "../data/storage";
+import { useLocale } from "../i18n/LocaleProvider";
 
 const MotionContext = createContext({
   reduced: false,
@@ -61,11 +62,15 @@ export function Touch({
   onPressOut,
   onPress,
   haptic = false,
+  labelIsUI = false,
+  accessibilityLabel,
   ...props
 }: Omit<PressableProps, "style"> & {
   style?: StyleProp<ViewStyle>;
   haptic?: boolean;
+  labelIsUI?: boolean;
 }) {
+  const { tx } = useLocale();
   const { reduced, haptics } = useMotion();
   const progress = useSharedValue(0);
   const animated = useAnimatedStyle(
@@ -78,6 +83,11 @@ export function Touch({
   return (
     <AnimatedPressable
       {...props}
+      accessibilityLabel={
+        labelIsUI && accessibilityLabel
+          ? tx(accessibilityLabel)
+          : accessibilityLabel
+      }
       style={[style, animated]}
       onPressIn={(event) => {
         progress.value = withTiming(1, { duration: 80 });

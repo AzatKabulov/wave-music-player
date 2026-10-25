@@ -12,15 +12,25 @@ import {
 } from "react-native";
 import { theme as t, type ColorRole, type TypeRole } from "./theme";
 import { Touch } from "./Motion";
+import { useLocale } from "../i18n/LocaleProvider";
 
 export function Label({
   type = "base",
   color = "text",
   style,
+  i18n = false,
+  children,
   ...props
-}: TextProps & { type?: TypeRole; color?: ColorRole }) {
+}: TextProps & { type?: TypeRole; color?: ColorRole; i18n?: boolean }) {
+  const { tx } = useLocale();
+  const content =
+    i18n && typeof children === "string"
+      ? tx(children.trim()) + (children.endsWith(" ") ? " " : "")
+      : children;
   return (
-    <Text {...props} style={[t.type[type], { color: t.color[color] }, style]} />
+    <Text {...props} style={[t.type[type], { color: t.color[color] }, style]}>
+      {content}
+    </Text>
   );
 }
 
@@ -32,6 +42,7 @@ export function Button({
   busy,
   icon: Icon,
   style,
+  i18n = false,
 }: {
   title: string;
   onPress: () => void;
@@ -40,7 +51,10 @@ export function Button({
   busy?: boolean;
   icon?: LucideIcon;
   style?: ViewStyle;
+  i18n?: boolean;
 }) {
+  const { tx } = useLocale();
+  const displayTitle = i18n ? tx(title) : title;
   const [focused, setFocused] = useState(false);
   const foreground =
     variant === "primary"
@@ -51,7 +65,7 @@ export function Button({
   return (
     <Touch
       accessibilityRole="button"
-      accessibilityLabel={title}
+      accessibilityLabel={displayTitle}
       accessibilityState={{ disabled: disabled || busy, busy }}
       disabled={disabled || busy}
       onPress={onPress}
@@ -75,7 +89,7 @@ export function Button({
         <Icon color={foreground} size={t.icon.sm} strokeWidth={t.stroke} />
       ) : null}
       <Label type="base" style={{ color: foreground, fontWeight: "600" }}>
-        {title}
+        {displayTitle}
       </Label>
     </Touch>
   );
@@ -98,12 +112,13 @@ export function IconButton({
   filled?: boolean;
   size?: keyof typeof t.icon;
 }) {
+  const { tx } = useLocale();
   const [focused, setFocused] = useState(false);
   return (
     <Touch
       haptic={selected !== undefined}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={tx(label)}
       accessibilityState={{ selected, disabled }}
       disabled={disabled}
       onPress={onPress}
@@ -142,6 +157,7 @@ export function Chip({
 }) {
   return (
     <Button
+      i18n
       title={title}
       onPress={onPress}
       variant={selected ? "primary" : "secondary"}
@@ -154,17 +170,20 @@ export function Input({
   label,
   error,
   style,
+  i18n = false,
   ...props
-}: TextInputProps & { label: string; error?: string }) {
+}: TextInputProps & { label: string; error?: string; i18n?: boolean }) {
+  const { tx } = useLocale();
   const [focused, setFocused] = useState(false);
   return (
     <View style={styles.inputGroup}>
       <Label type="sm" color="text-muted">
-        {label}
+        {i18n ? tx(label) : label}
       </Label>
       <TextInput
         {...props}
-        accessibilityLabel={label}
+        accessibilityLabel={i18n ? tx(label) : label}
+        placeholder={props.placeholder ? tx(props.placeholder) : undefined}
         placeholderTextColor={t.color["text-muted"]}
         onFocus={(event) => {
           setFocused(true);
@@ -183,7 +202,7 @@ export function Input({
       />
       {error ? (
         <Label type="sm" color="danger" accessibilityRole="alert">
-          {error}
+          {tx(error)}
         </Label>
       ) : null}
     </View>
@@ -203,13 +222,15 @@ export function StateView({
 }) {
   return (
     <View style={styles.state}>
-      <Label type="xl" accessibilityRole="header">
+      <Label i18n type="xl" accessibilityRole="header">
         {title}
       </Label>
-      <Label color="text-muted" style={styles.stateMessage}>
+      <Label i18n color="text-muted" style={styles.stateMessage}>
         {message}
       </Label>
-      {action && onAction ? <Button title={action} onPress={onAction} /> : null}
+      {action && onAction ? (
+        <Button i18n title={action} onPress={onAction} />
+      ) : null}
     </View>
   );
 }

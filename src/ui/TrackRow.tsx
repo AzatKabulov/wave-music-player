@@ -1,3 +1,4 @@
+import { useLocale } from "../i18n/LocaleProvider";
 import { AudioLines, Heart, MoreHorizontal } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { useMusic } from "../data/MusicProvider";
@@ -18,6 +19,7 @@ export function TrackRow({
   index?: number;
   subtitle?: boolean;
 }) {
+  const { tx } = useLocale();
   const m = useMusic(),
     active = m.track?.id === track.id,
     blocked =
@@ -28,7 +30,7 @@ export function TrackRow({
     <View style={[s.row, blocked && { opacity: t.opacity.disabled }]}>
       <Touch
         accessibilityRole="button"
-        accessibilityLabel={`Play ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? "Unavailable for playback" : track.artist) : ""}`}
+        accessibilityLabel={`${tx("Play")} ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? "Unavailable for playback" : track.artist) : ""}`}
         accessibilityState={{ disabled: blocked }}
         disabled={blocked}
         onPress={() => void m.playTracks(context || [track], index)}

@@ -10,4 +10,6 @@ First full browser regression run: 19/30 passed. Failures localized to accessibl
 
 Still to implement/finish: full EN/RU/TK locale coverage and Settings; playlist unsaved-change handling; request cancellation/timeouts and targeted data loading; real paginated full-catalog search and batched catalog reads; artwork variants/palette metadata; fuller queue source reconciliation and undo; screenshot/design review and device evidence; updated Android APK and iPhone preview handoff. Some production/native hardware checks inherently need the user's devices/build setup.
 
-Working repo: outputs/music-app. Existing approved implementation plan: tasks/plan.md, tasks/todo.md. Main branch HEAD before implementation: 25965fc. Source changes are not committed yet.
+Working repo: outputs/music-app. Existing approved implementation plan: tasks/plan.md, tasks/todo.md. Main branch HEAD before implementation: 25965fc. Core redesign committed as b8bb783. Locale/Settings changes are the next working slice.
+
+Owner test devices: iPhone 15 Pro; Redmi described as “10 Pro”, exact model unconfirmed. Do not assume Redmi Note 10 Pro. No physical device attached to ADB. Core 30 browser scenarios have all passed across the initial and focused repair runs. Locale selection/persistence/accessibility passed for phone and desktop. EN/RU/TK dictionaries and Settings override are implemented; complete dynamic/server-error translation review remains.

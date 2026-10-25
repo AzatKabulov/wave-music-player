@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleProvider";
 import { Clock3, Music2, Search, X } from "lucide-react-native";
 import { useDeferredValue, useEffect, useState } from "react";
 import {
@@ -18,6 +19,7 @@ import { TrackRow } from "../TrackRow";
 import { Cards, Section } from "./common";
 
 export function SearchScreen() {
+  const { tx } = useLocale();
   const m = useMusic(),
     c = m.snapshot!.catalog;
   const [query, setQuery] = useState("");
@@ -89,8 +91,8 @@ export function SearchScreen() {
       <View style={s.search}>
         <Search size={23} color={t.color.bg} />
         <TextInput
-          accessibilityLabel="Search music"
-          placeholder="What do you want to listen to?"
+          accessibilityLabel={tx("Search music")}
+          placeholder={tx("What do you want to listen to?")}
           placeholderTextColor="#494950"
           value={query}
           onChangeText={(value) => {
@@ -107,7 +109,7 @@ export function SearchScreen() {
         {query ? (
           <Touch
             accessibilityRole="button"
-            accessibilityLabel="Clear search"
+            accessibilityLabel={tx("Clear search")}
             onPress={() => {
               setQuery("");
               setCategory("");
@@ -145,7 +147,7 @@ export function SearchScreen() {
             )}
             ListHeaderComponent={
               shownTracks.length ? (
-                <Label type="lg" style={s.resultTitle}>
+                <Label i18n type="lg" style={s.resultTitle}>
                   {category || "Tracks"}
                 </Label>
               ) : undefined
@@ -154,7 +156,10 @@ export function SearchScreen() {
               !shownTracks.length && !otherCount ? (
                 <StateView
                   title="Nothing matched this time"
-                  message={`Try a shorter name or a different spelling for “${query || category}”.`}
+                  message={tx(
+                    "Try a shorter name or a different spelling for “{query}”.",
+                    { query: query || category },
+                  )}
                 />
               ) : undefined
             }
@@ -181,7 +186,7 @@ export function SearchScreen() {
                         <Artwork palette={artist.palette} size={48} round />
                         <View>
                           <Label>{artist.name}</Label>
-                          <Label type="sm" color="text-muted">
+                          <Label i18n type="sm" color="text-muted">
                             Artist
                           </Label>
                         </View>
@@ -256,7 +261,7 @@ export function SearchScreen() {
                     { backgroundColor: colors[index % colors.length] },
                   ]}
                 >
-                  <Label type="lg" style={s.tileTitle}>
+                  <Label i18n type="lg" style={s.tileTitle}>
                     {genre}
                   </Label>
                   <Music2 size={42} color={t.color.text} style={s.tileIcon} />

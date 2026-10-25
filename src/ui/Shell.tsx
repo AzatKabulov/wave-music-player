@@ -26,6 +26,7 @@ import { BrandMark } from "../design/BrandMark";
 import { Touch } from "../design/Motion";
 import { Button, IconButton, Label } from "../design/Primitives";
 import { theme as t } from "../design/theme";
+import { useLocale } from "../i18n/LocaleProvider";
 import { MiniPlayer } from "./player/MiniPlayer";
 
 export const go = (path: string) => router.push(path as never);
@@ -38,6 +39,7 @@ const destinations = [
 ];
 
 export function NavigationFrame({ children }: { children: React.ReactNode }) {
+  const { tx } = useLocale();
   const m = useMusic();
   const path = usePathname();
   const wide = useWindowDimensions().width >= 960;
@@ -59,7 +61,7 @@ export function NavigationFrame({ children }: { children: React.ReactNode }) {
             {destinations.map((d) => (
               <Button
                 key={d.path}
-                title={d.name}
+                title={tx(d.name)}
                 icon={d.icon}
                 variant={path === d.path ? "secondary" : "quiet"}
                 onPress={() => router.navigate(d.path as never)}
@@ -68,13 +70,14 @@ export function NavigationFrame({ children }: { children: React.ReactNode }) {
             ))}
           </View>
           <Button
+            i18n
             title="New playlist"
             icon={Plus}
             variant="quiet"
             onPress={() => go("/create")}
             style={s.sideButton}
           />
-          <Label type="sm" color="text-muted">
+          <Label i18n type="sm" color="text-muted">
             Your playlists
           </Label>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -109,7 +112,7 @@ export function NavigationFrame({ children }: { children: React.ReactNode }) {
                     <Touch
                       key={d.path}
                       accessibilityRole="tab"
-                      accessibilityLabel={d.name}
+                      accessibilityLabel={tx(d.name)}
                       accessibilityState={{ selected }}
                       onPress={() => router.navigate(d.path as never)}
                       style={s.destination}
@@ -120,7 +123,7 @@ export function NavigationFrame({ children }: { children: React.ReactNode }) {
                         strokeWidth={selected ? 2.4 : 1.7}
                       />
                       <Label type="xs" color={selected ? "text" : "text-muted"}>
-                        {d.name}
+                        {tx(d.name)}
                       </Label>
                     </Touch>
                   );
@@ -150,6 +153,7 @@ export function Shell({
   scroll?: boolean;
   trailing?: React.ReactNode;
 }) {
+  const { tx } = useLocale();
   const m = useMusic();
   const wide = useWindowDimensions().width >= 960;
   const contentStyle = [s.content, { paddingHorizontal: wide ? 32 : 16 }];
@@ -169,11 +173,12 @@ export function Shell({
               accessibilityRole="header"
               style={ui.grow}
             >
-              {title}
+              {tx(title)}
             </Label>
             {trailing ||
               (!showBack && m.snapshot?.profile ? (
                 <Touch
+                  labelIsUI
                   accessibilityRole="button"
                   accessibilityLabel="Open settings"
                   onPress={() => go("/settings")}

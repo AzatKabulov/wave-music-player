@@ -55,6 +55,7 @@ export function Home() {
         <>
           <View style={s.shortcuts}>
             <Touch
+              labelIsUI
               accessibilityRole="button"
               accessibilityLabel="Liked Songs"
               onPress={() => go("/liked")}
@@ -63,7 +64,7 @@ export function Home() {
               <View style={s.likedArt}>
                 <Heart size={23} color={t.color.text} fill={t.color.text} />
               </View>
-              <Label type="sm" numberOfLines={2} style={s.shortcutTitle}>
+              <Label i18n type="sm" numberOfLines={2} style={s.shortcutTitle}>
                 Liked Songs
               </Label>
             </Touch>
@@ -141,7 +142,7 @@ export function Home() {
                   <Label numberOfLines={2} style={[s.bold, s.center]}>
                     {artist.name}
                   </Label>
-                  <Label type="sm" color="text-muted">
+                  <Label i18n type="sm" color="text-muted">
                     Artist
                   </Label>
                 </Touch>

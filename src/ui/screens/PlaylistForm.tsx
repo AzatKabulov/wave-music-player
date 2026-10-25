@@ -75,6 +75,7 @@ export function PlaylistForm({
       <View style={ui.form}>
         <Artwork palette={p?.palette || "sea"} size={t.space[128]} />
         <Input
+          i18n
           label="Playlist name"
           value={title}
           onChangeText={(v) => {
@@ -86,6 +87,7 @@ export function PlaylistForm({
           placeholder="Name your next listening moment"
         />
         <Input
+          i18n
           label="Description (optional)"
           value={description}
           onChangeText={setDescription}
@@ -93,13 +95,16 @@ export function PlaylistForm({
           multiline
         />
         <Button
+          i18n
           title="Save playlist"
           busy={m.pending}
           onPress={() => void save()}
         />
         {p ? (
           <>
-            <Label type="lg">Track order</Label>
+            <Label i18n type="lg">
+              Track order
+            </Label>
             {items.map((item, i) => {
               const track = m.snapshot!.catalog.tracks.find(
                 (t) => t.id === item.trackId,
@@ -134,7 +139,7 @@ export function PlaylistForm({
               );
             })}
             {!items.length ? (
-              <Label color="text-muted">
+              <Label i18n color="text-muted">
                 This playlist is empty. Add music from track options.
               </Label>
             ) : null}
@@ -142,6 +147,7 @@ export function PlaylistForm({
               <View style={ui.card}>
                 <Label>Delete “{p.title}” and its track list?</Label>
                 <Button
+                  i18n
                   title="Delete this playlist"
                   variant="danger"
                   busy={m.pending}
@@ -157,6 +163,7 @@ export function PlaylistForm({
                   }
                 />
                 <Button
+                  i18n
                   title="Keep playlist"
                   variant="quiet"
                   onPress={() => setConfirm(false)}
@@ -164,6 +171,7 @@ export function PlaylistForm({
               </View>
             ) : (
               <Button
+                i18n
                 title="Delete playlist"
                 variant="danger"
                 onPress={() => setConfirm(true)}

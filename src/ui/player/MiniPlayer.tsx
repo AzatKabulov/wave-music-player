@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleProvider";
 import { Pause, Play, SkipForward } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { useMusic, usePlaybackStatus } from "../../data/MusicProvider";
@@ -8,6 +9,7 @@ import { theme as t } from "../../design/theme";
 import { router } from "expo-router";
 
 export function MiniPlayer() {
+  const { tx } = useLocale();
   const m = useMusic();
   const status = usePlaybackStatus();
   if (!m.track) return null;
@@ -17,7 +19,10 @@ export function MiniPlayer() {
       <View style={s.row}>
         <Touch
           accessibilityRole="button"
-          accessibilityLabel={`Open player for ${m.track.title} ${m.track.artist}`}
+          accessibilityLabel={tx("Open player for {title} {artist}", {
+            title: m.track.title,
+            artist: m.track.artist,
+          })}
           onPress={() => router.push("/player")}
           style={s.open}
         >

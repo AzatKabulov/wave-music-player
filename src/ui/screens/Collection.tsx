@@ -84,12 +84,14 @@ export function Collection({
         <View style={ui.row}>
           {playlist?.owner ? (
             <Button
+              i18n
               title="Edit playlist"
               variant="secondary"
               onPress={() => go(`/edit/${id}`)}
             />
           ) : (
             <Button
+              i18n
               title={
                 saved
                   ? artist
@@ -124,6 +126,7 @@ export function Collection({
             }
           />
           <Button
+            i18n
             title="Play"
             icon={Play}
             disabled={!tracks.length || m.pending}

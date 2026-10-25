@@ -96,6 +96,7 @@ export function Player() {
                 />
                 <View style={s.context}>
                   <Label
+                    i18n
                     type="sm"
                     accessibilityRole="header"
                     style={s.contextTitle}
@@ -211,6 +212,7 @@ export function Player() {
                 <Label
                   type="sm"
                   color="text-muted"
+                  i18n
                   accessibilityLiveRegion="polite"
                 >
                   {status.isBuffering
@@ -220,24 +222,28 @@ export function Player() {
                       : "Paused"}
                 </Label>
                 <Touch
+                  labelIsUI
                   accessibilityRole="button"
                   accessibilityLabel="Queue"
                   onPress={() => go("/queue")}
                   style={s.queue}
                 >
                   <ListMusic color={t.color.text} size={22} />
-                  <Label type="sm">Queue</Label>
+                  <Label i18n type="sm">
+                    Queue
+                  </Label>
                 </Touch>
               </View>
               {m.error ? (
                 <View accessibilityRole="alert" style={s.error}>
                   <Label color="danger">{m.error}</Label>
                   <Touch
+                    labelIsUI
                     accessibilityRole="button"
                     accessibilityLabel="Dismiss error"
                     onPress={() => m.setError("")}
                   >
-                    <Label>Dismiss</Label>
+                    <Label i18n>Dismiss</Label>
                   </Touch>
                 </View>
               ) : null}

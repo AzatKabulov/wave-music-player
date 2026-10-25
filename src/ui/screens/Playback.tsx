@@ -1,3 +1,4 @@
+import { useLocale } from "../../i18n/LocaleProvider";
 import { randomUUID } from "expo-crypto";
 import {
   ArrowDown,
@@ -32,6 +33,7 @@ import { Shell, back, go, ui } from "../Shell";
 import { Sheet } from "../sheets/Sheet";
 
 function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
+  const { tx } = useLocale();
   const m = useMusic();
   const track = m.snapshot!.catalog.tracks.find((t) => t.id === entry.trackId);
   const y = useSharedValue(0);
@@ -60,7 +62,16 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
     <Animated.View style={[s.queueRow, drag]}>
       <Touch
         accessibilityRole="button"
-        accessibilityLabel={`Play queue entry ${index + 1}: ${track.title} ${m.activeEntry?.id === entry.id ? "Playing now" : entry.origin === "explicit" ? "Your request" : track.artist}`}
+        accessibilityLabel={tx("Play queue entry {index}: {title} {subtitle}", {
+          index: index + 1,
+          title: track.title,
+          subtitle:
+            m.activeEntry?.id === entry.id
+              ? tx("Playing now")
+              : entry.origin === "explicit"
+                ? tx("Your request")
+                : track.artist,
+        })}
         onPress={() => m.jumpQueue(entry.id)}
         style={s.queueOpen}
       >
@@ -74,9 +85,9 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
           </Label>
           <Label type="sm" color="text-muted" numberOfLines={1}>
             {m.activeEntry?.id === entry.id
-              ? "Playing now"
+              ? tx("Playing now")
               : entry.origin === "explicit"
-                ? "Your request"
+                ? tx("Your request")
                 : track.artist}
           </Label>
         </View>
@@ -143,15 +154,18 @@ export function QueueScreen() {
         ListHeaderComponent={
           <View style={ui.section}>
             <View style={ui.h}>
-              <Label type="xl">Up next</Label>
+              <Label i18n type="xl">
+                Up next
+              </Label>
               <Button
+                i18n
                 title="Clear requests"
                 variant="quiet"
                 disabled={m.pending}
                 onPress={() => void m.clearExplicit()}
               />
             </View>
-            <Label type="sm" color="text-muted">
+            <Label i18n type="sm" color="text-muted">
               Drag the handle to reorder. Move controls are also available.
             </Label>
           </View>
@@ -183,7 +197,7 @@ export function Actions({
   if (!track)
     return (
       <Sheet title="Track unavailable">
-        <Label>Try another track from the catalog.</Label>
+        <Label i18n>Try another track from the catalog.</Label>
       </Sheet>
     );
   const add = async (playlist: Playlist) => {
@@ -214,12 +228,14 @@ export function Actions({
       {picker ? (
         <View style={s.actions}>
           <Input
+            i18n
             label="Find a playlist"
             placeholder="Playlist name"
             value={query}
             onChangeText={setQuery}
           />
           <Button
+            i18n
             title="Create a playlist"
             icon={Plus}
             onPress={() => go(`/create?track=${id}`)}
@@ -239,12 +255,15 @@ export function Actions({
               />
             ))}
           {!m.snapshot!.playlists.length ? (
-            <Label color="text-muted">Your playlists will appear here.</Label>
+            <Label i18n color="text-muted">
+              Your playlists will appear here.
+            </Label>
           ) : null}
         </View>
       ) : (
         <View style={s.actions}>
           <Button
+            i18n
             title="Add to playlist"
             icon={Plus}
             variant="quiet"
@@ -252,6 +271,7 @@ export function Actions({
             style={s.action}
           />
           <Button
+            i18n
             title="Play next"
             icon={ListMusic}
             disabled={m.pending}

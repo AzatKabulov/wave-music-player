@@ -5,20 +5,23 @@ import { MusicProvider } from "../data/MusicProvider";
 import { MotionProvider, useMotion } from "../design/Motion";
 import { NavigationFrame } from "../ui/Shell";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { LocaleProvider } from "../i18n/LocaleProvider";
 import { theme } from "../design/theme";
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <MotionProvider>
-          <MusicProvider>
-            <StatusBar style="light" />
-            <NavigationFrame>
-              <AppStack />
-            </NavigationFrame>
-          </MusicProvider>
-        </MotionProvider>
-      </GestureHandlerRootView>
+      <LocaleProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <MotionProvider>
+            <MusicProvider>
+              <StatusBar style="light" />
+              <NavigationFrame>
+                <AppStack />
+              </NavigationFrame>
+            </MusicProvider>
+          </MotionProvider>
+        </GestureHandlerRootView>
+      </LocaleProvider>
     </SafeAreaProvider>
   );
 }

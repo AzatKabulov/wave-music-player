@@ -51,7 +51,7 @@
     "typecheck": "tsc --noEmit",
     "build:web": "expo export --platform web",
     "api": "npm --prefix apps/api start",
-    "test": "node --experimental-strip-types --test src/data/*.test.ts && npm --prefix apps/api test",
+    "test": "node --experimental-strip-types --test src/data/*.test.ts src/i18n/*.test.ts && npm --prefix apps/api test",
     "format": "prettier --write src apps/api/src apps/api/test scripts/*.mjs package.json app.json tsconfig.json eas.json",
     "format:check": "prettier --check src apps/api/src apps/api/test scripts/*.mjs package.json app.json tsconfig.json eas.json",
     "lint": "expo lint",

@@ -23,7 +23,7 @@ export function Section({
     <View style={ui.section}>
       <View style={ui.h}>
         <View style={ui.grow}>
-          <Label type="xl" accessibilityRole="header">
+          <Label i18n type="xl" accessibilityRole="header">
             {title}
           </Label>
         </View>

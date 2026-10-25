@@ -93,7 +93,7 @@ export function Sheet({
           </Animated.View>
         </GestureDetector>
         <View style={[ui.row, s.heading]}>
-          <Label type="lg" accessibilityRole="header" style={ui.grow}>
+          <Label i18n type="lg" accessibilityRole="header" style={ui.grow}>
             {title}
           </Label>
           <IconButton icon={X} label="Close sheet" onPress={back} />

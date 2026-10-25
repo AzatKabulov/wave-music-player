@@ -42,7 +42,15 @@ export function Auth() {
   return (
     <Shell title="musify" eyebrow="KEEP YOUR OWN RHYTHM">
       <View style={ui.form}>
-        <View style={{ alignItems: "center", paddingVertical: 24, gap: 20 }}><BrandMark size={64}/><Label type="display" style={{ textAlign: "center" }}>Welcome to Musify</Label><Label color="text-muted" style={{ textAlign: "center" }}>Sign in to keep your music and playlists together.</Label></View>
+        <View style={{ alignItems: "center", paddingVertical: 24, gap: 20 }}>
+          <BrandMark size={64} />
+          <Label i18n type="display" style={{ textAlign: "center" }}>
+            Welcome to Musify
+          </Label>
+          <Label i18n color="text-muted" style={{ textAlign: "center" }}>
+            Sign in to keep your music and playlists together.
+          </Label>
+        </View>
         <View style={ui.wrap}>
           {(["login", "register", "recover"] as const).map((x) => (
             <Chip
@@ -64,6 +72,7 @@ export function Auth() {
         </View>
         {mode === "register" ? (
           <Input
+            i18n
             label="Your name"
             value={name}
             onChangeText={setName}
@@ -71,6 +80,7 @@ export function Auth() {
           />
         ) : null}
         <Input
+          i18n
           label="Email"
           value={email}
           onChangeText={setEmail}
@@ -80,6 +90,7 @@ export function Auth() {
         />
         {mode !== "recover" ? (
           <Input
+            i18n
             label="Password"
             value={password}
             onChangeText={setPassword}
@@ -95,6 +106,7 @@ export function Auth() {
           </Label>
         ) : null}
         <Button
+          i18n
           title={
             mode === "login"
               ? "Sign in"
@@ -107,6 +119,7 @@ export function Auth() {
         />
         {m.snapshot?.demoEnabled !== false ? (
           <Button
+            i18n
             title="Explore demo"
             variant="secondary"
             busy={m.pending}
@@ -132,8 +145,9 @@ export function Recovery({
       <View style={ui.form}>
         {tokenHash ? (
           <>
-            <Label>Continue with this one-time email link.</Label>
+            <Label i18n>Continue with this one-time email link.</Label>
             <Button
+              i18n
               title="Verify email link"
               busy={m.pending}
               onPress={() =>
@@ -157,6 +171,7 @@ export function Recovery({
         ) : (
           <>
             <Input
+              i18n
               label="New password"
               value={password}
               onChangeText={setPassword}
@@ -165,6 +180,7 @@ export function Recovery({
               error={validation}
             />
             <Button
+              i18n
               title="Save new password"
               busy={m.pending}
               onPress={() => {
