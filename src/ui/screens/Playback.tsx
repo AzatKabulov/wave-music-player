@@ -1,5 +1,7 @@
+import type { CellRendererProps } from "@react-native/virtualized-lists";
+import { queueDropTarget } from "../../data/queueDropTarget";
 import { useLocale } from "../../i18n/LocaleProvider";
-import { randomUUID } from "expo-crypto";
+import { randomUUID } from "../../data/uuid";
 import {
   ArrowDown,
   ArrowUp,
@@ -8,8 +10,15 @@ import {
   Plus,
   Trash2,
 } from "lucide-react-native";
-import { useState } from "react";
-import { FlatList, StyleSheet, View, Platform } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Platform,
+  useWindowDimensions,
+  type LayoutChangeEvent,
+} from "react-native";
 import { GestureDetector, usePanGesture } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -20,7 +29,7 @@ import { scheduleOnRN } from "react-native-worklets";
 import { useMusic } from "../../data/MusicProvider";
 import type { Playlist, QueueEntry } from "../../data/types";
 import { Artwork } from "../../design/Artwork";
-import { Touch } from "../../design/Motion";
+import { Touch, useMotion } from "../../design/Motion";
 import {
   Button,
   IconButton,
@@ -32,8 +41,27 @@ import { theme as t } from "../../design/theme";
 import { Shell, back, go, ui } from "../Shell";
 import { Sheet } from "../sheets/Sheet";
 
-function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
+type QueueListItem = { entry: QueueEntry; index: number; heading?: string };
+
+function QueueRow({
+  entry,
+  index,
+  onRemove,
+  onDrop,
+  onMeasure,
+}: {
+  entry: QueueEntry;
+  index: number;
+  onRemove: (entry: QueueEntry, index: number) => void;
+  onDrop: (id: string, translationY: number) => void;
+  onMeasure: (
+    id: string,
+    layout: LayoutChangeEvent["nativeEvent"]["layout"],
+  ) => void;
+}) {
   const { tx } = useLocale();
+  const { reduced } = useMotion();
+  const narrow = useWindowDimensions().width < 600;
   const m = useMusic();
   const track = m.snapshot!.catalog.tracks.find((t) => t.id === entry.trackId);
   const y = useSharedValue(0);
@@ -48,18 +76,20 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
       y.value = event.translationY;
     },
     onDeactivate: (event) => {
-      if (!event.canceled)
-        scheduleOnRN(move, Math.round(event.translationY / 76));
-      y.value = withSpring(0, { damping: 26, stiffness: 280 });
+      if (!event.canceled) scheduleOnRN(onDrop, entry.id, event.translationY);
+      y.value = reduced ? 0 : withSpring(0, { damping: 26, stiffness: 280 });
     },
   });
   const drag = useAnimatedStyle(() => ({
-    transform: [{ translateY: y.value }],
+    transform: [{ translateY: reduced ? 0 : y.value }],
     zIndex: y.value === 0 ? 0 : 10,
   }));
   if (!track) return null;
   return (
-    <Animated.View style={[s.queueRow, drag]}>
+    <Animated.View
+      onLayout={(event) => onMeasure(entry.id, event.nativeEvent.layout)}
+      style={[s.queueRow, drag]}
+    >
       <Touch
         accessibilityRole="button"
         accessibilityLabel={tx("Play queue entry {index}: {title} {subtitle}", {
@@ -78,7 +108,7 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
         <Artwork uri={track.artworkUrl} palette={track.palette} size={48} />
         <View style={ui.grow}>
           <Label
-            numberOfLines={1}
+            numberOfLines={2}
             color={m.activeEntry?.id === entry.id ? "accent" : "text"}
           >
             {track.title}{" "}
@@ -94,16 +124,18 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
       </Touch>
       <IconButton
         icon={Trash2}
-        label={`Remove queue entry ${index + 1}`}
+        label={tx("Remove queue entry {index}", { index: index + 1 })}
         disabled={entry.id === m.activeEntry?.id || m.pending}
-        onPress={() => void m.removeQueue(entry.id)}
+        onPress={() => onRemove(entry, index)}
       />
       <GestureDetector gesture={pan}>
         <Animated.View
           accessible={Platform.OS !== "web"}
           accessibilityRole={Platform.OS === "web" ? undefined : "adjustable"}
           accessibilityLabel={
-            Platform.OS === "web" ? undefined : `Reorder ${track.title}`
+            Platform.OS === "web"
+              ? undefined
+              : tx("Reorder {title}", { title: track.title })
           }
           accessibilityValue={{
             min: 1,
@@ -111,8 +143,8 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
             now: index + 1,
           }}
           accessibilityActions={[
-            { name: "increment", label: "Move down" },
-            { name: "decrement", label: "Move up" },
+            { name: "increment", label: tx("Move down") },
+            { name: "decrement", label: tx("Move up") },
           ]}
           onAccessibilityAction={(event) =>
             move(event.nativeEvent.actionName === "increment" ? 1 : -1)
@@ -123,17 +155,21 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
         </Animated.View>
       </GestureDetector>
       <View
-        style={[s.moveFallback, Platform.OS !== "web" && { display: "none" }]}
+        style={[
+          s.moveFallback,
+          narrow && { flexBasis: "100%", justifyContent: "flex-end" },
+          Platform.OS !== "web" && { display: "none" },
+        ]}
       >
         <IconButton
           icon={ArrowUp}
-          label={`Move ${track.title} up`}
+          label={tx("Move {title} up", { title: track.title })}
           disabled={index === 0 || m.pending}
           onPress={() => void m.moveQueue(entry.id, -1)}
         />
         <IconButton
           icon={ArrowDown}
-          label={`Move ${track.title} down`}
+          label={tx("Move {title} down", { title: track.title })}
           disabled={index === m.queue.entries.length - 1 || m.pending}
           onPress={() => void m.moveQueue(entry.id, 1)}
         />
@@ -143,20 +179,176 @@ function QueueRow({ entry, index }: { entry: QueueEntry; index: number }) {
 }
 export function QueueScreen() {
   const m = useMusic();
+  const frames = useRef(
+    new Map<
+      string,
+      { top: number; height: number; rowTop?: number; rowHeight?: number }
+    >(),
+  );
+  const Cell = useCallback(
+    ({
+      children,
+      style,
+      onLayout,
+      onFocusCapture,
+      item,
+    }: CellRendererProps<QueueListItem>) => (
+      <View
+        style={style}
+        onFocusCapture={onFocusCapture}
+        onLayout={(event) => {
+          const previous = frames.current.get(item.entry.id);
+          frames.current.set(item.entry.id, {
+            ...previous,
+            top: event.nativeEvent.layout.y,
+            height: event.nativeEvent.layout.height,
+          });
+          onLayout?.(event);
+        }}
+      >
+        {children}
+      </View>
+    ),
+    [],
+  );
+  const measureRow = (
+    id: string,
+    layout: LayoutChangeEvent["nativeEvent"]["layout"],
+  ) => {
+    const previous = frames.current.get(id) || {
+      top: 0,
+      height: layout.height,
+    };
+    frames.current.set(id, {
+      ...previous,
+      rowTop: layout.y,
+      rowHeight: layout.height,
+    });
+  };
+  const currentIndex = m.queue.entries.findIndex(
+    (entry) => entry.id === (m.activeEntry?.id || m.queue.currentId),
+  );
+  const group = (entries: QueueEntry[], start: number, heading: string) =>
+    entries.map((entry, offset) => ({
+      entry,
+      index: start + offset,
+      heading: offset === 0 ? heading : undefined,
+    }));
+  const ordered =
+    currentIndex < 0
+      ? group(m.queue.entries, 0, "Up next")
+      : [
+          ...group(
+            m.queue.entries.slice(currentIndex, currentIndex + 1),
+            currentIndex,
+            "Playing now",
+          ),
+          ...group(
+            m.queue.entries.slice(currentIndex + 1),
+            currentIndex + 1,
+            "Up next",
+          ),
+          ...group(
+            m.queue.entries.slice(0, currentIndex),
+            0,
+            "Earlier in queue",
+          ),
+        ];
+  const drop = (id: string, translationY: number) => {
+    const measured = ordered.flatMap((item) => {
+      const frame = frames.current.get(item.entry.id);
+      return frame
+        ? [
+            {
+              id: item.entry.id,
+              top: frame.top + (frame.rowTop || 0),
+              height: frame.rowHeight || frame.height,
+            },
+          ]
+        : [];
+    });
+    const target = queueDropTarget(id, translationY, measured);
+    if (target && target !== id) void m.moveQueueTo(id, target);
+  };
+  const [removed, setRemoved] = useState<{
+    entry: QueueEntry;
+    beforeId?: string;
+    afterId?: string;
+  } | null>(null);
+  useEffect(() => {
+    if (!removed) return;
+    const timer = setTimeout(() => setRemoved(null), 6500);
+    return () => clearTimeout(timer);
+  }, [removed]);
+  const remove = async (entry: QueueEntry, index: number) => {
+    const undo = {
+      entry,
+      beforeId: m.queue.entries[index - 1]?.id,
+      afterId: m.queue.entries[index + 1]?.id,
+    };
+    if (await m.removeQueue(entry.id)) setRemoved(undo);
+  };
   return (
     <Shell title="Your queue" back scroll={false}>
+      {removed ? (
+        <View
+          style={[
+            ui.h,
+            {
+              backgroundColor: t.color["surface-raised"],
+              borderRadius: 12,
+              paddingLeft: 16,
+              marginBottom: 12,
+            },
+          ]}
+        >
+          <Label i18n accessibilityLiveRegion="polite" style={ui.grow}>
+            Removed from queue
+          </Label>
+          <Button
+            i18n
+            title="Undo"
+            variant="quiet"
+            busy={m.pending}
+            onPress={() => {
+              const value = removed;
+              void m
+                .restoreQueueEntry(value.entry, value.beforeId, value.afterId)
+                .then((ok) => {
+                  if (ok) setRemoved(null);
+                });
+            }}
+          />
+        </View>
+      ) : null}
       <FlatList
-        data={m.queue.entries}
-        keyExtractor={(entry) => entry.id}
-        renderItem={({ item, index }) => (
-          <QueueRow entry={item} index={index} />
+        CellRendererComponent={Cell}
+        data={ordered}
+        keyExtractor={(item) => item.entry.id}
+        renderItem={({ item }) => (
+          <View>
+            {item.heading ? (
+              <Label
+                i18n
+                type="lg"
+                accessibilityRole="header"
+                style={{ paddingTop: 20, paddingBottom: 8 }}
+              >
+                {item.heading}
+              </Label>
+            ) : null}
+            <QueueRow
+              entry={item.entry}
+              index={item.index}
+              onDrop={drop}
+              onMeasure={measureRow}
+              onRemove={(entry, index) => void remove(entry, index)}
+            />
+          </View>
         )}
         ListHeaderComponent={
           <View style={ui.section}>
             <View style={ui.h}>
-              <Label i18n type="xl">
-                Up next
-              </Label>
               <Button
                 i18n
                 title="Clear requests"
@@ -339,7 +531,7 @@ const s = StyleSheet.create({
     gap: 12,
   },
   handle: {
-    width: 40,
+    width: 48,
     height: 48,
     alignItems: "center",
     justifyContent: "center",

@@ -193,7 +193,7 @@ export function Shell({
         ) : null}
         {m.error ? (
           <View style={s.alert} accessibilityRole="alert">
-            <Label color="danger" style={ui.grow}>
+            <Label i18n color="danger" style={ui.grow}>
               {m.error}
             </Label>
             <IconButton
@@ -219,7 +219,7 @@ export function Shell({
         )}
         {m.notice ? (
           <View style={s.notice} accessibilityRole="alert">
-            <Label type="sm" style={ui.grow}>
+            <Label i18n type="sm" style={ui.grow}>
               {m.notice}
             </Label>
             <IconButton
@@ -280,9 +280,9 @@ const s = StyleSheet.create({
     paddingVertical: 8,
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: t.color.accent,
     alignItems: "center",
     justifyContent: "center",

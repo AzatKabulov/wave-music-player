@@ -1,2 +1,4 @@
 import Screens from "../ui/Screens";
-export default function Route() { return <Screens screen="settings"/>; }
+export default function Route() {
+  return <Screens screen="settings" />;
+}

@@ -1,6 +1,12 @@
-import { randomUUID } from "expo-crypto";
+import { randomUUID } from "./uuid";
 import catalog from "./catalog.json";
-import type { MusicData, Playlist, QueueState, Snapshot } from "./types";
+import type {
+  MusicData,
+  Playlist,
+  QueueState,
+  Snapshot,
+  SearchResult,
+} from "./types";
 let snapshot: Snapshot = {
   profile: { id: "mock", displayName: "Listener" },
   catalog,
@@ -11,6 +17,45 @@ let snapshot: Snapshot = {
 };
 const queues = new Map<string, QueueState>();
 export const mock: MusicData = {
+  async search(query, kind, signal, cursor) {
+    if (signal?.aborted) throw signal.reason;
+    const needle = query.normalize("NFKC").toLocaleLowerCase();
+    const results: SearchResult[] = [
+      ...snapshot.catalog.tracks.map((item) => ({
+        kind: "track" as const,
+        item,
+      })),
+      ...snapshot.catalog.albums.map((item) => ({
+        kind: "album" as const,
+        item,
+      })),
+      ...snapshot.catalog.artists.map((item) => ({
+        kind: "artist" as const,
+        item,
+      })),
+      ...snapshot.catalog.playlists.map((item) => ({
+        kind: "playlist" as const,
+        item,
+      })),
+    ].filter(
+      (result) =>
+        (kind === "all" || result.kind === kind) &&
+        ("title" in result.item ? result.item.title : result.item.name)
+          .normalize("NFKC")
+          .toLocaleLowerCase()
+          .includes(needle),
+    );
+    const offset = Number(cursor || 0);
+    return {
+      data: results.slice(offset, offset + 30),
+      catalog: snapshot.catalog,
+      nextCursor: results.length > offset + 30 ? String(offset + 30) : null,
+      truncated: results.length > offset + 30,
+    };
+  },
+  async resolve() {
+    return structuredClone(snapshot.catalog);
+  },
   async verify() {
     throw Error("Configure the account provider to verify email links.");
   },

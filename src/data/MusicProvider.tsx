@@ -3,7 +3,7 @@ import {
   useAudioPlaylist,
   useAudioPlaylistStatus,
 } from "expo-audio";
-import { randomUUID } from "expo-crypto";
+import { randomUUID } from "./uuid";
 import Constants from "expo-constants";
 import React, {
   createContext,
@@ -21,10 +21,13 @@ import { mock } from "./mock";
 import { insertExplicit, moveEntry, shuffleEntries } from "./queue";
 import { deviceStorage } from "./storage";
 import { sourceUpdate } from "./sourceUpdate";
+import { sourcePatch } from "./sourcePatch";
 import { savedIds } from "./libraryState";
+import { mergeCatalog, refreshCatalog } from "./catalogCache";
 import type {
   MusicData,
   Library,
+  SearchKind,
   QueueEntry,
   QueueState,
   Snapshot,
@@ -68,6 +71,74 @@ function useMusicController() {
   useEffect(() => {
     snapshotRef.current = snapshot;
   }, [snapshot]);
+  const resolved = useRef(
+    new Map<string, { at: number; request: Promise<void> }>(),
+  );
+  const resolve = useCallback(
+    (kind: "album" | "artist" | "playlist", id: string) => {
+      const owner = snapshotRef.current?.profile?.id;
+      if (!owner) return Promise.resolve();
+      const key = `${owner}:${kind}:${id}`;
+      const cached = resolved.current.get(key);
+      const state = snapshotRef.current;
+      const present =
+        kind === "playlist"
+          ? [
+              ...(state?.playlists || []),
+              ...(state?.catalog.playlists || []),
+            ].some((item) => item.id === id)
+          : state?.catalog[kind === "album" ? "albums" : "artists"].some(
+              (item) => item.id === id,
+            );
+      if (cached && present && Date.now() - cached.at < 60000)
+        return cached.request;
+      const request = data
+        .resolve(kind, id)
+        .then((graph) => {
+          setSnapshot((previous) =>
+            previous && previous.profile?.id === owner
+              ? mergeCatalog(
+                  previous,
+                  graph,
+                  true,
+                  queueRef.current.entries.map((entry) => entry.trackId),
+                )
+              : previous,
+          );
+        })
+        .catch((error) => {
+          resolved.current.delete(key);
+          throw error;
+        });
+      resolved.current.set(key, { at: Date.now(), request });
+      return request;
+    },
+    [],
+  );
+  const search = useCallback(
+    async (
+      query: string,
+      kind: SearchKind,
+      signal?: AbortSignal,
+      cursor?: string,
+    ) => {
+      const owner = snapshotRef.current?.profile?.id;
+      const result = await data.search(query, kind, signal, cursor);
+      if (!signal?.aborted)
+        setSnapshot((previous) =>
+          previous && previous.profile?.id === owner
+            ? mergeCatalog(
+                previous,
+                result.catalog,
+                false,
+                queueRef.current.entries.map((entry) => entry.trackId),
+              )
+            : previous,
+        );
+      return result;
+    },
+    [],
+  );
   const saves = useRef(
     new Map<
       string,
@@ -111,7 +182,14 @@ function useMusicController() {
           },
         };
     }
-    if (mounted.current && n === generation.current) setSnapshot(value);
+    if (mounted.current && n === generation.current)
+      setSnapshot((previous) =>
+        refreshCatalog(
+          previous,
+          value,
+          queueRef.current.entries.map((entry) => entry.trackId),
+        ),
+      );
     return value;
   }, []);
   const save = useCallback(
@@ -225,12 +303,19 @@ function useMusicController() {
         state.entries,
         loadedLease.current === token,
       );
-      if (update === "replace") {
+      const patch =
+        update === "replace" &&
+        Platform.OS === "android" &&
+        loadedLease.current === token &&
+        previous.currentId === state.currentId
+          ? sourcePatch(previous.entries, state.entries, state.currentId)
+          : null;
+      if (update === "replace" && !patch) {
         engine.pause();
         engine.clear();
       }
       const additions =
-        update === "reuse"
+        update === "reuse" || patch
           ? []
           : update === "append"
             ? state.entries.slice(previous.entries.length)
@@ -238,21 +323,31 @@ function useMusicController() {
       additions.forEach((entry) =>
         engine.add({ uri: data.media(token, entry) }),
       );
+      if (patch) {
+        patch.remove.forEach((index) => engine.remove(index));
+        patch.insert.forEach(({ entry, index }) =>
+          engine.insert({ uri: data.media(token, entry) }, index),
+        );
+      }
       loadedLease.current = token;
       const index = state.entries.findIndex((e) => e.id === state.currentId);
-      if (index >= 0 && (update === "replace" || index !== engine.currentIndex))
+      if (
+        !patch &&
+        index >= 0 &&
+        (update === "replace" || index !== engine.currentIndex)
+      )
         engine.skipTo(index);
       setRepeat(engine, state.repeat);
       queueRef.current = state;
       setQueue(state);
-      if (update === "replace" && state.positionMs > 0)
+      if (update === "replace" && !patch && state.positionMs > 0)
         void engine
           .seekTo(state.positionMs / 1000)
           .catch(() => setError("Could not restore this position."));
       if (
         play &&
         state.entries.length &&
-        (update === "replace" || !statusRef.current.playing)
+        ((update === "replace" && !patch) || !statusRef.current.playing)
       )
         engine.play();
     },
@@ -364,13 +459,14 @@ function useMusicController() {
     }
   }, [track, engine]);
   const trackId = track?.id;
+  const ownerId = snapshot?.profile?.id;
   useEffect(() => {
     if (trackId && status.playing)
       void data
         .recent(trackId)
         .then(() =>
           setSnapshot((previous) =>
-            previous
+            previous && previous.profile?.id === ownerId
               ? {
                   ...previous,
                   recents: [
@@ -382,7 +478,7 @@ function useMusicController() {
           ),
         )
         .catch(() => {});
-  }, [trackId, status.playing]);
+  }, [trackId, status.playing, ownerId]);
   useEffect(() => {
     if (notice) {
       const timer = setTimeout(() => setNotice(""), 4500);
@@ -499,6 +595,8 @@ function useMusicController() {
   const music = useMemo(
     () => ({
       data,
+      resolve,
+      search,
       snapshot,
       loading,
       error,
@@ -512,6 +610,10 @@ function useMusicController() {
       run,
       refresh,
       save,
+      retryPlayback: () => {
+        lease.current = "";
+        return command((q) => q, true);
+      },
       playTracks,
       toggle: () => {
         try {
@@ -540,11 +642,42 @@ function useMusicController() {
         }),
       moveQueue: (id: string, delta: number) =>
         command((q) => ({ ...q, entries: moveEntry(q.entries, id, delta) })),
+      moveQueueTo: (id: string, targetId: string) =>
+        command((q) => {
+          const from = q.entries.findIndex((entry) => entry.id === id);
+          const target = q.entries.findIndex((entry) => entry.id === targetId);
+          return from < 0 || target < 0
+            ? q
+            : { ...q, entries: moveEntry(q.entries, id, target - from) };
+        }),
       removeQueue: (id: string) =>
         command((q) => {
           if (id === q.currentId)
             throw Error("Skip the current track before removing it.");
           return { ...q, entries: q.entries.filter((e) => e.id !== id) };
+        }),
+      restoreQueueEntry: (
+        entry: QueueEntry,
+        beforeId?: string,
+        afterId?: string,
+      ) =>
+        command((q) => {
+          if (q.entries.some((item) => item.id === entry.id)) return q;
+          const nextIndex = q.entries.findIndex((item) => item.id === afterId);
+          const previousIndex = q.entries.findIndex(
+            (item) => item.id === beforeId,
+          );
+          const entries = [...q.entries];
+          entries.splice(
+            nextIndex >= 0
+              ? nextIndex
+              : previousIndex >= 0
+                ? previousIndex + 1
+                : entries.length,
+            0,
+            entry,
+          );
+          return { ...q, entries };
         }),
       clearExplicit: () =>
         command((q) => ({
@@ -621,6 +754,8 @@ function useMusicController() {
       engine,
       command,
       stop,
+      resolve,
+      search,
     ],
   );
   return { music, status };

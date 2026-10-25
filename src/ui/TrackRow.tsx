@@ -30,7 +30,7 @@ export function TrackRow({
     <View style={[s.row, blocked && { opacity: t.opacity.disabled }]}>
       <Touch
         accessibilityRole="button"
-        accessibilityLabel={`${tx("Play")} ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? "Unavailable for playback" : track.artist) : ""}`}
+        accessibilityLabel={`${tx("Play")} ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? tx("Unavailable for playback") : track.artist) : ""}`}
         accessibilityState={{ disabled: blocked }}
         disabled={blocked}
         onPress={() => void m.playTracks(context || [track], index)}
@@ -48,7 +48,7 @@ export function TrackRow({
           </Label>
           {subtitle ? (
             <Label type="sm" color="text-muted" numberOfLines={1}>
-              {blocked ? "Unavailable for playback" : track.artist}
+              {blocked ? tx("Unavailable for playback") : track.artist}
             </Label>
           ) : null}
         </View>
@@ -56,13 +56,15 @@ export function TrackRow({
       </Touch>
       <IconButton
         icon={Heart}
-        label={`${saved ? "Unsave" : "Save"} ${track.title}`}
+        label={tx(saved ? "Unsave {title}" : "Save {title}", {
+          title: track.title,
+        })}
         selected={saved}
         onPress={() => void m.save("tracks", track.id, !saved)}
       />
       <IconButton
         icon={MoreHorizontal}
-        label={`Actions for ${track.title}`}
+        label={tx("Actions for {title}", { title: track.title })}
         onPress={() => go(`/actions/${track.id}`)}
       />
     </View>

@@ -122,7 +122,12 @@ export function Home() {
             <Cards items={c.playlists} type="playlist" />
           </Section>
           <Section title="Albums to explore" action={() => go("/search")}>
-            <Cards items={c.albums} type="album" />
+            <Cards
+              items={[...c.albums].sort(
+                (a, b) => Number(!!b.artworkUrl) - Number(!!a.artworkUrl),
+              )}
+              type="album"
+            />
           </Section>
           <Section title="Discover artists">
             <ScrollView

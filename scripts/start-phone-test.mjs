@@ -41,7 +41,7 @@ const env = {
   EXPO_PUBLIC_API_URL: config.baseUrl,
   EXPO_PUBLIC_PERSONAL_TEST: "1",
   EXPO_NO_TELEMETRY: "1",
-  CI: "1",
+  CI: "false",
   NODE_OPTIONS: `${process.env.NODE_OPTIONS || ""} --dns-result-order=ipv4first`,
 };
 console.log(

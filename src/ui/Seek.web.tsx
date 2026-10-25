@@ -1,3 +1,4 @@
+import { useLocale } from "../i18n/LocaleProvider";
 import { theme as t } from "../design/theme";
 import { useEffect, useState } from "react";
 export function Seek({
@@ -9,6 +10,7 @@ export function Seek({
   max: number;
   onChange: (value: number) => void;
 }) {
+  const { tx } = useLocale();
   // Keep rapid keyboard/pointer changes responsive between engine status ticks.
   const [draft, setDraft] = useState<number | null>(null);
   useEffect(() => {
@@ -18,7 +20,7 @@ export function Seek({
   }, [draft]);
   return (
     <input
-      aria-label="Playback position"
+      aria-label={tx("Playback position")}
       type="range"
       min={0}
       max={Math.max(1, max)}

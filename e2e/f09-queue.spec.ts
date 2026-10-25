@@ -29,7 +29,7 @@ test("F09-E1 selecting a duplicate starts that occurrence", async ({
   await page.getByRole("button", { name: "Queue", exact: true }).click();
   await a11y(page);
   await expect(
-    page.getByText("Playing now", { exact: true }).filter({ visible: true }),
+    page.getByRole("heading", { name: "Playing now", exact: true }),
   ).toBeVisible();
 });
 test("F09-H1 explicit requests can move and clear without deleting context", async ({

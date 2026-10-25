@@ -8,7 +8,7 @@ test("F13 language overrides persist and preserve listener content", async ({
   await expect(
     page.getByRole("heading", { name: "Настройки", exact: true }),
   ).toBeVisible();
-  await expect(page.getByTestId("profile-name")).toBeVisible();
+  await expect(page.getByTestId("profile-name")).toHaveText("Demo listener");
   await a11y(page);
   await page.reload();
   await expect(

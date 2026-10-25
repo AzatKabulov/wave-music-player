@@ -9,10 +9,19 @@ import {
   View,
 } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
+import { useCatalogSearch } from "../../data/useCatalogSearch";
+import type { SearchKind } from "../../data/types";
 import { deviceStorage } from "../../data/storage";
 import { Artwork } from "../../design/Artwork";
 import { Touch } from "../../design/Motion";
-import { Chip, IconButton, Label, StateView } from "../../design/Primitives";
+import {
+  Button,
+  Chip,
+  IconButton,
+  Label,
+  StateView,
+  Skeleton,
+} from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
 import { TrackRow } from "../TrackRow";
@@ -28,6 +37,16 @@ export function SearchScreen() {
   const [recent, setRecent] = useState<string[]>([]);
   const deferred = useDeferredValue(query);
   const q = deferred.trim().normalize("NFKC").toLocaleLowerCase();
+  const searchKind = (
+    {
+      All: "all",
+      Tracks: "track",
+      Albums: "album",
+      Artists: "artist",
+      Playlists: "playlist",
+    } as Record<string, SearchKind>
+  )[kind];
+  const remote = useCatalogSearch(q, searchKind);
   const historyKey = `musify.search.${m.snapshot!.profile!.id}`;
   useEffect(() => {
     let active = true;
@@ -57,18 +76,32 @@ export function SearchScreen() {
   };
   const matches = (value: string) =>
     value.normalize("NFKC").toLocaleLowerCase().includes(q);
-  const tracks = c.tracks.filter(
-    (track) =>
-      matches(`${track.title} ${track.artist} ${track.album}`) &&
-      (!category || track.genre === category),
-  );
-  const albums = c.albums.filter((album) =>
-    matches(`${album.title} ${album.artist}`),
-  );
-  const artists = c.artists.filter((artist) => matches(artist.name));
-  const playlists = [...c.playlists, ...m.snapshot!.playlists].filter(
-    (playlist) => matches(playlist.title),
-  );
+  const tracks = q
+    ? remote.page?.data.flatMap((result) =>
+        result.kind === "track" ? [result.item] : [],
+      ) || []
+    : c.tracks.filter(
+        (track) =>
+          matches(`${track.title} ${track.artist} ${track.album}`) &&
+          (!category || track.genre === category),
+      );
+  const albums = q
+    ? remote.page?.data.flatMap((result) =>
+        result.kind === "album" ? [result.item] : [],
+      ) || []
+    : c.albums.filter((album) => matches(`${album.title} ${album.artist}`));
+  const artists = q
+    ? remote.page?.data.flatMap((result) =>
+        result.kind === "artist" ? [result.item] : [],
+      ) || []
+    : c.artists.filter((artist) => matches(artist.name));
+  const playlists = q
+    ? remote.page?.data.flatMap((result) =>
+        result.kind === "playlist" ? [result.item] : [],
+      ) || []
+    : [...c.playlists, ...m.snapshot!.playlists].filter((playlist) =>
+        matches(playlist.title),
+      );
   const active = !!q || !!category;
   const shownTracks = kind === "All" || kind === "Tracks" ? tracks : [];
   const otherCount =
@@ -153,7 +186,13 @@ export function SearchScreen() {
               ) : undefined
             }
             ListEmptyComponent={
-              !shownTracks.length && !otherCount ? (
+              q && remote.busy && !remote.page ? (
+                <View style={{ gap: 12 }}>
+                  <Skeleton />
+                  <Skeleton />
+                  <Skeleton />
+                </View>
+              ) : !remote.error && !shownTracks.length && !otherCount ? (
                 <StateView
                   title="Nothing matched this time"
                   message={tx(
@@ -200,6 +239,25 @@ export function SearchScreen() {
                     <Cards items={playlists} type="playlist" />
                   </Section>
                 ) : null}
+                {remote.error && q ? (
+                  <StateView
+                    title="Search could not load"
+                    message={remote.error}
+                    action="Try again"
+                    onAction={
+                      remote.page ? () => void remote.loadMore() : remote.retry
+                    }
+                  />
+                ) : null}
+                {q && remote.page?.nextCursor && !remote.error ? (
+                  <Button
+                    i18n
+                    title="Load more"
+                    variant="secondary"
+                    busy={remote.busy}
+                    onPress={() => void remote.loadMore()}
+                  />
+                ) : null}
               </View>
             }
             keyboardShouldPersistTaps="handled"
@@ -220,7 +278,7 @@ export function SearchScreen() {
                 <View key={value} style={ui.row}>
                   <Touch
                     accessibilityRole="button"
-                    accessibilityLabel={`Search ${value}`}
+                    accessibilityLabel={tx("Search {query}", { query: value })}
                     onPress={() => setQuery(value)}
                     style={[s.recent, ui.grow]}
                   >
@@ -231,7 +289,7 @@ export function SearchScreen() {
                   </Touch>
                   <IconButton
                     icon={X}
-                    label={`Remove search ${value}`}
+                    label={tx("Remove search {query}", { query: value })}
                     onPress={() => {
                       const next = recent.filter((item) => item !== value);
                       setRecent(next);
@@ -251,7 +309,7 @@ export function SearchScreen() {
                 <Touch
                   key={genre}
                   accessibilityRole="button"
-                  accessibilityLabel={`Browse ${genre}`}
+                  accessibilityLabel={tx("Browse {genre}", { genre })}
                   onPress={() => {
                     setCategory(genre);
                     setKind("Tracks");

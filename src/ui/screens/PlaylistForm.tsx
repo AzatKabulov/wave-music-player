@@ -1,4 +1,5 @@
-import { randomUUID } from "expo-crypto";
+import { randomUUID } from "../../data/uuid";
+import { usePreventRemove } from "expo-router";
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react-native";
 import { useState } from "react";
 import { View } from "react-native";
@@ -14,6 +15,7 @@ import {
 } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
+import { ConfirmDialog } from "../Dialog";
 
 export function PlaylistForm({
   id,
@@ -30,6 +32,15 @@ export function PlaylistForm({
     [validation, setValidation] = useState(""),
     [confirm, setConfirm] = useState(false),
     [key] = useState(randomUUID);
+  const [leaving, setLeaving] = useState(false);
+  const [repeatRemoval, setRepeatRemoval] = useState<(() => void) | null>(null);
+  const dirty =
+    title !== (p?.title || "") ||
+    description !== (p?.description || "") ||
+    JSON.stringify(items) !== JSON.stringify(p?.items || []);
+  usePreventRemove(dirty && !leaving, ({ repeat }) =>
+    setRepeatRemoval(() => repeat),
+  );
   const save = async () => {
     if (!title.trim()) {
       setValidation("Start with a name for your playlist.");
@@ -59,7 +70,10 @@ export function PlaylistForm({
         );
       return created;
     }, "Playlist changes saved.");
-    if (value) go(`/playlist/${value.id}`);
+    if (value) {
+      setLeaving(true);
+      go(`/playlist/${value.id}`);
+    }
   };
   if (id && !p)
     return (
@@ -72,6 +86,19 @@ export function PlaylistForm({
     );
   return (
     <Shell title={p ? "Edit playlist" : "Create a playlist"} back>
+      <ConfirmDialog
+        visible={!!repeatRemoval}
+        title="Discard changes?"
+        message="Your playlist changes have not been saved."
+        action="Discard changes"
+        cancel="Keep editing"
+        onCancel={() => setRepeatRemoval(null)}
+        onConfirm={() => {
+          setLeaving(true);
+          repeatRemoval?.();
+          setRepeatRemoval(null);
+        }}
+      />
       <View style={ui.form}>
         <Artwork palette={p?.palette || "sea"} size={t.space[128]} />
         <Input
@@ -158,7 +185,10 @@ export function PlaylistForm({
                         return true;
                       })
                       .then((ok) => {
-                        if (ok) go("/library");
+                        if (ok) {
+                          setLeaving(true);
+                          go("/library");
+                        }
                       })
                   }
                 />

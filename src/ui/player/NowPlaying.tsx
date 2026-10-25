@@ -1,3 +1,5 @@
+import { useLocale } from "../../i18n/LocaleProvider";
+import { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   ChevronDown,
@@ -31,14 +33,54 @@ import { scheduleOnRN } from "react-native-worklets";
 import { useMusic, usePlaybackStatus } from "../../data/MusicProvider";
 import { Artwork } from "../../design/Artwork";
 import { Touch, useMotion } from "../../design/Motion";
-import { IconButton, Label, StateView } from "../../design/Primitives";
+import { Button, IconButton, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { back, go, ui } from "../Shell";
 import { Seek } from "../Seek";
 import { formatTime } from "../screens/common";
 
+function PlaybackRecovery() {
+  const m = useMusic();
+  const [stalled, setStalled] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    const timer = setTimeout(() => setStalled(true), 12000);
+    return () => clearTimeout(timer);
+  }, [attempt]);
+  if (!stalled) return null;
+  return (
+    <View style={s.error}>
+      <Label i18n type="lg">
+        Audio is taking longer
+      </Label>
+      <Label i18n color="text-muted">
+        Check the PC connection, then retry or choose another track.
+      </Label>
+      <View style={ui.wrap}>
+        <Button
+          i18n
+          title="Retry audio"
+          busy={m.pending}
+          onPress={() => {
+            setStalled(false);
+            setAttempt((value) => value + 1);
+            void m.retryPlayback();
+          }}
+        />
+        <Button
+          i18n
+          title="Find music"
+          variant="quiet"
+          onPress={() => go("/search")}
+        />
+      </View>
+    </View>
+  );
+}
+
 export function Player() {
   const m = useMusic();
+  const { tx } = useLocale();
   const status = usePlaybackStatus();
   const { width, height, fontScale } = useWindowDimensions();
   const { reduced } = useMotion();
@@ -104,12 +146,16 @@ export function Player() {
                     Now playing
                   </Label>
                   <Label type="xs" color="text-muted" numberOfLines={1}>
-                    {track?.album || "Your music"}
+                    {track?.album || tx("Your music")}
                   </Label>
                 </View>
                 <IconButton
                   icon={MoreHorizontal}
-                  label={track ? `Actions for ${track.title}` : "Track options"}
+                  label={
+                    track
+                      ? tx("Actions for {title}", { title: track.title })
+                      : tx("Track options")
+                  }
                   disabled={!track}
                   onPress={() => track && go(`/actions/${track.id}`)}
                 />
@@ -137,7 +183,9 @@ export function Player() {
                   </Label>
                   <Touch
                     accessibilityRole="button"
-                    accessibilityLabel={`Visit ${track.artist}`}
+                    accessibilityLabel={tx("Visit {artist}", {
+                      artist: track.artist,
+                    })}
                     onPress={() => go(`/artist/${track.artistId}`)}
                     style={s.artist}
                   >
@@ -185,7 +233,7 @@ export function Player() {
                 <Touch
                   haptic
                   accessibilityRole="button"
-                  accessibilityLabel={status.playing ? "Pause" : "Play"}
+                  accessibilityLabel={tx(status.playing ? "Pause" : "Play")}
                   onPress={m.toggle}
                   style={s.play}
                 >
@@ -203,7 +251,7 @@ export function Player() {
                 />
                 <IconButton
                   icon={m.queue.repeat === "single" ? Repeat1 : Repeat}
-                  label={`Repeat: ${m.queue.repeat}`}
+                  label={tx("Repeat: {mode}", { mode: tx(m.queue.repeat) })}
                   selected={m.queue.repeat !== "none"}
                   onPress={() => void m.repeat()}
                 />
@@ -236,7 +284,9 @@ export function Player() {
               </View>
               {m.error ? (
                 <View accessibilityRole="alert" style={s.error}>
-                  <Label color="danger">{m.error}</Label>
+                  <Label i18n color="danger">
+                    {m.error}
+                  </Label>
                   <Touch
                     labelIsUI
                     accessibilityRole="button"
@@ -246,6 +296,9 @@ export function Player() {
                     <Label i18n>Dismiss</Label>
                   </Touch>
                 </View>
+              ) : null}
+              {status.isBuffering || !status.isLoaded ? (
+                <PlaybackRecovery key={m.activeEntry?.id} />
               ) : null}
             </ScrollView>
           ) : (

@@ -1,3 +1,4 @@
+import { useLocale } from "../i18n/LocaleProvider";
 import Slider from "@react-native-community/slider";
 import { useState } from "react";
 import { theme as t } from "../design/theme";
@@ -12,9 +13,10 @@ export function Seek({
 }) {
   const [dragging, setDragging] = useState(false);
   const [draft, setDraft] = useState(value);
+  const { tx } = useLocale();
   return (
     <Slider
-      accessibilityLabel="Playback position"
+      accessibilityLabel={tx("Playback position")}
       accessibilityRole="adjustable"
       accessibilityValue={{
         min: 0,

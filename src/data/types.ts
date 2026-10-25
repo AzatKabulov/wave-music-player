@@ -62,6 +62,18 @@ export type Catalog = {
   artists: Artist[];
   playlists: Playlist[];
 };
+export type SearchKind = "all" | "track" | "album" | "artist" | "playlist";
+export type SearchResult =
+  | { kind: "track"; item: Track }
+  | { kind: "album"; item: Album }
+  | { kind: "artist"; item: Artist }
+  | { kind: "playlist"; item: Playlist };
+export type SearchPage = {
+  data: SearchResult[];
+  catalog: Catalog;
+  nextCursor: string | null;
+  truncated: boolean;
+};
 export type Snapshot = {
   profile: Profile | null;
   catalog: Catalog;
@@ -73,6 +85,13 @@ export type Snapshot = {
   accountProvider?: "local" | "supabase";
 };
 export interface MusicData {
+  search(
+    query: string,
+    kind: SearchKind,
+    signal?: AbortSignal,
+    cursor?: string,
+  ): Promise<SearchPage>;
+  resolve(kind: "album" | "artist" | "playlist", id: string): Promise<Catalog>;
   snapshot(): Promise<Snapshot>;
   auth(
     kind: "login" | "register" | "recover",

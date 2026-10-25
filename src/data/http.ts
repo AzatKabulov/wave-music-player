@@ -1,12 +1,15 @@
-import { randomUUID } from "expo-crypto";
+import { randomUUID } from "./uuid";
 import { Platform } from "react-native";
 import { credentials } from "./credentials";
+import { fetchJson } from "./fetchJson";
 import type { MusicData, QueueState, Snapshot } from "./types";
 export const apiUrl = (
   process.env.EXPO_PUBLIC_API_URL || "http://localhost:4100"
 ).replace(/\/$/, "");
 let authPromise = credentials.read();
 const acknowledged = new Map<string, QueueState | null>();
+let tokenRefresh: Promise<void> | null = null;
+let authGeneration = 0;
 class RequestError extends Error {
   constructor(
     message: string,
@@ -21,11 +24,14 @@ async function request(
   body?: unknown,
   key?: string,
   retry = true,
+  signal?: AbortSignal,
 ): Promise<any> {
+  const generation = authGeneration;
   const auth = await authPromise;
-  const response = await fetch(`${apiUrl}${path}`, {
+  const result = await fetchJson(`${apiUrl}${path}`, {
     method,
     credentials: "include",
+    signal,
     headers: {
       "Content-Type": "application/json",
       "X-Saz-Platform": Platform.OS === "web" ? "web" : "native",
@@ -36,37 +42,58 @@ async function request(
     },
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
-  const json = response.status === 204 ? {} : await response.json();
+  const response = result.response;
+  const json = result.json as Record<string, any>;
   if (response.status === 401 && retry && !path.startsWith("/auth/")) {
     try {
-      const renewed = await request(
-        "/auth/refresh",
-        "POST",
-        auth?.refreshToken ? { refreshToken: auth.refreshToken } : {},
-        undefined,
-        false,
-      );
-      await saveAuth(renewed);
-      return request(path, method, body, key, false);
-    } catch {
-      await saveAuth(null);
+      if (generation !== authGeneration)
+        throw new RequestError("Your account changed. Try again.", 409);
+      const latest = await authPromise;
+      if (latest?.accessToken === auth?.accessToken) {
+        tokenRefresh ||= request(
+          "/auth/refresh",
+          "POST",
+          auth?.refreshToken ? { refreshToken: auth.refreshToken } : {},
+          undefined,
+          false,
+        )
+          .then((value) => {
+            if (generation === authGeneration) return saveAuth(value, true);
+          })
+          .finally(() => {
+            tokenRefresh = null;
+          });
+        await tokenRefresh;
+      }
+      if (generation !== authGeneration)
+        throw new RequestError("Your account changed. Try again.", 409);
+      return request(path, method, body, key, false, signal);
+    } catch (error) {
+      if (
+        error instanceof RequestError &&
+        (error.status === 401 || error.status === 403)
+      ) {
+        if (generation === authGeneration) await saveAuth(null);
+      } else throw error;
     }
   }
   if (!response.ok)
     throw new RequestError(
-      json.error?.message || "The service is unavailable. Try again.",
+      json?.error?.message || "The service is unavailable. Try again.",
       response.status,
     );
   return json;
 }
 async function saveAuth(
   value: { accessToken?: string; refreshToken?: string } | null,
+  renewal = false,
 ) {
+  if (!renewal) authGeneration++;
   const next = value?.accessToken
     ? { accessToken: value.accessToken, refreshToken: value.refreshToken }
     : null;
-  await credentials.write(next);
   authPromise = Promise.resolve(next);
+  await credentials.write(next);
 }
 const fromWire = (s: any): QueueState => ({
   revision: s.revision,
@@ -77,21 +104,40 @@ const fromWire = (s: any): QueueState => ({
   shuffle: s.shuffle,
 });
 export const http: MusicData = {
+  search(query, kind, signal, cursor) {
+    return request(
+      `/v1/search?q=${encodeURIComponent(query)}&type=${kind}&limit=30${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`,
+      "GET",
+      undefined,
+      undefined,
+      true,
+      signal,
+    );
+  },
+  resolve(kind, id) {
+    return request(`/v1/resolve/${kind}/${encodeURIComponent(id)}`);
+  },
   async snapshot() {
+    const generation = authGeneration;
     const value: Snapshot = await request("/v1/snapshot");
     if (!value.profile && value.accountProvider === "supabase") {
       try {
         const auth = await authPromise;
-        await saveAuth(
-          await request(
-            "/auth/refresh",
-            "POST",
-            auth?.refreshToken ? { refreshToken: auth.refreshToken } : {},
-          ),
+        const renewed = await request(
+          "/auth/refresh",
+          "POST",
+          auth?.refreshToken ? { refreshToken: auth.refreshToken } : {},
         );
+        if (generation !== authGeneration) return request("/v1/snapshot");
+        await saveAuth(renewed, true);
         return request("/v1/snapshot");
-      } catch {
-        await saveAuth(null);
+      } catch (error) {
+        if (
+          error instanceof RequestError &&
+          (error.status === 401 || error.status === 403)
+        ) {
+          if (generation === authGeneration) await saveAuth(null);
+        } else throw error;
       }
     }
     return value;

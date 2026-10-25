@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { StyleSheet, View, type ViewStyle } from "react-native";
+import {
+  StyleSheet,
+  View,
+  useWindowDimensions,
+  type ViewStyle,
+} from "react-native";
 import { Image } from "expo-image";
+import { ListMusic, Music2, UserRound } from "lucide-react-native";
+import { sizedArtwork } from "../data/artworkSource";
+import { useMotion } from "./Motion";
 import { theme as t } from "./theme";
-
 export const palettes = [
   "clay",
   "sea",
@@ -13,126 +20,70 @@ export const palettes = [
 ] as const;
 export type Palette = (typeof palettes)[number];
 export function Artwork({
-  palette = "clay",
   size = t.space[160],
   round,
   style,
   uri,
+  kind,
 }: {
   palette?: string;
   size?: number;
   round?: boolean;
   style?: ViewStyle;
   uri?: string;
+  kind?: "album" | "playlist" | "artist";
 }) {
+  const { reduced } = useMotion();
+  const { scale } = useWindowDimensions();
+  const source = sizedArtwork(uri, size, scale);
   const [failedUri, setFailedUri] = useState<string>();
-  if (uri && failedUri !== uri)
-    return (
-      <View
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
-        style={[
-          styles.frame,
-          {
-            width: size,
-            height: size,
-            borderRadius: round ? t.radius.pill : t.radius.sm,
-          },
-          style,
-        ]}
-      >
-        <Image
-          source={{ uri }}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-          recyclingKey={uri}
-          transition={120}
-          style={{ width: "100%", height: "100%" }}
-          onError={() => setFailedUri(uri)}
-          accessible={false}
-        />
-      </View>
-    );
-  const color =
-    t.color[
-      `art-${palettes.includes(palette as Palette) ? (palette as Palette) : "clay"}`
-    ];
+  const Glyph =
+    round || kind === "artist"
+      ? UserRound
+      : kind === "playlist"
+        ? ListMusic
+        : Music2;
   return (
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       style={[
-        styles.frame,
+        s.frame,
         {
           width: size,
           height: size,
-          backgroundColor: color,
           borderRadius: round ? t.radius.pill : t.radius.sm,
         },
         style,
       ]}
     >
-      <View
-        style={[
-          styles.band,
-          {
-            width: size * t.ratio.arch,
-            height: size,
-            transform: [{ rotate: "30deg" }],
-          },
-        ]}
-      />
-      <View
-        style={[
-          styles.disc,
-          { width: size * t.ratio.outerDisc, height: size * t.ratio.outerDisc },
-        ]}
-      >
-        <View
-          style={[
-            styles.inner,
-            {
-              width: size * t.ratio.innerDisc,
-              height: size * t.ratio.innerDisc,
-            },
-          ]}
-        >
-          <View
-            style={[
-              styles.dot,
-              { width: size * t.ratio.label, height: size * t.ratio.label },
-            ]}
-          />
-        </View>
-      </View>
+      {uri && failedUri !== uri ? (
+        <Image
+          source={{ uri: source }}
+          contentFit="cover"
+          cachePolicy="memory-disk"
+          recyclingKey={source}
+          transition={reduced ? 0 : 120}
+          style={{ width: "100%", height: "100%" }}
+          onError={() => setFailedUri(uri)}
+          accessible={false}
+        />
+      ) : (
+        <Glyph
+          size={Math.max(18, Math.min(64, size * 0.26))}
+          color={t.color["text-muted"]}
+          strokeWidth={1.3}
+        />
+      )}
     </View>
   );
 }
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   frame: {
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    backgroundColor: t.color["surface-raised"],
   },
-  band: {
-    position: "absolute",
-    backgroundColor: t.color["art-light"],
-    opacity: t.opacity.art,
-    left: t.space[0],
-  },
-  disc: {
-    borderRadius: t.radius.pill,
-    backgroundColor: t.color["art-ink"],
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inner: {
-    borderRadius: t.radius.pill,
-    borderWidth: t.layout.borderWidth,
-    borderColor: t.color["art-light"],
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dot: { borderRadius: t.radius.pill, backgroundColor: t.color["art-light"] },
 });

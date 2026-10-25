@@ -1,9 +1,17 @@
+import { useEffect, useState } from "react";
+import { useLocale } from "../../i18n/LocaleProvider";
 import { Check, MoreHorizontal, Play, Shuffle } from "lucide-react-native";
 import { View, StyleSheet } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
 import type { Album, Artist, Playlist, Track } from "../../data/types";
 import { Artwork } from "../../design/Artwork";
-import { Button, IconButton, Label, StateView } from "../../design/Primitives";
+import {
+  Button,
+  IconButton,
+  Label,
+  StateView,
+  Skeleton,
+} from "../../design/Primitives";
 import { Shell, go, ui } from "../Shell";
 import { MusicList } from "../MusicList";
 import { Cards, Section, formatTime } from "./common";
@@ -15,9 +23,36 @@ export function Collection({
   type: "album" | "playlist" | "artist";
   id: string;
 }) {
+  const { tx } = useLocale();
+  const [resource, setResource] = useState({ key: "", error: "" });
+  const [retry, setRetry] = useState(0);
   const m = useMusic(),
     sn = m.snapshot!,
     c = sn.catalog;
+  const resolve = m.resolve;
+  const resourceKey = `${type}:${id}:${retry}`;
+  const loading = resource.key !== resourceKey;
+  const error = loading ? "" : resource.error;
+  useEffect(() => {
+    let active = true;
+    void resolve(type, id)
+      .then(() => {
+        if (active) setResource({ key: resourceKey, error: "" });
+      })
+      .catch((error) => {
+        if (active)
+          setResource({
+            key: resourceKey,
+            error:
+              error instanceof Error
+                ? error.message
+                : "This collection could not load.",
+          });
+      });
+    return () => {
+      active = false;
+    };
+  }, [resolve, type, id, resourceKey]);
   const entity =
     type === "album"
       ? c.albums.find((x) => x.id === id)
@@ -27,12 +62,27 @@ export function Collection({
   if (!entity)
     return (
       <Shell title="Collection" back>
-        <StateView
-          title="This collection is unavailable"
-          message="It may have been removed or belong to another listener."
-          action="Return to library"
-          onAction={() => go("/library")}
-        />
+        {loading ? (
+          <View style={{ gap: 16 }}>
+            <Skeleton height={232} />
+            <Skeleton />
+            <Skeleton />
+          </View>
+        ) : error ? (
+          <StateView
+            title="This collection could not load"
+            message={error}
+            action="Try again"
+            onAction={() => setRetry((value) => value + 1)}
+          />
+        ) : (
+          <StateView
+            title="This collection is unavailable"
+            message="It may have been removed or belong to another listener."
+            action="Return to library"
+            onAction={() => go("/library")}
+          />
+        )}
       </Shell>
     );
   const title = "name" in entity ? entity.name : entity.title;
@@ -57,6 +107,7 @@ export function Collection({
     <View style={s.header}>
       <View style={s.cover}>
         <Artwork
+          kind={type}
           palette={entity.palette}
           uri={album?.artworkUrl || playlist?.artworkUrl}
           size={232}
@@ -71,11 +122,11 @@ export function Collection({
           ? artist.bio
           : album
             ? `${album.artist} · ${album.year}`
-            : playlist?.description || "Your collection, your way."}
+            : playlist?.description || tx("Your collection, your way.")}
       </Label>
       <Label type="sm" color="text-muted">
-        {playlist?.owner ? "Your playlist · " : ""}
-        {tracks.length} tracks ·{" "}
+        {playlist?.owner ? `${tx("Your playlist")} · ` : ""}
+        {tx("Tracks: {count}", { count: tracks.length })} ·{" "}
         {formatTime(
           tracks.reduce((sum, track) => sum + track.durationMs, 0) / 1000,
         )}
@@ -134,7 +185,17 @@ export function Collection({
           />
         </View>
       </View>
-      <Label type="lg">{artist ? "Popular tracks" : "Tracks"}</Label>
+      {error ? (
+        <StateView
+          title="This collection could not load"
+          message={error}
+          action="Try again"
+          onAction={() => setRetry((value) => value + 1)}
+        />
+      ) : null}
+      <Label i18n type="lg">
+        {artist ? "Popular tracks" : "Tracks"}
+      </Label>
     </View>
   );
   const footer = artist ? (

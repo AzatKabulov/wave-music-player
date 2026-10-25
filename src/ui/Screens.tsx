@@ -1,4 +1,10 @@
-import { useLocalSearchParams, usePathname, useIsFocused } from "expo-router";
+import {
+  useLocalSearchParams,
+  usePathname,
+  useIsFocused,
+  useRoute,
+  useRootNavigationState,
+} from "expo-router";
 import { View, Platform } from "react-native";
 import { useMusic } from "../data/MusicProvider";
 import type { Track } from "../data/types";
@@ -107,11 +113,38 @@ function Screens({ screen }: { screen?: string } = {}) {
 
 export default function RouteScreen(props: { screen?: string }) {
   const focused = useIsFocused();
+  const path = usePathname();
+  const route = useRoute();
+  const root = useRootNavigationState();
+  const state =
+    root?.routes.find((item) => item.name === "__root")?.state || root;
+  const modal = path.startsWith("/actions/") || path.startsWith("/add/");
+  const background = modal
+    ? state?.routes
+        .slice(0, state.index)
+        .slice()
+        .reverse()
+        .find(
+          (item) => item.name !== "actions/[id]" && item.name !== "add/[id]",
+        )
+    : undefined;
+  const tabState = background?.name === "(tabs)" ? background.state : undefined;
+  const backgroundTab = tabState?.routes[tabState.index || 0]?.name;
+  const behindSheet =
+    !!background &&
+    (route.key === background.key ||
+      (!!props.screen && props.screen === backgroundTab));
+  const show = focused || behindSheet;
   return (
     <View
+      testID={`screen-${props.screen || route.name}`}
+      {...(Platform.OS === "web"
+        ? { inert: !focused || undefined, "aria-hidden": !focused || undefined }
+        : {})}
+      pointerEvents={focused ? "auto" : "none"}
       style={{
         flex: 1,
-        display: Platform.OS === "web" && !focused ? "none" : "flex",
+        display: Platform.OS === "web" && !show ? "none" : "flex",
       }}
     >
       <Screens {...props} />
