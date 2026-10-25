@@ -23,16 +23,16 @@ Windows development PC; phones initially use the same Wi-Fi with the PC awake. i
 ## Capabilities and Constraints
 
 - Existing Expo 58 / React Native 0.88 client, Expo Router, expo-audio, Fastify API, local PostgreSQL-compatible persistence, and production adapter groundwork.
-- Current functionality includes catalog browsing, local snapshot search, playback, queue edits, library saves, playlist management, account flows, and basic preferences.
+- Current functionality includes catalog browsing, full-catalog paginated search, playback, queue edits, library saves, playlist management, account flows, and basic preferences.
 - First testing costs should stay on free/local infrastructure where practical. No Apple or Google developer membership has been arranged.
-- English is implemented. Turkmen, Russian, and English are required; initial language follows the phone with English fallback and a Settings override.
+- English, Turkmen and Russian interface dictionaries are implemented and need native-speaker/device acceptance; initial language follows the phone with English fallback and a Settings override.
 - Keep existing libraries, playlists, account data, queue semantics, and imported test media through the redesign.
 - Broad catalog sourcing is unresolved. Personal test media is not evidence of public distribution permission.
 - Public monetization remains undecided: compare subscriptions and advertising after personal testing.
 
 ## Brand Commitments
 
-Musify is the owner-selected working name. The old navy/amber design is explicitly unsatisfactory. On 2026-10-25 the owner selected close Spotify layout fidelity and fast, subtle everyday motion, with richer player and sheet transitions. Exact replacement colors remain proposed until visual review. Maintain Musify's own name and assets.
+Musify is the owner-selected working name. The old navy/amber design is explicitly unsatisfactory. On 2026-10-25 the owner selected close Spotify layout fidelity and fast, subtle everyday motion, with richer player and sheet transitions. The implemented near-black/mint direction is reviewable in the running candidate. Maintain Musify's own name and assets.
 
 ## Evidence on Hand
 
@@ -48,4 +48,4 @@ Source implementation; earlier browser screenshots in `replica/clone-screens`; A
 
 ## Current Work
 
-The owner requested a thorough improvement plan, not immediate implementation. `tasks/plan.md` and `tasks/todo.md` define the proposed redesign and engineering work. Earlier unfinished production work in `replica/tasks/todo.md` remains intact.
+The redesign is implemented as a personal-test candidate. `DESIGN.md` records the current source-backed visual system; `tasks/plan.md` and `tasks/todo.md` track the broader work. The six scored finish-review fixes are resolved in `tasks/finish-verdict.md`, scoped to the web/source candidate. The 16 current `.impeccable/review` frames are web layout captures, not native phone evidence; no approved bitmap comp exists and no detector ran for this native project. Native APK/emulator validation is being prepared; physical-device accessibility, gestures, audio continuity and release-device performance remain unmeasured. Earlier unfinished production work in `replica/tasks/todo.md` remains intact.

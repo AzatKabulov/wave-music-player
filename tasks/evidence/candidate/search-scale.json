@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-25T16:52:01.061Z",
+  "fixture": {
+    "addedPublishedTracks": 10000,
+    "playlistItems": 1000,
+    "initialSnapshotTracks": 100
+  },
+  "environment": {
+    "node": "v24.13.1",
+    "cpu": "AMD Ryzen 7 4800H with Radeon Graphics         ",
+    "ramGiB": 23,
+    "database": "PGlite in-memory, isolated fixture; app.inject, no LAN transfer"
+  },
+  "search": {
+    "samplesMs": [
+      169.60919999999987,
+      161.05469999999968,
+      155.67720000000008,
+      147.0043999999998,
+      134.77710000000025,
+      153.48289999999997,
+      132.73790000000008,
+      132.34860000000026,
+      161.8751000000002,
+      163.65030000000024,
+      128.20880000000034,
+      157.90080000000034,
+      145.83590000000004,
+      166.26249999999982,
+      167.2539999999999,
+      140.67119999999977,
+      150.64090000000033,
+      147.8804999999993,
+      145.66479999999865,
+      145.85460000000057,
+      162.59389999999985,
+      152.01360000000022,
+      153.27300000000105,
+      145.8184000000001,
+      153.187100000001,
+      153.39470000000074,
+      157.34779999999955,
+      162.11999999999898,
+      157.96260000000075,
+      173.01620000000003
+    ],
+    "medianMs": 153.27300000000105,
+    "p95Ms": 169.60919999999987,
+    "budgetMs": 200,
+    "pass": true,
+    "measures": "Server request processing only; excludes 220ms debounce, network and browser rendering"
+  },
+  "collection": {
+    "items": 1000,
+    "resolveMs": 479.58230000000003
+  },
+  "physicalPhoneFrameRate": "Not measured",
+  "baseline": "No matched pre-change timing; no before/after speed claim"
+}

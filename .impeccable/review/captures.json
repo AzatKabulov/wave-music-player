@@ -1,0 +1,146 @@
+[
+  {
+    "screen": "home",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/home-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "collection",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/collection-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "player",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/player-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "queue",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/queue-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "search",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/search-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "sheet",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/sheet-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "library",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/library-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "settings",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "path": ".impeccable/review/settings-phone-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "home",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/home-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "collection",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/collection-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "player",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/player-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "queue",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/queue-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "search",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/search-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "sheet",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/sheet-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "library",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/library-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  },
+  {
+    "screen": "settings",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "path": ".impeccable/review/settings-wide-web.png",
+    "surface": "React Native web preview; not native phone evidence"
+  }
+]

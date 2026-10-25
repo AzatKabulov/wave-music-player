@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-25T22:38:18.074Z",
+  "scope": "Existing personal artwork only; same source covers, HTTP response byte sizes, no startup/frame-rate inference",
+  "samples": [
+    {
+      "assetId": "8a33576f-515b-4abe-adae-cc5ede60fe93",
+      "originalBytes": 108737,
+      "variantBytes": {
+        "128": 3878,
+        "320": 16708,
+        "768": 48139
+      }
+    },
+    {
+      "assetId": "96fad84d-1d23-49e3-8a9b-f497d8585fd0",
+      "originalBytes": 106950,
+      "variantBytes": {
+        "128": 4664,
+        "320": 18814,
+        "768": 52326
+      }
+    },
+    {
+      "assetId": "baf90a49-5dae-401f-b560-46c1cf7c7274",
+      "originalBytes": 87969,
+      "variantBytes": {
+        "128": 3457,
+        "320": 11582,
+        "768": 33092
+      }
+    }
+  ],
+  "totals": {
+    "originalBytes": 303656,
+    "row128Bytes": 11999,
+    "shelf320Bytes": 47104,
+    "row128ReductionPercent": 96.04848907974814,
+    "shelf320ReductionPercent": 84.48770977685275
+  }
+}

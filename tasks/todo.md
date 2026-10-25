@@ -1,6 +1,6 @@
 # Musify improvement tasks
 
-Status: planned; implementation has not started. Read [plan.md](plan.md) for the screen, motion, performance and acceptance contracts. Estimates below describe scope, not elapsed-time promises. Paths are relative to the app repository. Preserve the separate unfinished production backlog in `replica/tasks/todo.md`.
+Status: implementation active since 2026-10-26. See [implementation-status.md](implementation-status.md) for delivered code and evidence. An unchecked task can have its software implemented while still awaiting the explicit native/device acceptance criteria; these checkboxes do not mean no work has happened. Read [plan.md](plan.md) for the screen, motion, performance and acceptance contracts. Estimates below describe scope, not elapsed-time promises. Paths are relative to the app repository. Preserve the separate unfinished production backlog in `replica/tasks/todo.md`.
 
 Common verification: run lint/typecheck for source changes, focused behavior tests for changed logic, and the affected flow on the relevant platform. Run broader regression checks at milestones. For new native dependencies, verify SDK compatibility and both platform exports. Screenshots prove appearance only; gestures, haptics, sound and frame times need appropriate device evidence.
 

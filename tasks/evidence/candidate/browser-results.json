@@ -1,0 +1,16 @@
+{
+  "recordedLocalDate": "2026-10-26",
+  "scope": "React Native web preview in Edge; phone 390x844 and desktop 1440x900, disposable QA databases; not native device evidence",
+  "stats": {
+    "startTime": "2026-10-25T22:37:19.093Z",
+    "duration": 312048.738,
+    "expected": 40,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "projects": [
+    "phone-web",
+    "desktop-web"
+  ]
+}

@@ -1,0 +1,456 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-25T22:43:44.142299+00:00",
+  "title": "Design System: Musify",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Near black",
+        "tonalRamp": [
+          "oklch(15% 0.00425 285.88)",
+          "oklch(26.43% 0.00425 285.88)",
+          "oklch(37.86% 0.00425 285.88)",
+          "oklch(49.29% 0.00425 285.88)",
+          "oklch(60.71% 0.00425 285.88)",
+          "oklch(72.14% 0.00425 285.88)",
+          "oklch(83.57% 0.00425 285.88)",
+          "oklch(95% 0.00425 285.88)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Charcoal",
+        "tonalRamp": [
+          "oklch(15% 0.00782 285.71)",
+          "oklch(26.43% 0.00782 285.71)",
+          "oklch(37.86% 0.00782 285.71)",
+          "oklch(49.29% 0.00782 285.71)",
+          "oklch(60.71% 0.00782 285.71)",
+          "oklch(72.14% 0.00782 285.71)",
+          "oklch(83.57% 0.00782 285.71)",
+          "oklch(95% 0.00782 285.71)"
+        ]
+      },
+      "surface-raised": {
+        "role": "neutral",
+        "displayName": "Raised charcoal",
+        "tonalRamp": [
+          "oklch(15% 0.01107 285.63)",
+          "oklch(26.43% 0.01107 285.63)",
+          "oklch(37.86% 0.01107 285.63)",
+          "oklch(49.29% 0.01107 285.63)",
+          "oklch(60.71% 0.01107 285.63)",
+          "oklch(72.14% 0.01107 285.63)",
+          "oklch(83.57% 0.01107 285.63)",
+          "oklch(95% 0.01107 285.63)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Divider gray",
+        "tonalRamp": [
+          "oklch(15% 0.01674 285.61)",
+          "oklch(26.43% 0.01674 285.61)",
+          "oklch(37.86% 0.01674 285.61)",
+          "oklch(49.29% 0.01674 285.61)",
+          "oklch(60.71% 0.01674 285.61)",
+          "oklch(72.14% 0.01674 285.61)",
+          "oklch(83.57% 0.01674 285.61)",
+          "oklch(95% 0.01674 285.61)"
+        ]
+      },
+      "border-input": {
+        "role": "neutral",
+        "displayName": "Input gray",
+        "tonalRamp": [
+          "oklch(15% 0.01490 285.96)",
+          "oklch(26.43% 0.01490 285.96)",
+          "oklch(37.86% 0.01490 285.96)",
+          "oklch(49.29% 0.01490 285.96)",
+          "oklch(60.71% 0.01490 285.96)",
+          "oklch(72.14% 0.01490 285.96)",
+          "oklch(83.57% 0.01490 285.96)",
+          "oklch(95% 0.01490 285.96)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Soft white",
+        "tonalRamp": [
+          "oklch(15% 0.00264 286.35)",
+          "oklch(26.43% 0.00264 286.35)",
+          "oklch(37.86% 0.00264 286.35)",
+          "oklch(49.29% 0.00264 286.35)",
+          "oklch(60.71% 0.00264 286.35)",
+          "oklch(72.14% 0.00264 286.35)",
+          "oklch(83.57% 0.00264 286.35)",
+          "oklch(95% 0.00264 286.35)"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Muted silver",
+        "tonalRamp": [
+          "oklch(15% 0.01407 286.07)",
+          "oklch(26.43% 0.01407 286.07)",
+          "oklch(37.86% 0.01407 286.07)",
+          "oklch(49.29% 0.01407 286.07)",
+          "oklch(60.71% 0.01407 286.07)",
+          "oklch(72.14% 0.01407 286.07)",
+          "oklch(83.57% 0.01407 286.07)",
+          "oklch(95% 0.01407 286.07)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Mint",
+        "tonalRamp": [
+          "oklch(15% 0.14909 167.95)",
+          "oklch(26.43% 0.14909 167.95)",
+          "oklch(37.86% 0.14909 167.95)",
+          "oklch(49.29% 0.14909 167.95)",
+          "oklch(60.71% 0.14909 167.95)",
+          "oklch(72.14% 0.14909 167.95)",
+          "oklch(83.57% 0.14909 167.95)",
+          "oklch(95% 0.14909 167.95)"
+        ]
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "Deep mint foreground",
+        "tonalRamp": [
+          "oklch(15% 0.02923 167.22)",
+          "oklch(26.43% 0.02923 167.22)",
+          "oklch(37.86% 0.02923 167.22)",
+          "oklch(49.29% 0.02923 167.22)",
+          "oklch(60.71% 0.02923 167.22)",
+          "oklch(72.14% 0.02923 167.22)",
+          "oklch(83.57% 0.02923 167.22)",
+          "oklch(95% 0.02923 167.22)"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "Soft coral",
+        "tonalRamp": [
+          "oklch(15% 0.10204 26.88)",
+          "oklch(26.43% 0.10204 26.88)",
+          "oklch(37.86% 0.10204 26.88)",
+          "oklch(49.29% 0.10204 26.88)",
+          "oklch(60.71% 0.10204 26.88)",
+          "oklch(72.14% 0.10204 26.88)",
+          "oklch(83.57% 0.10204 26.88)",
+          "oklch(95% 0.10204 26.88)"
+        ]
+      },
+      "success": {
+        "role": "primary",
+        "displayName": "Success mint",
+        "tonalRamp": [
+          "oklch(15% 0.14909 167.95)",
+          "oklch(26.43% 0.14909 167.95)",
+          "oklch(37.86% 0.14909 167.95)",
+          "oklch(49.29% 0.14909 167.95)",
+          "oklch(60.71% 0.14909 167.95)",
+          "oklch(72.14% 0.14909 167.95)",
+          "oklch(83.57% 0.14909 167.95)",
+          "oklch(95% 0.14909 167.95)"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Focus mint",
+        "tonalRamp": [
+          "oklch(15% 0.14909 167.95)",
+          "oklch(26.43% 0.14909 167.95)",
+          "oklch(37.86% 0.14909 167.95)",
+          "oklch(49.29% 0.14909 167.95)",
+          "oklch(60.71% 0.14909 167.95)",
+          "oklch(72.14% 0.14909 167.95)",
+          "oklch(83.57% 0.14909 167.95)",
+          "oklch(95% 0.14909 167.95)"
+        ]
+      },
+      "art-clay": {
+        "role": "neutral",
+        "displayName": "Catalog clay",
+        "tonalRamp": [
+          "oklch(15% 0.10547 31.48)",
+          "oklch(26.43% 0.10547 31.48)",
+          "oklch(37.86% 0.10547 31.48)",
+          "oklch(49.29% 0.10547 31.48)",
+          "oklch(60.71% 0.10547 31.48)",
+          "oklch(72.14% 0.10547 31.48)",
+          "oklch(83.57% 0.10547 31.48)",
+          "oklch(95% 0.10547 31.48)"
+        ]
+      },
+      "art-sea": {
+        "role": "neutral",
+        "displayName": "Catalog sea",
+        "tonalRamp": [
+          "oklch(15% 0.06254 202.69)",
+          "oklch(26.43% 0.06254 202.69)",
+          "oklch(37.86% 0.06254 202.69)",
+          "oklch(49.29% 0.06254 202.69)",
+          "oklch(60.71% 0.06254 202.69)",
+          "oklch(72.14% 0.06254 202.69)",
+          "oklch(83.57% 0.06254 202.69)",
+          "oklch(95% 0.06254 202.69)"
+        ]
+      },
+      "art-night": {
+        "role": "neutral",
+        "displayName": "Catalog night",
+        "tonalRamp": [
+          "oklch(15% 0.08886 256.89)",
+          "oklch(26.43% 0.08886 256.89)",
+          "oklch(37.86% 0.08886 256.89)",
+          "oklch(49.29% 0.08886 256.89)",
+          "oklch(60.71% 0.08886 256.89)",
+          "oklch(72.14% 0.08886 256.89)",
+          "oklch(83.57% 0.08886 256.89)",
+          "oklch(95% 0.08886 256.89)"
+        ]
+      },
+      "art-sand": {
+        "role": "neutral",
+        "displayName": "Catalog sand",
+        "tonalRamp": [
+          "oklch(15% 0.07185 67.44)",
+          "oklch(26.43% 0.07185 67.44)",
+          "oklch(37.86% 0.07185 67.44)",
+          "oklch(49.29% 0.07185 67.44)",
+          "oklch(60.71% 0.07185 67.44)",
+          "oklch(72.14% 0.07185 67.44)",
+          "oklch(83.57% 0.07185 67.44)",
+          "oklch(95% 0.07185 67.44)"
+        ]
+      },
+      "art-berry": {
+        "role": "neutral",
+        "displayName": "Catalog berry",
+        "tonalRamp": [
+          "oklch(15% 0.08771 353.26)",
+          "oklch(26.43% 0.08771 353.26)",
+          "oklch(37.86% 0.08771 353.26)",
+          "oklch(49.29% 0.08771 353.26)",
+          "oklch(60.71% 0.08771 353.26)",
+          "oklch(72.14% 0.08771 353.26)",
+          "oklch(83.57% 0.08771 353.26)",
+          "oklch(95% 0.08771 353.26)"
+        ]
+      },
+      "art-forest": {
+        "role": "neutral",
+        "displayName": "Catalog forest",
+        "tonalRamp": [
+          "oklch(15% 0.06676 162.75)",
+          "oklch(26.43% 0.06676 162.75)",
+          "oklch(37.86% 0.06676 162.75)",
+          "oklch(49.29% 0.06676 162.75)",
+          "oklch(60.71% 0.06676 162.75)",
+          "oklch(72.14% 0.06676 162.75)",
+          "oklch(83.57% 0.06676 162.75)",
+          "oklch(95% 0.06676 162.75)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "display",
+        "purpose": "Collections and authentication headings."
+      },
+      "xl": {
+        "displayName": "xl",
+        "purpose": "Screens, shelves and player track title."
+      },
+      "lg": {
+        "displayName": "lg",
+        "purpose": "Subsections and sheet titles."
+      },
+      "base": {
+        "displayName": "base",
+        "purpose": "Body and track names; component weight overrides may apply."
+      },
+      "sm": {
+        "displayName": "sm",
+        "purpose": "Artist and collection metadata."
+      },
+      "xs": {
+        "displayName": "xs",
+        "purpose": "Navigation labels and timing."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "press-in",
+        "value": "80ms; scale 0.975; opacity 0.84",
+        "purpose": "src/design/Motion.tsx; reduced motion keeps opacity but removes scale."
+      },
+      {
+        "name": "press-out",
+        "value": "140ms; cubic ease-out",
+        "purpose": "src/design/Motion.tsx; release Touch feedback."
+      },
+      {
+        "name": "artwork-reveal",
+        "value": "120ms",
+        "purpose": "src/design/Artwork.tsx; becomes 0 with reduced motion."
+      },
+      {
+        "name": "sheet-scrim",
+        "value": "160ms",
+        "purpose": "src/ui/sheets/Sheet.tsx; FadeIn, becomes 0 with reduced motion."
+      },
+      {
+        "name": "sheet-enter",
+        "value": "240ms",
+        "purpose": "src/ui/sheets/Sheet.tsx; SlideInDown, becomes 0 with reduced motion."
+      },
+      {
+        "name": "player-gesture-dismiss",
+        "value": "180ms",
+        "purpose": "src/ui/player/NowPlaying.tsx; becomes 0 with reduced motion."
+      },
+      {
+        "name": "player-sheet-return",
+        "value": "spring: damping 26, stiffness 260",
+        "purpose": "Player/sheet gesture cancellation; reduced-motion styles suppress translation."
+      },
+      {
+        "name": "queue-return",
+        "value": "spring: damping 26, stiffness 280",
+        "purpose": "src/ui/screens/Playback.tsx; returns instantly and suppresses translation with reduced motion."
+      },
+      {
+        "name": "route-hierarchy",
+        "value": "slide_from_right; player slide_from_bottom; tabs none",
+        "purpose": "src/app/_layout.tsx and (tabs)/_layout.tsx; reduced-motion stack fallback is fade. Native timing is not measured."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-navigation",
+        "value": "960px"
+      },
+      {
+        "name": "queue-move-wrap",
+        "value": "600px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Web documentation translation of src/design/Primitives.tsx; native Touch feedback approximated in CSS.",
+      "html": "<button class=\"ds-button-primary\">Play</button>",
+      "css": ".ds-button-primary{box-sizing:border-box;background:#41E2B1;color:#071A13;font:600 16px/22px system-ui,-apple-system,Segoe UI,sans-serif;min-height:48px;padding:12px 20px;border:2px solid transparent;border-radius:999px;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-button-primary:hover{cursor:pointer}.ds-button-primary:focus-visible{outline:none;border-color:#41E2B1}.ds-button-primary:active{transform:scale(.975);opacity:.84;transition-duration:80ms}.ds-button-primary:disabled{opacity:.45;cursor:default}@media(prefers-reduced-motion:reduce){.ds-button-primary:active{transform:none}}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Web documentation translation of src/design/Primitives.tsx; native Touch feedback approximated in CSS.",
+      "html": "<button class=\"ds-button-secondary\">Save</button>",
+      "css": ".ds-button-secondary{box-sizing:border-box;background:#25252B;color:#FAFAFC;font:600 16px/22px system-ui,-apple-system,Segoe UI,sans-serif;min-height:48px;padding:12px 20px;border:2px solid transparent;border-radius:999px;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-button-secondary:hover{cursor:pointer}.ds-button-secondary:focus-visible{outline:none;border-color:#41E2B1}.ds-button-secondary:active{transform:scale(.975);opacity:.84;transition-duration:80ms}.ds-button-secondary:disabled{opacity:.45;cursor:default}@media(prefers-reduced-motion:reduce){.ds-button-secondary:active{transform:none}}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Web documentation translation of src/design/Primitives.tsx; native Touch feedback approximated in CSS.",
+      "html": "<button class=\"ds-button-quiet\">Add to playlist</button>",
+      "css": ".ds-button-quiet{box-sizing:border-box;background:transparent;color:#FAFAFC;font:600 16px/22px system-ui,-apple-system,Segoe UI,sans-serif;min-height:48px;padding:12px 20px;border:2px solid transparent;border-radius:999px;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-button-quiet:hover{cursor:pointer}.ds-button-quiet:focus-visible{outline:none;border-color:#41E2B1}.ds-button-quiet:active{transform:scale(.975);opacity:.84;transition-duration:80ms}.ds-button-quiet:disabled{opacity:.45;cursor:default}@media(prefers-reduced-motion:reduce){.ds-button-quiet:active{transform:none}}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Web documentation translation of src/design/Primitives.tsx; native Touch feedback approximated in CSS.",
+      "html": "<button class=\"ds-button-danger\">Delete playlist</button>",
+      "css": ".ds-button-danger{box-sizing:border-box;background:#25252B;color:#FFAAA0;font:600 16px/22px system-ui,-apple-system,Segoe UI,sans-serif;min-height:48px;padding:12px 20px;border:2px solid transparent;border-radius:999px;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-button-danger:hover{cursor:pointer}.ds-button-danger:focus-visible{outline:none;border-color:#41E2B1}.ds-button-danger:active{transform:scale(.975);opacity:.84;transition-duration:80ms}.ds-button-danger:disabled{opacity:.45;cursor:default}@media(prefers-reduced-motion:reduce){.ds-button-danger:active{transform:none}}"
+    },
+    {
+      "name": "Labeled Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Neutral form field from src/design/Primitives.tsx, with focus and invalid border treatment.",
+      "html": "<label class=\"ds-field\"><span>Email</span><input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\"/></label>",
+      "css": ".ds-field{box-sizing:border-box;display:grid;gap:8px;color:#B5B5BF;font:400 13px/18px system-ui,-apple-system,Segoe UI,sans-serif}.ds-input{box-sizing:border-box;min-height:48px;padding:12px 16px;border:2px solid #85858F;border-radius:10px;background:#18181C;color:#FAFAFC;font:400 16px/22px system-ui,-apple-system,Segoe UI,sans-serif}.ds-input::placeholder{color:#B5B5BF}.ds-input:hover{cursor:text}.ds-input:focus-visible{outline:none;border-color:#41E2B1}.ds-input[aria-invalid=true]{border-color:#FFAAA0}"
+    },
+    {
+      "name": "Bottom Navigation",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Three mobile destinations from src/ui/Shell.tsx. Static selection; native routing is not reproduced.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main\"><button class=\"ds-destination\" aria-current=\"page\"><svg aria-hidden=\"true\" width=\"25\" height=\"25\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg><span>Home</span></button><button class=\"ds-destination\"><svg aria-hidden=\"true\" width=\"25\" height=\"25\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m21 21-4.34-4.34\"/><circle cx=\"11\" cy=\"11\" r=\"8\"/></svg><span>Search</span></button><button class=\"ds-destination\"><svg aria-hidden=\"true\" width=\"25\" height=\"25\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m16 6 4 14M12 6v14M8 8v12M4 4v16\"/></svg><span>Library</span></button></nav>",
+      "css": ".ds-nav{box-sizing:border-box;display:flex;min-height:64px;background:#0B0B0D}.ds-destination{box-sizing:border-box;flex:1;min-height:64px;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;color:#B5B5BF;background:transparent;border:0;font:500 11px/16px system-ui,-apple-system,Segoe UI,sans-serif;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-destination[aria-current]{color:#FAFAFC}.ds-destination[aria-current] svg{stroke-width:2.4}.ds-destination:hover{cursor:pointer}.ds-destination:focus-visible{outline:auto}.ds-destination:active{transform:scale(.975);opacity:.84;transition-duration:80ms}@media(prefers-reduced-motion:reduce){.ds-destination:active{transform:none}}"
+    },
+    {
+      "name": "Filter Chips",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "Selected and unselected Chip/Button composition from src/design/Primitives.tsx.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\">All</button><button class=\"ds-chip\" aria-pressed=\"false\">Albums</button></div>",
+      "css": ".ds-chips{box-sizing:border-box;display:flex;gap:8px}.ds-chip{box-sizing:border-box;min-height:48px;padding:8px 16px;border:2px solid transparent;border-radius:999px;background:#25252B;color:#FAFAFC;font:600 16px/22px system-ui,-apple-system,Segoe UI,sans-serif;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-chip[aria-pressed=true]{background:#41E2B1;color:#071A13}.ds-chip:hover{cursor:pointer}.ds-chip:focus-visible{outline:none;border-color:#41E2B1}.ds-chip:active{transform:scale(.975);opacity:.84;transition-duration:80ms}@media(prefers-reduced-motion:reduce){.ds-chip:active{transform:none}}"
+    },
+    {
+      "name": "Music Card",
+      "kind": "card",
+      "refersTo": "music-card",
+      "description": "Flat shelf card from src/ui/screens/common.tsx using the neutral Music2 fallback from src/design/Artwork.tsx. Example copy is illustrative.",
+      "html": "<button class=\"ds-music-card\"><span class=\"ds-card-art\"><svg aria-hidden=\"true\" width=\"42\" height=\"42\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m19 6-5.2-3.9a.5.5 0 0 0-.8.4V18\"/><circle cx=\"9\" cy=\"18\" r=\"4\"/></svg></span><span class=\"ds-card-title\">Album title</span><span class=\"ds-card-meta\">Artist name</span></button>",
+      "css": ".ds-music-card{box-sizing:border-box;display:flex;flex-direction:column;gap:8px;width:160px;padding:0;background:transparent;border:0;color:#FAFAFC;text-align:left;font:400 16px/22px system-ui,-apple-system,Segoe UI,sans-serif;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-card-art{box-sizing:border-box;width:160px;height:160px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:#25252B;color:#B5B5BF}.ds-card-art svg{stroke-width:1.3}.ds-card-title{box-sizing:border-box;font-weight:600}.ds-card-meta{box-sizing:border-box;color:#B5B5BF;font-size:13px;line-height:18px}.ds-music-card:hover{cursor:pointer}.ds-music-card:focus-visible{outline:auto}.ds-music-card:active{transform:scale(.975);opacity:.84;transition-duration:80ms}@media(prefers-reduced-motion:reduce){.ds-music-card:active{transform:none}}"
+    },
+    {
+      "name": "Mini-player",
+      "kind": "custom",
+      "refersTo": "mini-player",
+      "description": "Static web translation of src/ui/player/MiniPlayer.tsx. Example metadata and progress are illustrative; no audio or routing runs here.",
+      "html": "<div class=\"ds-mini\"><div class=\"ds-mini-row\"><button class=\"ds-mini-open\"><span class=\"ds-mini-art\"><svg aria-hidden=\"true\" width=\"42\" height=\"42\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m19 6-5.2-3.9a.5.5 0 0 0-.8.4V18\"/><circle cx=\"9\" cy=\"18\" r=\"4\"/></svg></span><span class=\"ds-mini-copy\"><span class=\"ds-mini-title\">Track title</span><span class=\"ds-mini-artist\">Artist name</span></span></button><button class=\"ds-mini-control\" aria-label=\"Pause\"><svg aria-hidden=\"true\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"14\" y=\"3\" width=\"5\" height=\"18\" rx=\"1\"/><rect x=\"5\" y=\"3\" width=\"5\" height=\"18\" rx=\"1\"/></svg></button><button class=\"ds-mini-control\" aria-label=\"Next track\"><svg aria-hidden=\"true\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 4v16\"/><path d=\"M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z\"/></svg></button></div><div class=\"ds-mini-rail\"><div class=\"ds-mini-progress\"></div></div></div>",
+      "css": ".ds-mini{box-sizing:border-box;margin:0 8px;border-radius:8px;overflow:hidden;background:#25252B;color:#FAFAFC;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.ds-mini-row{box-sizing:border-box;display:flex;align-items:center;padding:6px;min-height:62px}.ds-mini-open{box-sizing:border-box;flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:0;border:0;background:transparent;color:inherit;text-align:left;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-mini-art{box-sizing:border-box;width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:4px;color:#B5B5BF}.ds-mini-art svg{width:18px;height:18px;stroke-width:1.3}.ds-mini-copy{box-sizing:border-box;min-width:0;display:grid}.ds-mini-title{box-sizing:border-box;font:600 14px/20px system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ds-mini-artist{box-sizing:border-box;font:400 13px/18px system-ui,-apple-system,Segoe UI,sans-serif;color:#B5B5BF}.ds-mini-control{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:48px;min-height:48px;border:2px solid transparent;border-radius:999px;background:transparent;color:inherit;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-mini-open:hover,.ds-mini-control:hover{cursor:pointer}.ds-mini-open:focus-visible{outline:auto}.ds-mini-control:focus-visible{outline:none;border-color:#41E2B1}.ds-mini-open:active,.ds-mini-control:active{transform:scale(.975);opacity:.84;transition-duration:80ms}.ds-mini-rail{box-sizing:border-box;height:2px;margin:0 8px;background:#45454F}.ds-mini-progress{box-sizing:border-box;height:2px;width:35%;background:#FAFAFC}@media(prefers-reduced-motion:reduce){.ds-mini-open:active,.ds-mini-control:active{transform:none}}"
+    },
+    {
+      "name": "Action Sheet",
+      "kind": "custom",
+      "refersTo": "sheet",
+      "description": "Static panel translation of src/ui/sheets/Sheet.tsx and Playback.tsx. Dismiss gestures, backdrop, Back and native modal semantics require the app runtime.",
+      "html": "<section class=\"ds-sheet\" aria-label=\"Track options\"><div class=\"ds-sheet-grip\"><span></span></div><header class=\"ds-sheet-header\"><h3>Track options</h3><button class=\"ds-sheet-close\" aria-label=\"Close sheet\"><svg aria-hidden=\"true\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18m0-12 12 12\"/></svg></button></header><div class=\"ds-sheet-content\"><button class=\"ds-sheet-action\">Add to playlist</button><button class=\"ds-sheet-action\">Play next</button></div></section>",
+      "css": ".ds-sheet{box-sizing:border-box;max-width:560px;width:100%;border-radius:20px 20px 0 0;background:#18181C;color:#FAFAFC;overflow:hidden;padding-bottom:16px;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.ds-sheet-grip{box-sizing:border-box;height:28px;display:flex;align-items:center;justify-content:center}.ds-sheet-grip span{width:36px;height:4px;border-radius:2px;background:#B5B5BF}.ds-sheet-header{box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:0 8px 8px 24px}.ds-sheet-header h3{flex:1;margin:0;font:600 18px/24px system-ui,-apple-system,Segoe UI,sans-serif}.ds-sheet-close{box-sizing:border-box;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;border:2px solid transparent;border-radius:999px;background:transparent;color:inherit;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-sheet-content{box-sizing:border-box;display:grid;gap:8px;padding:0 24px 16px}.ds-sheet-action{box-sizing:border-box;min-height:48px;padding:12px 8px;border:2px solid transparent;border-radius:999px;background:transparent;color:inherit;text-align:left;font:600 16px/22px system-ui,-apple-system,Segoe UI,sans-serif;transition:transform 140ms cubic-bezier(.215,.61,.355,1),opacity 140ms cubic-bezier(.215,.61,.355,1);}.ds-sheet-close:hover,.ds-sheet-action:hover{cursor:pointer}.ds-sheet-close:focus-visible,.ds-sheet-action:focus-visible{outline:none;border-color:#41E2B1}.ds-sheet-close:active,.ds-sheet-action:active{transform:scale(.975);opacity:.84;transition-duration:80ms}@media(prefers-reduced-motion:reduce){.ds-sheet-close:active,.ds-sheet-action:active{transform:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Familiar listening, Musify identity",
+    "overview": "Compact, artwork-led mobile layouts put finding and playing music first. The owner's Spotify layout direction informs the hierarchy; Musify keeps its own name, angular brand mark and mint accent. Near-black surfaces, native system type and restrained controls support frequent listening tasks.\n\nThis scan records the implemented candidate, using source as authority. The 16 frames in [.impeccable/review/captures.json](.impeccable/review/captures.json) are phone-width and wide **web** layout evidence. There is no approved bitmap comp or detector result. Native gestures, accessibility, audio continuity and release-device performance still require acceptance; these documents certify none of them.",
+    "keyCharacteristics": [
+      "Dense music shelves and readable track metadata.",
+      "Persistent browsing navigation and mini-player; immersive full player.",
+      "Neutral missing-art glyphs and genuine covers when supplied.",
+      "Fast press feedback, richer sheets and system reduced-motion handling."
+    ],
+    "rules": [
+      {
+        "name": "The Context Rule",
+        "body": "Keep the originating screen visible beneath an action sheet while blocking its input/focus. [src/ui/Screens.tsx](src/ui/Screens.tsx) retains that background and applies web inert/aria-hidden state.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** use shared primitives, tokens and native system type for new screens.",
+      "**Do** preserve visible music context, readable metadata and 48-unit targets for new controls.",
+      "**Do** retain neutral entity-specific fallbacks, translated UI and system reduced-motion handling.",
+      "**Do** label web captures and native/device measurements separately."
+    ],
+    "donts": [
+      "**Don't** restore the rejected navy/amber identity or use Spotify branding/assets.",
+      "**Don't** replace missing covers with repeated decorative records.",
+      "**Don't** describe catalog palette gradients as cover-color extraction or claim shared-element motion.",
+      "**Don't** treat the reviewed web/source candidate as native or public-release acceptance."
+    ]
+  }
+}
