@@ -27,7 +27,7 @@ test("F01-H1 account entry and validation", async ({ page }) => {
     .getByRole("button", { name: "Create your account", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Keep your own rhythm", exact: true }),
+    page.getByRole("heading", { name: "Home", exact: true }),
   ).toBeVisible();
   await a11y(page);
 });

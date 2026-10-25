@@ -2,9 +2,8 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
-import { Artwork } from "../../design/Artwork";
+import { BrandMark } from "../../design/BrandMark";
 import { Button, Chip, Input, Label } from "../../design/Primitives";
-import { theme as t } from "../../design/theme";
 import { Shell, ui } from "../Shell";
 
 export function Auth() {
@@ -43,11 +42,7 @@ export function Auth() {
   return (
     <Shell title="musify" eyebrow="KEEP YOUR OWN RHYTHM">
       <View style={ui.form}>
-        <Artwork palette="clay" size={t.space[192]} />
-        <Label type="display">Make room for{"\n"}your music.</Label>
-        <Label color="text-muted">
-          Choose a track. Keep a feeling. Make it yours.
-        </Label>
+        <View style={{ alignItems: "center", paddingVertical: 24, gap: 20 }}><BrandMark size={64}/><Label type="display" style={{ textAlign: "center" }}>Welcome to Musify</Label><Label color="text-muted" style={{ textAlign: "center" }}>Sign in to keep your music and playlists together.</Label></View>
         <View style={ui.wrap}>
           {(["login", "register", "recover"] as const).map((x) => (
             <Chip

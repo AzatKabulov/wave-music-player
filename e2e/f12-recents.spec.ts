@@ -2,6 +2,10 @@ import { test, expect, a11y, playHome } from "./fixtures";
 test("F12-H1 history returns to a permitted track", async ({ page }) => {
   await playHome(page);
   await page
+    .getByRole("tab", { name: "Home", exact: true })
+    .or(page.getByRole("button", { name: "Home", exact: true }))
+    .click();
+  await page
     .getByRole("button", { name: "Open settings", exact: true })
     .click();
   await a11y(page);

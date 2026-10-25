@@ -2,7 +2,6 @@ import type { LucideIcon } from "lucide-react-native";
 import { useState } from "react";
 import {
   ActivityIndicator,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -12,6 +11,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import { theme as t, type ColorRole, type TypeRole } from "./theme";
+import { Touch } from "./Motion";
 
 export function Label({
   type = "base",
@@ -49,7 +49,7 @@ export function Button({
         ? t.color.danger
         : t.color.text;
   return (
-    <Pressable
+    <Touch
       accessibilityRole="button"
       accessibilityLabel={title}
       accessibilityState={{ disabled: disabled || busy, busy }}
@@ -57,14 +57,13 @@ export function Button({
       onPress={onPress}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
-      style={({ pressed }) => [
+      style={[
         styles.button,
         variant === "primary"
           ? styles.primary
           : variant === "quiet"
             ? styles.quiet
             : styles.secondary,
-        pressed && styles.pressed,
         focused && styles.focus,
         (disabled || busy) && styles.disabled,
         style,
@@ -78,7 +77,7 @@ export function Button({
       <Label type="base" style={{ color: foreground, fontWeight: "600" }}>
         {title}
       </Label>
-    </Pressable>
+    </Touch>
   );
 }
 
@@ -101,7 +100,8 @@ export function IconButton({
 }) {
   const [focused, setFocused] = useState(false);
   return (
-    <Pressable
+    <Touch
+      haptic={selected !== undefined}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ selected, disabled }}
@@ -109,10 +109,9 @@ export function IconButton({
       onPress={onPress}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
-      style={({ pressed }) => [
+      style={[
         styles.iconButton,
         filled && styles.primary,
-        pressed && styles.pressed,
         focused && styles.focus,
         disabled && styles.disabled,
       ]}
@@ -128,7 +127,7 @@ export function IconButton({
               : t.color.text
         }
       />
-    </Pressable>
+    </Touch>
   );
 }
 

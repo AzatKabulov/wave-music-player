@@ -1,24 +1,28 @@
-import { ArrowRight, Headphones, Heart } from "lucide-react-native";
+import { Heart, Play } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
 import { Artwork } from "../../design/Artwork";
+import { Touch } from "../../design/Motion";
 import { Chip, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
+import { Cards, Section, Tracks } from "./common";
 
-import { Cards, Section, Tracks, s } from "./common";
 export function Home() {
-  const m = useMusic(),
-    c = m.snapshot!.catalog,
-    [filter, setFilter] = useState("For you"),
-    wide = useWindowDimensions().width >= t.space[640],
-    featured =
-      c.playlists.find((p) => p.title === "The long way home") ||
-      c.playlists[0];
+  const m = useMusic();
+  const c = m.snapshot!.catalog;
+  const [filter, setFilter] = useState("All");
+  const genres = [
+    ...new Set(c.tracks.map((track) => track.genre).filter(Boolean)),
+  ].slice(0, 5);
+  const recent = m
+    .snapshot!.recents.map((id) => c.tracks.find((track) => track.id === id))
+    .filter((track) => !!track)
+    .slice(0, 6);
   if (!c.tracks.length)
     return (
-      <Shell title="Keep your own rhythm">
+      <Shell title="Home">
         <StateView
           title="The music is on its way"
           message="No releases are available yet. Check back soon."
@@ -28,123 +32,161 @@ export function Home() {
       </Shell>
     );
   return (
-    <Shell
-      title="Keep your own rhythm"
-      eyebrow="MUSIFY / YOUR EVERYDAY LISTENING"
-    >
-      <View style={[ui.wrap, s.filters]}>
-        {["For you", "Instrumental", "Electronic", "Ambient"].map((f) => (
+    <Shell title="Home">
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={s.filters}
+      >
+        {["All", ...genres].map((genre) => (
           <Chip
-            key={f}
-            title={f}
-            selected={f === filter}
-            onPress={() => setFilter(f)}
+            key={genre}
+            title={genre}
+            selected={filter === genre}
+            onPress={() => setFilter(genre)}
           />
         ))}
-      </View>
-      {filter === "For you" ? (
+      </ScrollView>
+      {filter !== "All" ? (
+        <Section title={filter}>
+          <Tracks tracks={c.tracks.filter((track) => track.genre === filter)} />
+        </Section>
+      ) : (
         <>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() =>
-              go(featured ? `/playlist/${featured.id}` : "/search")
-            }
-            style={s.hero}
-          >
-            <View style={s.heroCopy}>
-              <Label type="xs" style={s.heroEyebrow}>
-                THE DAILY SELECTION
-              </Label>
-              <Label type="display" style={s.heroTitle}>
-                {featured?.title === "The long way home" ? (
-                  <>Take the{"\n"}long way home.</>
-                ) : (
-                  featured?.title || "Make room for music."
-                )}
-              </Label>
-              <Label style={s.heroDescription}>
-                A little less rush.{"\n"}A little more music.
-              </Label>
-              <View style={s.heroLink}>
-                <Label style={s.heroTitle}>Explore the mix</Label>
-                <ArrowRight size={t.icon.sm} color={t.color["art-light"]} />
-              </View>
-            </View>
-            {wide ? (
-              <Artwork palette="clay" size={t.space[192]} style={s.heroArt} />
-            ) : null}
-          </Pressable>
           <View style={s.shortcuts}>
-            {c.playlists.map((p) => (
-              <Pressable
+            <Touch
+              accessibilityRole="button"
+              accessibilityLabel="Liked Songs"
+              onPress={() => go("/liked")}
+              style={s.shortcut}
+            >
+              <View style={s.likedArt}>
+                <Heart size={23} color={t.color.text} fill={t.color.text} />
+              </View>
+              <Label type="sm" numberOfLines={2} style={s.shortcutTitle}>
+                Liked Songs
+              </Label>
+            </Touch>
+            {[...m.snapshot!.playlists, ...c.playlists].slice(0, 5).map((p) => (
+              <Touch
                 key={p.id}
                 accessibilityRole="button"
                 accessibilityLabel={`Open ${p.title}`}
                 onPress={() => go(`/playlist/${p.id}`)}
                 style={s.shortcut}
               >
-                <Artwork
-                  palette={p.palette}
-                  uri={p.artworkUrl}
-                  size={t.space[56]}
-                />
-                <Label type="sm" numberOfLines={2} style={ui.grow}>
+                <Artwork uri={p.artworkUrl} palette={p.palette} size={56} />
+                <Label type="sm" numberOfLines={2} style={s.shortcutTitle}>
                   {p.title}
                 </Label>
-              </Pressable>
+              </Touch>
             ))}
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Your liked tracks"
-              onPress={() => go("/liked")}
-              style={s.shortcut}
-            >
-              <View style={s.heartTile}>
-                <Heart size={t.icon.base} color={t.color.accent} />
-              </View>
-              <Label type="sm">Your liked tracks</Label>
-            </Pressable>
           </View>
+          {recent.length ? (
+            <Section title="Recently played">
+              <View style={ui.list}>
+                {recent.slice(0, 3).map((track) => (
+                  <Touch
+                    key={track.id}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Play ${track.title} ${track.artist}`}
+                    onPress={() =>
+                      void m.playTracks(recent, recent.indexOf(track))
+                    }
+                    style={s.recent}
+                  >
+                    <Artwork
+                      uri={track.artworkUrl}
+                      palette={track.palette}
+                      size={48}
+                    />
+                    <View style={ui.grow}>
+                      <Label numberOfLines={1} style={s.bold}>
+                        {track.title}{" "}
+                      </Label>
+                      <Label type="sm" color="text-muted" numberOfLines={1}>
+                        {track.artist}
+                      </Label>
+                    </View>
+                    <Play color={t.color.text} size={20} />
+                  </Touch>
+                ))}
+              </View>
+            </Section>
+          ) : null}
           <Section
-            title="Something worth hearing"
-            kicker="RELEASES TO SPEND TIME WITH"
+            title="Made for your next listen"
             action={() => go("/search")}
           >
-            <Cards items={c.albums} type="album" />
-          </Section>
-          <Section title="For the way today feels">
             <Cards items={c.playlists} type="playlist" />
           </Section>
-          <Section title="Find another favourite">
-            <ScrollView horizontal contentContainerStyle={s.cards}>
-              {c.artists.map((a) => (
-                <Pressable
-                  key={a.id}
+          <Section title="Albums to explore" action={() => go("/search")}>
+            <Cards items={c.albums} type="album" />
+          </Section>
+          <Section title="Discover artists">
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.artists}
+            >
+              {c.artists.map((artist) => (
+                <Touch
+                  key={artist.id}
                   accessibilityRole="button"
-                  accessibilityLabel={`Open ${a.name}`}
-                  onPress={() => go(`/artist/${a.id}`)}
-                  style={s.artistCard}
+                  accessibilityLabel={`Open ${artist.name}`}
+                  onPress={() => go(`/artist/${artist.id}`)}
+                  style={s.artist}
                 >
-                  <Artwork palette={a.palette} size={t.space[112]} round />
-                  <Label type="sm" numberOfLines={2} style={s.center}>
-                    {a.name}
+                  <Artwork palette={artist.palette} size={136} round />
+                  <Label numberOfLines={2} style={[s.bold, s.center]}>
+                    {artist.name}
                   </Label>
-                </Pressable>
+                  <Label type="sm" color="text-muted">
+                    Artist
+                  </Label>
+                </Touch>
               ))}
             </ScrollView>
           </Section>
-          <View style={s.footnote}>
-            <Headphones size={t.icon.sm} color={t.color["text-muted"]} />
-            <Label type="xs" color="text-muted">
-              An independent listening space. Personal test catalog.
-            </Label>
-          </View>
         </>
-      ) : (
-        <Section title={filter}>
-          <Tracks tracks={c.tracks.filter((x) => x.genre === filter)} />
-        </Section>
       )}
     </Shell>
   );
 }
+const s = StyleSheet.create({
+  filters: { gap: 8, paddingBottom: 20 },
+  shortcuts: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 28,
+  },
+  shortcut: {
+    width: "48%",
+    minHeight: 56,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    overflow: "hidden",
+    backgroundColor: t.color["surface-raised"],
+    borderRadius: 5,
+  },
+  shortcutTitle: { fontWeight: "600", flex: 1, paddingRight: 8 },
+  likedArt: {
+    height: 56,
+    width: 56,
+    backgroundColor: t.color["art-berry"],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  recent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    minHeight: 64,
+  },
+  artists: { gap: 16 },
+  artist: { width: 144, alignItems: "center", gap: 8 },
+  bold: { fontWeight: "600" },
+  center: { textAlign: "center" },
+});

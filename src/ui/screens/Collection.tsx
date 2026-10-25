@@ -1,13 +1,13 @@
-import { Check, Play, Plus } from "lucide-react-native";
-import { View } from "react-native";
+import { Check, MoreHorizontal, Play, Shuffle } from "lucide-react-native";
+import { View, StyleSheet } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
 import type { Album, Artist, Playlist, Track } from "../../data/types";
 import { Artwork } from "../../design/Artwork";
-import { Button, Label, StateView } from "../../design/Primitives";
-import { theme as t } from "../../design/theme";
+import { Button, IconButton, Label, StateView } from "../../design/Primitives";
 import { Shell, go, ui } from "../Shell";
+import { MusicList } from "../MusicList";
+import { Cards, Section, formatTime } from "./common";
 
-import { Cards, Section, Tracks, formatTime, s } from "./common";
 export function Collection({
   type,
   id,
@@ -35,113 +35,132 @@ export function Collection({
         />
       </Shell>
     );
-  const title = "name" in entity ? entity.name : entity.title,
-    artist = type === "artist" ? (entity as Artist) : null,
-    album = type === "album" ? (entity as Album) : null,
-    playlist = type === "playlist" ? (entity as Playlist) : null;
-  const tracks = album
+  const title = "name" in entity ? entity.name : entity.title;
+  const artist = type === "artist" ? (entity as Artist) : null;
+  const album = type === "album" ? (entity as Album) : null;
+  const playlist = type === "playlist" ? (entity as Playlist) : null;
+  const byId = new Map(c.tracks.map((track) => [track.id, track]));
+  const ids = album
     ? album.trackIds
-        .map((id) => c.tracks.find((t) => t.id === id))
-        .filter((x): x is Track => !!x)
     : playlist
-      ? playlist.items
-          .map((i) => c.tracks.find((t) => t.id === i.trackId))
-          .filter((x): x is Track => !!x)
-      : c.tracks.filter((t) => t.artistId === id);
-  const saved =
-      sn.library[
-        type === "album"
-          ? "albums"
-          : type === "artist"
-            ? "artists"
-            : "playlists"
-      ].includes(id),
-    kind =
-      type === "album" ? "albums" : type === "artist" ? "artists" : "playlists";
+      ? playlist.items.map((item) => item.trackId)
+      : c.tracks
+          .filter((track) => track.artistId === id)
+          .map((track) => track.id);
+  const tracks = ids
+    .map((trackId) => byId.get(trackId))
+    .filter((track): track is Track => !!track);
+  const kind =
+    type === "album" ? "albums" : type === "artist" ? "artists" : "playlists";
+  const saved = sn.library[kind].includes(id);
+  const header = (
+    <View style={s.header}>
+      <View style={s.cover}>
+        <Artwork
+          palette={entity.palette}
+          uri={album?.artworkUrl || playlist?.artworkUrl}
+          size={232}
+          round={!!artist}
+        />
+      </View>
+      <Label type="display" accessibilityRole="header">
+        {title}
+      </Label>
+      <Label color="text-muted" numberOfLines={artist ? 4 : undefined}>
+        {artist
+          ? artist.bio
+          : album
+            ? `${album.artist} · ${album.year}`
+            : playlist?.description || "Your collection, your way."}
+      </Label>
+      <Label type="sm" color="text-muted">
+        {playlist?.owner ? "Your playlist · " : ""}
+        {tracks.length} tracks ·{" "}
+        {formatTime(
+          tracks.reduce((sum, track) => sum + track.durationMs, 0) / 1000,
+        )}
+      </Label>
+      <View style={ui.h}>
+        <View style={ui.row}>
+          {playlist?.owner ? (
+            <Button
+              title="Edit playlist"
+              variant="secondary"
+              onPress={() => go(`/edit/${id}`)}
+            />
+          ) : (
+            <Button
+              title={
+                saved
+                  ? artist
+                    ? "Following"
+                    : "Saved"
+                  : artist
+                    ? "Follow"
+                    : "Save"
+              }
+              icon={saved ? Check : undefined}
+              variant="secondary"
+              onPress={() => void m.save(kind, id, !saved)}
+            />
+          )}
+          <IconButton
+            icon={MoreHorizontal}
+            label="Collection options"
+            onPress={() => {
+              if (playlist?.owner) go(`/edit/${id}`);
+              else if (album?.artistId) go(`/artist/${album.artistId}`);
+              else m.setNotice(`${tracks.length} available tracks`);
+            }}
+          />
+        </View>
+        <View style={ui.row}>
+          <IconButton
+            icon={Shuffle}
+            label="Shuffle collection"
+            disabled={!tracks.length || m.pending}
+            onPress={() =>
+              void m.playTracks([...tracks].sort(() => Math.random() - 0.5))
+            }
+          />
+          <Button
+            title="Play"
+            icon={Play}
+            disabled={!tracks.length || m.pending}
+            onPress={() => void m.playTracks(tracks)}
+          />
+        </View>
+      </View>
+      <Label type="lg">{artist ? "Popular tracks" : "Tracks"}</Label>
+    </View>
+  );
+  const footer = artist ? (
+    <Section title="Releases">
+      <Cards
+        items={c.albums.filter((item) => item.artistId === id)}
+        type="album"
+      />
+    </Section>
+  ) : album ? (
+    <Button
+      title={`Visit ${album.artist}`}
+      variant="quiet"
+      onPress={() => go(`/artist/${album.artistId}`)}
+    />
+  ) : undefined;
   return (
     <Shell
       title={
         type === "artist" ? "Artist" : type === "album" ? "Album" : "Playlist"
       }
       back
+      scroll={false}
     >
-      <View style={s.collectionHeader}>
-        <Artwork
-          palette={entity.palette}
-          uri={album?.artworkUrl || playlist?.artworkUrl}
-          size={t.space[192]}
-          round={type === "artist"}
-        />
-        <View style={s.collectionCopy}>
-          <Label type="xs" color="text-muted">
-            {playlist?.owner ? "YOUR PLAYLIST" : type.toUpperCase()}
-          </Label>
-          <Label type="display" accessibilityRole="header">
-            {title}
-          </Label>
-          <Label color="text-muted">
-            {artist
-              ? artist.bio
-              : album
-                ? `${album.artist} · ${album.year}`
-                : playlist?.description}
-          </Label>
-          <Label type="sm" color="text-muted">
-            {tracks.length} tracks ·{" "}
-            {formatTime(
-              tracks.reduce((sum, x) => sum + x.durationMs, 0) / 1000,
-            )}
-          </Label>
-          <View style={ui.wrap}>
-            <Button
-              title="Play"
-              icon={Play}
-              disabled={!tracks.length || m.pending}
-              onPress={() => void m.playTracks(tracks)}
-            />
-            {!playlist?.owner ? (
-              <Button
-                title={
-                  saved
-                    ? artist
-                      ? "Following"
-                      : "Saved"
-                    : artist
-                      ? "Follow"
-                      : "Save"
-                }
-                icon={saved ? Check : Plus}
-                variant="secondary"
-                onPress={() => void m.run(() => m.data.save(kind, id, !saved))}
-              />
-            ) : (
-              <Button
-                title="Edit playlist"
-                variant="secondary"
-                onPress={() => go(`/edit/${id}`)}
-              />
-            )}
-          </View>
-        </View>
-      </View>
-      <Section title={artist ? "Popular tracks" : "Tracks"}>
-        <Tracks tracks={tracks} />
-      </Section>
-      {artist ? (
-        <Section title="Releases">
-          <Cards
-            items={c.albums.filter((x) => x.artistId === id)}
-            type="album"
-          />
-        </Section>
-      ) : null}
-      {album ? (
-        <Button
-          title={`Visit ${album.artist}`}
-          variant="quiet"
-          onPress={() => go(`/artist/${album.artistId}`)}
-        />
-      ) : null}
+      <MusicList tracks={tracks} header={header} footer={footer} />
     </Shell>
   );
 }
+const s = StyleSheet.create({
+  header: { gap: 12, paddingBottom: 16 },
+  cover: { alignItems: "center", paddingVertical: 16 },
+});

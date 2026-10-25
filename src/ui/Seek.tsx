@@ -1,5 +1,5 @@
+import Slider from "@react-native-community/slider";
 import { useState } from "react";
-import { Pressable, View } from "react-native";
 import { theme as t } from "../design/theme";
 export function Seek({
   value,
@@ -10,40 +10,46 @@ export function Seek({
   max: number;
   onChange: (value: number) => void;
 }) {
-  const [width, setWidth] = useState(1);
+  const [dragging, setDragging] = useState(false);
+  const [draft, setDraft] = useState(value);
   return (
-    <Pressable
-      accessibilityRole="adjustable"
+    <Slider
       accessibilityLabel="Playback position"
+      accessibilityRole="adjustable"
       accessibilityValue={{
         min: 0,
         max: Math.floor(max),
-        now: Math.floor(value),
+        now: Math.floor(dragging ? draft : value),
       }}
       accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
-      onAccessibilityAction={(e) =>
-        onChange(value + (e.nativeEvent.actionName === "increment" ? 5 : -5))
+      onAccessibilityAction={(event) =>
+        onChange(
+          Math.min(
+            max,
+            Math.max(
+              0,
+              value + (event.nativeEvent.actionName === "increment" ? 5 : -5),
+            ),
+          ),
+        )
       }
-      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
-      onPress={(e) => onChange((e.nativeEvent.locationX / width) * max)}
-      style={{ minHeight: t.layout.touch, justifyContent: "center" }}
-    >
-      <View
-        style={{
-          height: t.space[4],
-          backgroundColor: t.color.border,
-          borderRadius: t.radius.pill,
-        }}
-      >
-        <View
-          style={{
-            height: t.space[4],
-            width: `${max ? Math.min(100, (value / max) * 100) : 0}%`,
-            backgroundColor: t.color.accent,
-            borderRadius: t.radius.pill,
-          }}
-        />
-      </View>
-    </Pressable>
+      minimumValue={0}
+      maximumValue={Math.max(1, max)}
+      value={dragging ? draft : Math.min(value, max)}
+      step={0.1}
+      minimumTrackTintColor={t.color.text}
+      maximumTrackTintColor={t.color.border}
+      thumbTintColor={t.color.text}
+      onSlidingStart={() => {
+        setDraft(value);
+        setDragging(true);
+      }}
+      onValueChange={setDraft}
+      onSlidingComplete={(next) => {
+        setDragging(false);
+        onChange(next);
+      }}
+      style={{ width: "100%", height: 40 }}
+    />
   );
 }

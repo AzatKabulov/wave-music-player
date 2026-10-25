@@ -40,7 +40,7 @@ export const test = base.extend<{ listener: void }>({
       await page.goto("/home");
       await expect(
         page.getByRole("heading", {
-          name: "Keep your own rhythm",
+          name: "Home",
           exact: true,
         }),
       ).toBeVisible();
@@ -58,7 +58,11 @@ export async function a11y(page: Page) {
   expect(
     result.violations.map((v) => ({
       id: v.id,
-      nodes: v.nodes.map((n) => n.target),
+      nodes: v.nodes.map((n) => ({
+        target: n.target,
+        html: n.html,
+        reason: n.failureSummary,
+      })),
     })),
   ).toEqual([]);
 }

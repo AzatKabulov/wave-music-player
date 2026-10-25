@@ -1,140 +1,323 @@
-import { Music2 } from "lucide-react-native";
-import { useState } from "react";
-import { Pressable, View } from "react-native";
+import { Clock3, Music2, Search, X } from "lucide-react-native";
+import { useDeferredValue, useEffect, useState } from "react";
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from "react-native";
 import { useMusic } from "../../data/MusicProvider";
-import { Button, Chip, Input, Label, StateView } from "../../design/Primitives";
+import { deviceStorage } from "../../data/storage";
+import { Artwork } from "../../design/Artwork";
+import { Touch } from "../../design/Motion";
+import { Chip, IconButton, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
+import { TrackRow } from "../TrackRow";
+import { Cards, Section } from "./common";
 
-import { Cards, Section, Tracks, s } from "./common";
 export function SearchScreen() {
   const m = useMusic(),
-    [query, setQuery] = useState(""),
-    [kind, setKind] = useState("All"),
-    [category, setCategory] = useState("");
-  const c = m.snapshot!.catalog;
-  const q = query.trim().normalize("NFKC").toLocaleLowerCase();
-  const matches = (text: string) =>
-    text.normalize("NFKC").toLocaleLowerCase().includes(q);
+    c = m.snapshot!.catalog;
+  const [query, setQuery] = useState("");
+  const [kind, setKind] = useState("All");
+  const [category, setCategory] = useState("");
+  const [recent, setRecent] = useState<string[]>([]);
+  const deferred = useDeferredValue(query);
+  const q = deferred.trim().normalize("NFKC").toLocaleLowerCase();
+  const historyKey = `musify.search.${m.snapshot!.profile!.id}`;
+  useEffect(() => {
+    let active = true;
+    void deviceStorage.getItem(historyKey).then((value) => {
+      if (active) {
+        try {
+          const parsed = JSON.parse(value || "[]");
+          if (Array.isArray(parsed))
+            setRecent(
+              parsed.filter((item) => typeof item === "string").slice(0, 6),
+            );
+        } catch {}
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [historyKey]);
+  const remember = (value = query) => {
+    if (!value.trim()) return;
+    const next = [
+      value.trim(),
+      ...recent.filter((item) => item !== value.trim()),
+    ].slice(0, 6);
+    setRecent(next);
+    void deviceStorage.setItem(historyKey, JSON.stringify(next));
+  };
+  const matches = (value: string) =>
+    value.normalize("NFKC").toLocaleLowerCase().includes(q);
   const tracks = c.tracks.filter(
-    (x) =>
-      matches(`${x.title} ${x.artist} ${x.album}`) &&
-      (!category || x.genre === category),
+    (track) =>
+      matches(`${track.title} ${track.artist} ${track.album}`) &&
+      (!category || track.genre === category),
   );
-  const albums = c.albums.filter((x) => matches(`${x.title} ${x.artist}`));
-  const artists = c.artists.filter((x) => matches(x.name));
-  const playlists = [...c.playlists, ...m.snapshot!.playlists].filter((x) =>
-    matches(x.title),
+  const albums = c.albums.filter((album) =>
+    matches(`${album.title} ${album.artist}`),
   );
-  const any = tracks.length + albums.length + artists.length + playlists.length;
+  const artists = c.artists.filter((artist) => matches(artist.name));
+  const playlists = [...c.playlists, ...m.snapshot!.playlists].filter(
+    (playlist) => matches(playlist.title),
+  );
+  const active = !!q || !!category;
+  const shownTracks = kind === "All" || kind === "Tracks" ? tracks : [];
+  const otherCount =
+    (kind === "All" || kind === "Albums" ? albums.length : 0) +
+    (kind === "All" || kind === "Artists" ? artists.length : 0) +
+    (kind === "All" || kind === "Playlists" ? playlists.length : 0);
+  const genres = [
+    ...new Set(c.tracks.map((track) => track.genre).filter(Boolean)),
+  ];
+  const colors = [
+    t.color["art-forest"],
+    t.color["art-night"],
+    t.color["art-clay"],
+    t.color["art-berry"],
+    t.color["art-sea"],
+    t.color["art-sand"],
+  ];
   return (
-    <Shell title="Search" eyebrow="FOLLOW YOUR CURIOSITY">
-      <View style={ui.section}>
-        <Input
-          label="Search music"
-          placeholder="Tracks, artists, albums…"
+    <Shell title="Search" scroll={false}>
+      <View style={s.search}>
+        <Search size={23} color={t.color.bg} />
+        <TextInput
+          accessibilityLabel="Search music"
+          placeholder="What do you want to listen to?"
+          placeholderTextColor="#494950"
           value={query}
-          onChangeText={(v) => {
-            setQuery(v);
+          onChangeText={(value) => {
+            setQuery(value);
             setCategory("");
           }}
+          onSubmitEditing={() => remember()}
           autoCorrect={false}
+          autoCapitalize="none"
           returnKeyType="search"
+          maxLength={120}
+          style={s.input}
         />
-        {q || category ? (
-          <>
-            <View style={ui.wrap}>
-              {["All", "Tracks", "Albums", "Artists", "Playlists"].map((k) => (
-                <Chip
-                  key={k}
-                  title={k}
-                  selected={k === kind}
-                  onPress={() => setKind(k)}
-                />
-              ))}
-            </View>
-            {category ? (
-              <Button
-                title={`Clear ${category} filter`}
-                variant="quiet"
-                onPress={() => setCategory("")}
-              />
-            ) : null}
-          </>
+        {query ? (
+          <Touch
+            accessibilityRole="button"
+            accessibilityLabel="Clear search"
+            onPress={() => {
+              setQuery("");
+              setCategory("");
+            }}
+            style={s.clear}
+          >
+            <X size={22} color={t.color.bg} />
+          </Touch>
         ) : null}
       </View>
-      {!q && !category ? (
+      {active ? (
         <>
-          <Section title="Find your mood">
-            <View style={s.browse}>
-              {["Ambient", "Electronic", "Instrumental", "Jazz"].map(
-                (genre, i) => (
-                  <Pressable
-                    key={genre}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={s.filters}
+            style={s.filterScroll}
+          >
+            {["All", "Tracks", "Albums", "Artists", "Playlists"].map(
+              (value) => (
+                <Chip
+                  key={value}
+                  title={value}
+                  selected={kind === value}
+                  onPress={() => setKind(value)}
+                />
+              ),
+            )}
+          </ScrollView>
+          <FlatList
+            data={shownTracks}
+            keyExtractor={(track) => track.id}
+            renderItem={({ item, index }) => (
+              <TrackRow track={item} context={shownTracks} index={index} />
+            )}
+            ListHeaderComponent={
+              shownTracks.length ? (
+                <Label type="lg" style={s.resultTitle}>
+                  {category || "Tracks"}
+                </Label>
+              ) : undefined
+            }
+            ListEmptyComponent={
+              !shownTracks.length && !otherCount ? (
+                <StateView
+                  title="Nothing matched this time"
+                  message={`Try a shorter name or a different spelling for “${query || category}”.`}
+                />
+              ) : undefined
+            }
+            ListFooterComponent={
+              <View style={s.other}>
+                {(kind === "All" || kind === "Albums") && albums.length ? (
+                  <Section title="Albums">
+                    <Cards items={albums} type="album" />
+                  </Section>
+                ) : null}
+                {(kind === "All" || kind === "Artists") && artists.length ? (
+                  <Section title="Artists">
+                    {artists.map((artist) => (
+                      <Touch
+                        key={artist.id}
+                        accessibilityRole="button"
+                        accessibilityLabel={artist.name}
+                        onPress={() => {
+                          remember();
+                          go(`/artist/${artist.id}`);
+                        }}
+                        style={s.recent}
+                      >
+                        <Artwork palette={artist.palette} size={48} round />
+                        <View>
+                          <Label>{artist.name}</Label>
+                          <Label type="sm" color="text-muted">
+                            Artist
+                          </Label>
+                        </View>
+                      </Touch>
+                    ))}
+                  </Section>
+                ) : null}
+                {(kind === "All" || kind === "Playlists") &&
+                playlists.length ? (
+                  <Section title="Playlists">
+                    <Cards items={playlists} type="playlist" />
+                  </Section>
+                ) : null}
+              </View>
+            }
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            initialNumToRender={12}
+            windowSize={7}
+          />
+        </>
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 24 }}
+        >
+          {recent.length ? (
+            <Section title="Recent searches">
+              {recent.map((value) => (
+                <View key={value} style={ui.row}>
+                  <Touch
                     accessibilityRole="button"
-                    accessibilityLabel={`Browse ${genre}`}
-                    onPress={() => setCategory(genre)}
-                    style={[
-                      s.browseTile,
-                      {
-                        backgroundColor: [
-                          t.color["art-forest"],
-                          t.color["art-night"],
-                          t.color["art-clay"],
-                          t.color["art-berry"],
-                        ][i],
-                      },
-                    ]}
+                    accessibilityLabel={`Search ${value}`}
+                    onPress={() => setQuery(value)}
+                    style={[s.recent, ui.grow]}
                   >
-                    <Label type="lg" style={{ color: t.color.text }}>
-                      {genre}
+                    <Clock3 size={22} color={t.color["text-muted"]} />
+                    <Label numberOfLines={1} style={ui.grow}>
+                      {value}
                     </Label>
-                    <Music2 size={t.icon.hero} color={t.color["art-light"]} />
-                  </Pressable>
-                ),
-              )}
+                  </Touch>
+                  <IconButton
+                    icon={X}
+                    label={`Remove search ${value}`}
+                    onPress={() => {
+                      const next = recent.filter((item) => item !== value);
+                      setRecent(next);
+                      void deviceStorage.setItem(
+                        historyKey,
+                        JSON.stringify(next),
+                      );
+                    }}
+                  />
+                </View>
+              ))}
+            </Section>
+          ) : null}
+          <Section title="Browse your music">
+            <View style={s.browse}>
+              {genres.map((genre, index) => (
+                <Touch
+                  key={genre}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Browse ${genre}`}
+                  onPress={() => {
+                    setCategory(genre);
+                    setKind("Tracks");
+                  }}
+                  style={[
+                    s.tile,
+                    { backgroundColor: colors[index % colors.length] },
+                  ]}
+                >
+                  <Label type="lg" style={s.tileTitle}>
+                    {genre}
+                  </Label>
+                  <Music2 size={42} color={t.color.text} style={s.tileIcon} />
+                </Touch>
+              ))}
             </View>
           </Section>
           <Section title="Start somewhere new">
-            <Cards items={c.albums.slice(2)} type="album" />
+            <Cards items={c.albums} type="album" />
           </Section>
-        </>
-      ) : !any ? (
-        <StateView
-          title="Nothing matched this time"
-          message={`Try a shorter name or a different spelling for “${query}”.`}
-        />
-      ) : (
-        <>
-          {kind === "All" || kind === "Tracks" ? (
-            <Section title={category || "Tracks"}>
-              <Tracks tracks={tracks} />
-            </Section>
-          ) : null}
-          {(kind === "All" || kind === "Albums") && albums.length ? (
-            <Section title="Albums">
-              <Cards items={albums} type="album" />
-            </Section>
-          ) : null}
-          {(kind === "All" || kind === "Artists") && artists.length ? (
-            <Section title="Artists">
-              {artists.map((a) => (
-                <Button
-                  key={a.id}
-                  title={a.name}
-                  variant="secondary"
-                  onPress={() => go(`/artist/${a.id}`)}
-                />
-              ))}
-            </Section>
-          ) : null}
-          {(kind === "All" || kind === "Playlists") && playlists.length ? (
-            <Section title="Playlists">
-              <Cards items={playlists} type="playlist" />
-            </Section>
-          ) : null}
-        </>
+        </ScrollView>
       )}
     </Shell>
   );
 }
+const s = StyleSheet.create({
+  search: {
+    backgroundColor: t.color.text,
+    minHeight: 52,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 12,
+    gap: 10,
+    marginBottom: 20,
+  },
+  input: {
+    flex: 1,
+    minWidth: 0,
+    color: t.color.bg,
+    minHeight: 52,
+    fontSize: 15,
+    fontWeight: "500",
+    paddingVertical: 10,
+  },
+  clear: {
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  filters: { gap: 8, paddingBottom: 16 },
+  filterScroll: { flexGrow: 0 },
+  resultTitle: { marginBottom: 12 },
+  other: { paddingTop: 20, paddingBottom: 20 },
+  recent: {
+    minHeight: 60,
+    gap: 12,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  browse: { gap: 12, flexDirection: "row", flexWrap: "wrap" },
+  tile: {
+    flexBasis: "46%",
+    flexGrow: 1,
+    minHeight: 112,
+    padding: 16,
+    borderRadius: 8,
+    overflow: "hidden",
+    justifyContent: "space-between",
+  },
+  tileTitle: { color: t.color.text, fontWeight: "700" },
+  tileIcon: { alignSelf: "flex-end", transform: [{ rotate: "15deg" }] },
+});

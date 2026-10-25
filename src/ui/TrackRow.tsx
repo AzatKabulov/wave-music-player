@@ -1,7 +1,8 @@
 import { AudioLines, Heart, MoreHorizontal } from "lucide-react-native";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useMusic } from "../data/MusicProvider";
 import type { Track } from "../data/types";
+import { Touch } from "../design/Motion";
 import { Artwork } from "../design/Artwork";
 import { IconButton, Label } from "../design/Primitives";
 import { theme as t } from "../design/theme";
@@ -25,7 +26,7 @@ export function TrackRow({
     saved = m.snapshot?.library.tracks.includes(track.id);
   return (
     <View style={[s.row, blocked && { opacity: t.opacity.disabled }]}>
-      <Pressable
+      <Touch
         accessibilityRole="button"
         accessibilityLabel={`Play ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? "Unavailable for playback" : track.artist) : ""}`}
         accessibilityState={{ disabled: blocked }}
@@ -50,17 +51,12 @@ export function TrackRow({
           ) : null}
         </View>
         {active ? <AudioLines size={t.icon.sm} color={t.color.accent} /> : null}
-      </Pressable>
+      </Touch>
       <IconButton
         icon={Heart}
         label={`${saved ? "Unsave" : "Save"} ${track.title}`}
         selected={saved}
-        onPress={() =>
-          void m.run(
-            () => m.data.save("tracks", track.id, !saved),
-            saved ? "Removed from liked tracks" : "Added to liked tracks",
-          )
-        }
+        onPress={() => void m.save("tracks", track.id, !saved)}
       />
       <IconButton
         icon={MoreHorizontal}

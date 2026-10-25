@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Image, StyleSheet, View, type ViewStyle } from "react-native";
+import { StyleSheet, View, type ViewStyle } from "react-native";
+import { Image } from "expo-image";
 import { theme as t } from "./theme";
 
 export const palettes = [
@@ -42,7 +43,10 @@ export function Artwork({
       >
         <Image
           source={{ uri }}
-          resizeMode="cover"
+          contentFit="cover"
+          cachePolicy="memory-disk"
+          recyclingKey={uri}
+          transition={120}
           style={{ width: "100%", height: "100%" }}
           onError={() => setFailedUri(uri)}
           accessible={false}

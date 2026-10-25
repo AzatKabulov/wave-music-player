@@ -1,7 +1,8 @@
 import { ArrowRight } from "lucide-react-native";
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import type { Album, Playlist, Track } from "../../data/types";
+import { Touch } from "../../design/Motion";
 import { Artwork } from "../../design/Artwork";
 import { IconButton, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
@@ -10,7 +11,6 @@ import { TrackRow } from "../TrackRow";
 
 export function Section({
   title,
-  kicker,
   action,
   children,
 }: {
@@ -23,11 +23,6 @@ export function Section({
     <View style={ui.section}>
       <View style={ui.h}>
         <View style={ui.grow}>
-          {kicker ? (
-            <Label type="xs" color="text-muted">
-              {kicker}
-            </Label>
-          ) : null}
           <Label type="xl" accessibilityRole="header">
             {title}
           </Label>
@@ -58,7 +53,7 @@ export function Cards({
       contentContainerStyle={s.cards}
     >
       {items.map((item) => (
-        <Pressable
+        <Touch
           key={item.id}
           accessibilityRole="button"
           onPress={() => go(`/${type}/${item.id}`)}
@@ -71,7 +66,7 @@ export function Cards({
           <Label type="sm" color="text-muted" numberOfLines={2}>
             {"artist" in item ? item.artist : item.description}
           </Label>
-        </Pressable>
+        </Touch>
       ))}
     </ScrollView>
   );
@@ -101,7 +96,7 @@ export const formatTime = (seconds: number) =>
   `${Math.floor((Number.isFinite(seconds) ? seconds : 0) / 60)}:${String(Math.floor((Number.isFinite(seconds) ? seconds : 0) % 60)).padStart(2, "0")}`;
 export const s = StyleSheet.create({
   filters: { marginBottom: t.space[24] },
-  cards: { gap: t.space[20], paddingBottom: t.space[8] },
+  cards: { gap: t.space[16], paddingBottom: t.space[8] },
   card: { width: t.space[160], gap: t.space[8] },
   semibold: { fontWeight: "600" },
   center: { textAlign: "center" },

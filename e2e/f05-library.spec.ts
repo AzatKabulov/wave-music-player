@@ -7,7 +7,10 @@ test("F05-H1 likes are separate from album saves", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Unsave Open Road", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Library", exact: true }).click();
+  await page
+    .getByRole("tab", { name: "Library", exact: true })
+    .or(page.getByRole("button", { name: "Library", exact: true }))
+    .click();
   await a11y(page);
   await page.getByRole("button", { name: /Liked tracks/ }).click();
   await expect(

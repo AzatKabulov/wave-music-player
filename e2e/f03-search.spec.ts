@@ -1,6 +1,9 @@
 import { test, expect, a11y } from "./fixtures";
 test("F03-H1/E1 search, no result and Unicode input", async ({ page }) => {
-  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await page
+    .getByRole("tab", { name: "Search", exact: true })
+    .or(page.getByRole("button", { name: "Search", exact: true }))
+    .click();
   await a11y(page);
   await page
     .getByRole("textbox", { name: "Search music", exact: true })
