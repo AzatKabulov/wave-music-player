@@ -6,16 +6,18 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createDatabase } from "../src/database.mjs";
+import sharp from "sharp";
 import { createApp } from "../src/app.mjs";
 
 test("personal artwork is linked to a published album and never exposes audio assets", async () => {
   const db = await createDatabase({ memory: true });
   const dir = await mkdtemp(join(tmpdir(), "musify-art-"));
   const id = randomUUID();
-  const png = Buffer.from(
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j3ioAAAAASUVORK5CYII=",
-    "base64",
-  );
+  const png = await sharp({
+    create: { width: 600, height: 600, channels: 3, background: "#446155" },
+  })
+    .png()
+    .toBuffer();
   await writeFile(join(dir, `${id}.png`), png);
   await db.admin(async (c) => {
     await c.query(
@@ -42,6 +44,18 @@ test("personal artwork is linked to a published album and never exposes audio as
     assert.equal(response.statusCode, 200);
     assert.equal(response.headers["content-type"], "image/png");
     assert.deepEqual(response.rawPayload, png);
+    const thumbnail = await app.inject({
+      method: "GET",
+      url: `/v1/artwork/${id}?w=128`,
+    });
+    assert.equal(thumbnail.statusCode, 200, thumbnail.body);
+    assert.equal(thumbnail.headers["content-type"], "image/jpeg");
+    assert.equal(thumbnail.headers["cache-control"], "private, max-age=86400");
+    assert.equal(
+      (await app.inject({ method: "GET", url: `/v1/artwork/${id}?w=9999` }))
+        .statusCode,
+      422,
+    );
     assert.equal(
       (await ordinary.inject({ method: "GET", url: `/v1/artwork/${id}` }))
         .statusCode,
@@ -91,11 +105,22 @@ test("personal artwork is linked to a published album and never exposes audio as
         .statusCode,
       404,
     );
+    assert.equal(
+      (await app.inject({ method: "GET", url: `/v1/artwork/${id}?w=128` }))
+        .statusCode,
+      404,
+    );
   } finally {
     await app.close();
     await ordinary.close();
     await db.close();
     await unlink(join(dir, `${id}.png`));
+    await unlink(join(dir, "variants", `${id}-128.jpg`)).catch((error) => {
+      if (error.code !== "ENOENT") throw error;
+    });
+    await rmdir(join(dir, "variants")).catch((error) => {
+      if (error.code !== "ENOENT") throw error;
+    });
     await rmdir(dir);
   }
 });

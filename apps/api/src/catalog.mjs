@@ -1,17 +1,22 @@
 const palettes = ["clay", "sea", "night", "sand", "berry", "forest"];
 export const palette = (id) =>
   palettes[parseInt(id.slice(-4), 16) % palettes.length];
-export async function catalog(client, userId, baseUrl = "") {
-  const artists = (
-    await client.query(
-      "select id,name,bio from music.artists where status='published' order by created_at,id limit 100",
-    )
-  ).rows.map((x) => ({ ...x, palette: palette(x.id) }));
+export async function catalog(client, userId, baseUrl = "", references = {}) {
   const rows = (
-    await client.query(`select t.id,t.title,t.duration_ms,t.explicit,t.language_code,t.genres,a.id artist_id,a.name artist,
+    await client.query(
+      `with initial as (
+    select id from music.tracks where status='published' order by created_at,id limit 100
+  ) select distinct on (t.id) t.id,t.title,t.duration_ms,t.explicit,t.language_code,t.genres,a.id artist_id,a.name artist,
   al.id album_id,al.title album,al.cover_asset_id,at.disc_number,at.track_number from music.tracks t join music.track_artists ta on ta.track_id=t.id and ta.credit_role='primary' and ta.position=0
   join music.artists a on a.id=ta.artist_id left join music.album_tracks at on at.track_id=t.id left join music.albums al on al.id=at.album_id
-  where t.status='published' order by t.created_at,t.id limit 100`)
+  where t.status='published' and (
+    t.id in (select id from initial) or t.id=any($2::uuid[])
+    or exists(select 1 from music.queue_entries qe where qe.track_id=t.id and qe.user_id=$1)
+    or exists(select 1 from music.playlist_items pi join music.playlists p on p.id=pi.playlist_id
+      where pi.track_id=t.id and (p.user_id=$1 or exists(select 1 from music.saved_playlists sp where sp.playlist_id=p.id and sp.user_id=$1)))
+  ) order by t.id,al.release_date desc nulls last`,
+      [userId, references.tracks || []],
+    )
   ).rows;
   const tracks = rows.map((x) => ({
     id: x.id,
@@ -22,17 +27,46 @@ export async function catalog(client, userId, baseUrl = "") {
     genre: x.genres[0] || "Music",
     artistId: x.artist_id,
     artist: x.artist,
-    albumId: x.album_id,
-    album: x.album,
+    albumId: x.album_id || "",
+    album: x.album || "",
     palette: palette(x.artist_id),
     available: true,
     artworkUrl: x.cover_asset_id
       ? `${baseUrl}/v1/artwork/${x.cover_asset_id}`
       : undefined,
   }));
+  const artists = (
+    await client.query(
+      `select id,name,bio from music.artists where status='published' and (
+    id in (select id from music.artists where status='published' order by created_at,id limit 100)
+    or id=any($1::uuid[])) order by created_at,id`,
+      [
+        [
+          ...new Set([
+            ...(references.artists || []),
+            ...rows.map((row) => row.artist_id),
+          ]),
+        ],
+      ],
+    )
+  ).rows.map((row) => ({
+    ...row,
+    bio: row.bio || "",
+    palette: palette(row.id),
+  }));
   const albums = (
     await client.query(
-      "select id,title,cover_asset_id,extract(year from release_date)::int as year from music.albums where status='published' order by created_at,id limit 100",
+      `select id,title,cover_asset_id,extract(year from release_date)::int as year from music.albums where status='published' and (
+        id in (select id from music.albums where status='published' order by created_at,id limit 100)
+        or id=any($1::uuid[])) order by created_at,id`,
+      [
+        [
+          ...new Set([
+            ...(references.albums || []),
+            ...rows.map((row) => row.album_id).filter(Boolean),
+          ]),
+        ],
+      ],
     )
   ).rows.map((a) => {
     const ts = tracks.filter((t) => t.albumId === a.id);
@@ -55,18 +89,30 @@ export async function catalog(client, userId, baseUrl = "") {
   });
   const lists = (
     await client.query(
-      "select id,title,description,user_id,revision from music.playlists order by updated_at desc,id limit 100",
+      `select id,title,description,user_id,revision from music.playlists where
+        id in (select id from music.playlists order by updated_at desc,id limit 100)
+        or user_id=$1 or id=any($2::uuid[]) order by updated_at desc,id`,
+      [userId, references.playlists || []],
     )
   ).rows;
-  const playlists = [];
-  for (const p of lists) {
-    const items = (
-      await client.query(
-        'select id,track_id as "trackId" from music.playlist_items where playlist_id=$1 order by position limit 5000',
-        [p.id],
-      )
-    ).rows;
-    playlists.push({
+  const groupedItems = new Map(lists.map((list) => [list.id, []]));
+  if (lists.length) {
+    // Preserve the per-playlist bound and row-level access rules, while making
+    // one database round trip for all visible playlist items.
+    const { rows: items } = await client.query(
+      `select p.id as playlist_id, i.id, i.track_id as "trackId"
+       from music.playlists p cross join lateral (
+         select id, track_id, position from music.playlist_items
+         where playlist_id = p.id order by position limit 5000
+       ) i where p.id = any($1::uuid[]) order by p.id, i.position`,
+      [lists.map((list) => list.id)],
+    );
+    for (const { playlist_id, ...item } of items)
+      groupedItems.get(playlist_id).push(item);
+  }
+  const playlists = lists.map((p) => {
+    const items = groupedItems.get(p.id);
+    return {
       id: p.id,
       title: p.title,
       description: p.description,
@@ -77,8 +123,8 @@ export async function catalog(client, userId, baseUrl = "") {
         palette(p.id),
       items,
       artworkUrl: tracks.find((t) => t.id === items[0]?.trackId)?.artworkUrl,
-    });
-  }
+    };
+  });
   return { artists, albums, tracks, playlists };
 }
 export async function snapshot(db, identity, baseUrl = "") {
@@ -103,13 +149,12 @@ export async function snapshot(db, identity, baseUrl = "") {
       )
     ).rows[0];
     if (!p || p.state !== "active") return { profile: null };
-    const cat = await catalog(c, identity.id, baseUrl),
-      prefs = (
-        await c.query(
-          'select explicit_allowed as "explicitAllowed",locale,library_sort as "librarySort" from music.user_preferences where user_id=$1',
-          [identity.id],
-        )
-      ).rows[0];
+    const prefs = (
+      await c.query(
+        'select explicit_allowed as "explicitAllowed",locale,library_sort as "librarySort" from music.user_preferences where user_id=$1',
+        [identity.id],
+      )
+    ).rows[0];
     const library = {};
     for (const [kind, column] of [
       ["tracks", "track_id"],
@@ -129,6 +174,10 @@ export async function snapshot(db, identity, baseUrl = "") {
         [identity.id],
       )
     ).rows.map((x) => x.id);
+    const cat = await catalog(c, identity.id, baseUrl, {
+      ...library,
+      tracks: [...new Set([...library.tracks, ...recents])],
+    });
     return {
       profile: {
         id: p.id,

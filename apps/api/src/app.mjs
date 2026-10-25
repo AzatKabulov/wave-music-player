@@ -5,9 +5,11 @@ import Fastify from "fastify";
 import { randomBytes } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { Readable } from "node:stream";
+import { fileURLToPath } from "node:url";
 import { z, ZodError } from "zod";
 import { createAuth } from "./auth.mjs";
 import { catalog, palette, snapshot } from "./catalog.mjs";
+import { catalogGraph, createCatalogSearch } from "./catalog-query.mjs";
 import {
   entries,
   fail,
@@ -27,6 +29,7 @@ import { createJobs } from "./jobs.mjs";
 import { registerOperators } from "./operators.mjs";
 import { audioRoot } from "./seed.mjs";
 import { registerPersonalDownload } from "./personal-download.mjs";
+import { artworkVariant } from "./artwork-variants.mjs";
 
 export async function createApp({
   db,
@@ -64,9 +67,9 @@ export async function createApp({
     crossOriginResourcePolicy: { policy: "cross-origin" },
   });
   app.addHook("onSend", async (req, reply, payload) => {
-    reply
-      .header("Cache-Control", "no-store")
-      .header("Referrer-Policy", "no-referrer");
+    if (!reply.hasHeader("Cache-Control"))
+      reply.header("Cache-Control", "no-store");
+    reply.header("Referrer-Policy", "no-referrer");
     return payload;
   });
   app.setErrorHandler((e, req, reply) => {
@@ -171,7 +174,7 @@ export async function createApp({
         if (!options.public && !req.identity)
           fail(401, "unauthorized", "Sign in to continue.");
         for (const [name, value] of Object.entries(req.params || {}))
-          if (name !== "token") uuid.parse(value);
+          if (name !== "token" && name !== "kind") uuid.parse(value);
         if (schema) req.body = schema.parse(req.body ?? {});
       },
       handler,
@@ -180,6 +183,7 @@ export async function createApp({
   const user = (req, fn) => db.user(req.identity.id, fn);
   const getCatalog = (req) =>
     user(req, (c) => catalog(c, req.identity.id, baseUrl));
+  const searchCatalog = createCatalogSearch(db, baseUrl);
   const getPlaylist = (req, id) =>
     user(req, async (c) => {
       const all = await catalog(c, req.identity.id, baseUrl),
@@ -250,6 +254,22 @@ export async function createApp({
         Number(asset.byte_size) > 10485760
       )
         fail(404, "not_found", "This artwork is unavailable.");
+      const width = z
+        .object({ w: z.enum(["128", "320", "768"]).optional() })
+        .strict()
+        .parse(req.query).w;
+      if (width) {
+        const buffer = await artworkVariant(
+          fileURLToPath(new URL(asset.storage_key.slice(9), personalMediaRoot)),
+          new URL("variants/", personalMediaRoot),
+          req.params.assetId,
+          Number(width),
+        );
+        return reply
+          .type("image/jpeg")
+          .header("Cache-Control", "private, max-age=86400")
+          .send(buffer);
+      }
       return reply
         .type(asset.mime_type)
         .header("Content-Length", asset.byte_size)
@@ -312,25 +332,14 @@ export async function createApp({
   route("GET", "/v1/search", null, async (req) => {
     const q = query.parse(req.query);
     if (!q.q?.trim()) fail(422, "query_required", "Enter a search.");
-    const c = await getCatalog(req),
-      needle = q.q.normalize("NFKC").toLocaleLowerCase(),
-      hits = [];
-    for (const [kind, list] of [
-      ["track", c.tracks],
-      ["album", c.albums],
-      ["artist", c.artists],
-      ["playlist", c.playlists],
-    ])
-      if (!q.type || q.type === "all" || q.type === kind)
-        for (const item of list)
-          if (
-            `${item.title || item.name} ${item.artist || ""}`
-              .normalize("NFKC")
-              .toLocaleLowerCase()
-              .includes(needle)
-          )
-            hits.push({ kind, item });
-    return page(req, hits);
+    return searchCatalog(req.identity.id, q);
+  });
+  route("GET", "/v1/resolve/:kind/:id", null, async (req) => {
+    const kind = z.enum(["album", "artist", "playlist"]).parse(req.params.kind);
+    const id = uuid.parse(req.params.id);
+    return user(req, (client) =>
+      catalogGraph(client, req.identity.id, baseUrl, { [kind]: [id] }, true),
+    );
   });
   route("GET", "/v1/search/suggestions", null, async (req) => {
     const q = query.parse(req.query);
