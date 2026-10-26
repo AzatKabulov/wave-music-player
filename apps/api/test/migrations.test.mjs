@@ -99,7 +99,11 @@ test("catalog upgrades preserve identities, distinguish fixtures, and run once",
     ).rows;
     assert.deepEqual(
       versions.map((row) => row.version),
-      ["001_music.sql", "002_catalog_metadata.sql"],
+      [
+        "001_music.sql",
+        "002_catalog_metadata.sql",
+        "003_artwork_metadata_access.sql",
+      ],
     );
     await assert.rejects(
       () =>

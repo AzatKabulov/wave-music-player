@@ -1,4 +1,13 @@
-export type Artist = { id: string; name: string; palette: string; bio: string };
+export type Artist = {
+  id: string;
+  name: string;
+  palette: string;
+  bio: string;
+  aliases?: string[];
+  bioSource?: string | null;
+  artworkUrl?: string;
+  artworkColor?: string;
+};
 export type Track = {
   id: string;
   title: string;
@@ -13,6 +22,12 @@ export type Track = {
   explicit: boolean;
   available: boolean;
   artworkUrl?: string;
+  artworkColor?: string;
+  contentKind?: "recording" | "fixture";
+  explicitState?: "unknown" | "clean" | "explicit";
+  version?: string | null;
+  discNumber?: number;
+  trackNumber?: number;
 };
 export type Album = {
   id: string;
@@ -23,6 +38,12 @@ export type Album = {
   year: number;
   trackIds: string[];
   artworkUrl?: string;
+  artworkColor?: string;
+  releaseType?: "album" | "ep" | "single" | "compilation" | "unknown";
+  releaseDate?: string | null;
+  edition?: string | null;
+  expectedTrackCount?: number | null;
+  completeness?: "unknown" | "partial" | "complete";
 };
 export type PlaylistItem = { id: string; trackId: string };
 export type Playlist = {
@@ -34,6 +55,7 @@ export type Playlist = {
   revision: string;
   items: PlaylistItem[];
   artworkUrl?: string;
+  artworkColor?: string;
 };
 export type Library = {
   tracks: string[];

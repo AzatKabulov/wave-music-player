@@ -1,3 +1,9 @@
+import {
+  artistMetadata,
+  recordingMetadata,
+  releaseMetadata,
+  withArtworkMetadata,
+} from "./catalog-shapes.mjs";
 const palettes = ["clay", "sea", "night", "sand", "berry", "forest"];
 export const palette = (id) =>
   palettes[parseInt(id.slice(-4), 16) % palettes.length];
@@ -6,7 +12,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
     await client.query(
       `with initial as (
     select id from music.tracks where status='published' order by created_at,id limit 100
-  ) select distinct on (t.id) t.id,t.title,t.duration_ms,t.explicit,t.language_code,t.genres,a.id artist_id,a.name artist,
+  ) select distinct on (t.id) t.id,t.title,t.duration_ms,t.explicit,t.language_code,t.genres,t.content_kind,t.explicit_state,t.version_label,a.id artist_id,a.name artist,
   al.id album_id,al.title album,al.cover_asset_id,at.disc_number,at.track_number from music.tracks t join music.track_artists ta on ta.track_id=t.id and ta.credit_role='primary' and ta.position=0
   join music.artists a on a.id=ta.artist_id left join music.album_tracks at on at.track_id=t.id left join music.albums al on al.id=at.album_id
   where t.status='published' and (
@@ -19,6 +25,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
     )
   ).rows;
   const tracks = rows.map((x) => ({
+    ...recordingMetadata(x),
     id: x.id,
     title: x.title,
     durationMs: x.duration_ms,
@@ -37,7 +44,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
   }));
   const artists = (
     await client.query(
-      `select id,name,bio from music.artists where status='published' and (
+      `select id,name,bio,aliases,bio_source,image_asset_id from music.artists where status='published' and (
     id in (select id from music.artists where status='published' order by created_at,id limit 100)
     or id=any($1::uuid[])) order by created_at,id`,
       [
@@ -51,12 +58,13 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
     )
   ).rows.map((row) => ({
     ...row,
+    ...artistMetadata(row, baseUrl),
     bio: row.bio || "",
     palette: palette(row.id),
   }));
   const albums = (
     await client.query(
-      `select id,title,cover_asset_id,extract(year from release_date)::int as year from music.albums where status='published' and (
+      `select id,title,cover_asset_id,release_type,release_date,edition,expected_track_count,completeness,extract(year from release_date)::int as year from music.albums where status='published' and (
         id in (select id from music.albums where status='published' order by created_at,id limit 100)
         or id=any($1::uuid[])) order by created_at,id`,
       [
@@ -72,6 +80,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
     const ts = tracks.filter((t) => t.albumId === a.id);
     return {
       ...a,
+      ...releaseMetadata(a),
       artist: ts[0]?.artist || "Various artists",
       artistId: ts[0]?.artistId,
       palette: ts[0]?.palette || palette(a.id),
@@ -125,7 +134,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
       artworkUrl: tracks.find((t) => t.id === items[0]?.trackId)?.artworkUrl,
     };
   });
-  return { artists, albums, tracks, playlists };
+  return withArtworkMetadata(client, { artists, albums, tracks, playlists });
 }
 export async function snapshot(db, identity, baseUrl = "") {
   if (!identity)

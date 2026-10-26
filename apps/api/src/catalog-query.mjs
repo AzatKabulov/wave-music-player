@@ -1,6 +1,12 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { fail, hash } from "./common.mjs";
 import { palette } from "./catalog.mjs";
+import {
+  artistMetadata,
+  recordingMetadata,
+  releaseMetadata,
+  withArtworkMetadata,
+} from "./catalog-shapes.mjs";
 
 export async function catalogGraph(
   client,
@@ -12,7 +18,7 @@ export async function catalogGraph(
   const ids = { track: [], album: [], artist: [], playlist: [], ...selected };
   const rows = (
     await client.query(
-      `select distinct on (t.id) t.id,t.title,t.duration_ms,t.explicit,t.language_code,t.genres,
+      `select distinct on (t.id) t.id,t.title,t.duration_ms,t.explicit,t.language_code,t.genres,t.content_kind,t.explicit_state,t.version_label,
     a.id artist_id,a.name artist,al.id album_id,al.title album,al.cover_asset_id,at.disc_number,at.track_number
     from music.tracks t join music.track_artists ta on ta.track_id=t.id and ta.credit_role='primary' and ta.position=0
     join music.artists a on a.id=ta.artist_id left join music.album_tracks at on at.track_id=t.id
@@ -25,6 +31,7 @@ export async function catalogGraph(
   ).rows;
   const artwork = (id) => (id ? `${baseUrl}/v1/artwork/${id}` : undefined);
   const tracks = rows.map((row) => ({
+    ...recordingMetadata(row),
     id: row.id,
     title: row.title,
     durationMs: row.duration_ms,
@@ -50,17 +57,18 @@ export async function catalogGraph(
   ];
   const artists = (
     await client.query(
-      "select id,name,bio from music.artists where id=any($1::uuid[]) and status='published'",
+      "select id,name,bio,aliases,bio_source,image_asset_id from music.artists where id=any($1::uuid[]) and status='published'",
       [artistIds],
     )
   ).rows.map((row) => ({
     ...row,
+    ...artistMetadata(row, baseUrl),
     bio: row.bio || "",
     palette: palette(row.id),
   }));
   const albums = (
     await client.query(
-      `select al.id,al.title,al.cover_asset_id,extract(year from al.release_date)::int as year,
+      `select al.id,al.title,al.cover_asset_id,al.release_type,al.release_date,al.edition,al.expected_track_count,al.completeness,extract(year from al.release_date)::int as year,
     credit.artist_id,credit.artist from music.albums al left join lateral (
       select a.id artist_id,a.name artist from music.album_tracks at join music.track_artists ta on ta.track_id=at.track_id and ta.credit_role='primary' and ta.position=0
       join music.artists a on a.id=ta.artist_id where at.album_id=al.id order by at.disc_number,at.track_number limit 1
@@ -68,6 +76,7 @@ export async function catalogGraph(
       [albumIds],
     )
   ).rows.map((row) => ({
+    ...releaseMetadata(row),
     id: row.id,
     title: row.title,
     year: row.year,
@@ -114,7 +123,7 @@ export async function catalogGraph(
     for (const { playlist_id, ...item } of items)
       byId.get(playlist_id).items.push(item);
   }
-  return { tracks, artists, albums, playlists };
+  return withArtworkMetadata(client, { tracks, artists, albums, playlists });
 }
 
 export function createCatalogSearch(db, baseUrl) {
