@@ -17,6 +17,9 @@ let snapshot: Snapshot = {
 };
 const queues = new Map<string, QueueState>();
 export const mock: MusicData = {
+  async cachedSnapshot() {
+    return null;
+  },
   async search(query, kind, signal, cursor) {
     if (signal?.aborted) throw signal.reason;
     const needle = query.normalize("NFKC").toLocaleLowerCase();

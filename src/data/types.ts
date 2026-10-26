@@ -108,6 +108,7 @@ export type Snapshot = {
   accountProvider?: "local" | "supabase";
 };
 export interface MusicData {
+  cachedSnapshot(): Promise<Snapshot | null>;
   search(
     query: string,
     kind: SearchKind,

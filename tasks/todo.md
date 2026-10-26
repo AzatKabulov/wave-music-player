@@ -413,6 +413,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V05 — Persist account-scoped metadata cache
 
+**Execution:** V05.1 implements native session-scoped disk metadata with validation, quota, expiry and logout invalidation; seven cache tests and platform exports pass. Bounded V04 contracts and physical cached-start evidence remain open. See `v2-execution.md`.
+
 **Phase:** B. **Dependencies:** V04. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Add a versioned disk bootstrap cache with quotas, expiry and explicit account-switch invalidation.

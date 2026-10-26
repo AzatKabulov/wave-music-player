@@ -447,13 +447,19 @@ function useMusicController() {
           shouldPlayInBackground: !expoGo,
           interruptionMode: "doNotMix",
         });
+        const cached = await data.cachedSnapshot().catch(() => null);
+        if (cached && !cancelled) {
+          snapshotRef.current = cached;
+          setSnapshot(cached);
+          setLoading(false);
+        }
         const account = await refresh();
         if (cancelled) return;
         // The browse surface is useful as soon as its metadata is available.
         // Queue/media authorization restores independently and never wins over
         // a newer explicit choice made while its network request was pending.
         setLoading(false);
-        if (account.profile) {
+        if (account.profile && current()) {
           const restored = await data.restoreQueue(id);
           if (restored?.entries.length && current()) {
             await ensureLease();

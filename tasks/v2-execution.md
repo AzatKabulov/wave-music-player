@@ -63,3 +63,11 @@ Personal snapshot/search/Home feeds exclude fixtures from discovery; saved and q
 - The visual round caught versioned artwork URLs being rejected by the image route. The route now validates the content hash and thumbnail width together; matching content loads, invalid/mismatched versions fail, and the regression test covers both. Cover extraction now ignores dark/neutral borders where representative color is available.
 - All eight corrected Home/album/menu/player images were inspected once in the confirmation batch: `tasks/evidence/v2/visual/`. They show real covers and final source layouts. They are web captures, not native acceptance or Spotify pixel-parity evidence.
 - Physical iOS/Android motion, background continuity, frame timing and native finish review remain open. The existing 0.2 APK is still the last packaged installer; source/Expo preview changes do not imply a rebuilt APK.
+
+## V05.1 / V06.2 — native cached startup
+
+Native startup can display the last coherent account snapshot before refreshing from the server. The disposable cache is scoped to a SHA-256 digest of the API/session identity, has a schema version, 24-hour expiry and a 2 MiB UTF-8 quota. It validates nested identities and shapes, excludes profile email and auth fields, and clears on explicit authentication changes. Serialized storage operations prevent an older pending write from repopulating the cache after logout. Browser startup continues to validate its httpOnly-cookie session with the server before showing private state.
+
+The cache contains metadata only; playback still requires current server authorization. Oversized or corrupt records become cache misses without deleting installation identity or preferences. The current full snapshot remains a scaling limit until V04's bounded bootstrap contract lands; the cache does not mark V04 or the whole V05 complete.
+
+Verification: seven cache tests cover restore, account isolation, secret exclusion, expiry/corruption, malformed nested values, Unicode byte quota, storage failure and write/logout ordering. Four focused phone-width browser account/resume/race checks passed. Typecheck and Android/iOS/web exports passed. The initial restricted Hermes export failed; the same export succeeded outside the sandbox. Actual native cached-start latency is unmeasured and remains in V47.

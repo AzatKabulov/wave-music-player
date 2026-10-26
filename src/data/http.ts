@@ -2,6 +2,9 @@ import { randomUUID } from "./uuid";
 import { Platform } from "react-native";
 import { credentials } from "./credentials";
 import { fetchJson } from "./fetchJson";
+import { digestStringAsync, CryptoDigestAlgorithm } from "expo-crypto";
+import { deviceStorage } from "./storage";
+import { createSnapshotCache } from "./snapshotCache";
 import type { MusicData, QueueState, Snapshot } from "./types";
 export const apiUrl = (
   process.env.EXPO_PUBLIC_API_URL || "http://localhost:4100"
@@ -10,6 +13,33 @@ let authPromise = credentials.read();
 const acknowledged = new Map<string, QueueState | null>();
 let tokenRefresh: Promise<void> | null = null;
 let authGeneration = 0;
+let snapshotVersion = 0;
+const metadataCache = createSnapshotCache(deviceStorage);
+async function cacheScope() {
+  // Browser sessions use httpOnly cookies; their account cannot be identified
+  // safely before server validation. Early cached startup is native-only.
+  if (Platform.OS === "web") return null;
+  const auth = await authPromise;
+  if (!auth?.accessToken) return null;
+  return digestStringAsync(
+    CryptoDigestAlgorithm.SHA256,
+    `${apiUrl}\n${auth.refreshToken || auth.accessToken}`,
+  );
+}
+function rememberSnapshot(
+  value: Snapshot,
+  generation: number,
+  version: number,
+) {
+  if (Platform.OS === "web") return;
+  void cacheScope()
+    .then(async (scope) => {
+      if (generation !== authGeneration || version !== snapshotVersion) return;
+      if (scope && value.profile) await metadataCache.write(scope, value);
+      else await metadataCache.clear();
+    })
+    .catch(() => {});
+}
 class RequestError extends Error {
   constructor(
     message: string,
@@ -88,7 +118,11 @@ async function saveAuth(
   value: { accessToken?: string; refreshToken?: string } | null,
   renewal = false,
 ) {
-  if (!renewal) authGeneration++;
+  if (!renewal) {
+    authGeneration++;
+    snapshotVersion++;
+    void metadataCache.clear();
+  }
   const next = value?.accessToken
     ? { accessToken: value.accessToken, refreshToken: value.refreshToken }
     : null;
@@ -103,6 +137,31 @@ const fromWire = (s: any): QueueState => ({
   repeat: s.repeatMode,
   shuffle: s.shuffle,
 });
+async function fetchSnapshot() {
+  const generation = authGeneration;
+  const value: Snapshot = await request("/v1/snapshot");
+  if (!value.profile && value.accountProvider === "supabase") {
+    try {
+      const auth = await authPromise;
+      const renewed = await request(
+        "/auth/refresh",
+        "POST",
+        auth?.refreshToken ? { refreshToken: auth.refreshToken } : {},
+      );
+      if (generation !== authGeneration) return request("/v1/snapshot");
+      await saveAuth(renewed, true);
+      return request("/v1/snapshot");
+    } catch (error) {
+      if (
+        error instanceof RequestError &&
+        (error.status === 401 || error.status === 403)
+      ) {
+        if (generation === authGeneration) await saveAuth(null);
+      } else throw error;
+    }
+  }
+  return value;
+}
 export const http: MusicData = {
   search(query, kind, signal, cursor) {
     return request(
@@ -117,29 +176,22 @@ export const http: MusicData = {
   resolve(kind, id) {
     return request(`/v1/resolve/${kind}/${encodeURIComponent(id)}`);
   },
-  async snapshot() {
+  async cachedSnapshot() {
     const generation = authGeneration;
-    const value: Snapshot = await request("/v1/snapshot");
-    if (!value.profile && value.accountProvider === "supabase") {
-      try {
-        const auth = await authPromise;
-        const renewed = await request(
-          "/auth/refresh",
-          "POST",
-          auth?.refreshToken ? { refreshToken: auth.refreshToken } : {},
-        );
-        if (generation !== authGeneration) return request("/v1/snapshot");
-        await saveAuth(renewed, true);
-        return request("/v1/snapshot");
-      } catch (error) {
-        if (
-          error instanceof RequestError &&
-          (error.status === 401 || error.status === 403)
-        ) {
-          if (generation === authGeneration) await saveAuth(null);
-        } else throw error;
-      }
+    try {
+      const scope = await cacheScope();
+      if (!scope || generation !== authGeneration) return null;
+      const value = await metadataCache.read(scope);
+      return generation === authGeneration ? value : null;
+    } catch {
+      return null;
     }
+  },
+  async snapshot() {
+    const generation = authGeneration,
+      version = ++snapshotVersion;
+    const value = await fetchSnapshot();
+    rememberSnapshot(value, generation, version);
     return value;
   },
   async auth(kind, email, password, displayName) {
