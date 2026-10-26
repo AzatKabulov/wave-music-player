@@ -1,0 +1,366 @@
+{
+  "date": "2026-10-26T12:29:49.320Z",
+  "backup": "Local private recovery copy; see apps/api/data/catalog-backups/",
+  "migrations": [
+    "001_music.sql",
+    "002_catalog_metadata.sql"
+  ],
+  "filesVerified": 60,
+  "recordings": 30,
+  "artists": 12,
+  "releases": 27,
+  "published": [
+    {
+      "content_kind": "fixture",
+      "count": 12
+    },
+    {
+      "content_kind": "recording",
+      "count": 30
+    }
+  ],
+  "protectedState": {
+    "profiles": {
+      "count": 16,
+      "sha256": "4195723c38e043e599713c27675e4c3d78ebd1808c900fabae40e89139361cd5"
+    },
+    "user_preferences": {
+      "count": 15,
+      "sha256": "19ed09e2ebb3f95b9a76b3d01cdbaa2a8eb6393a271a804131697a078b168d71"
+    },
+    "saved_tracks": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "saved_albums": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "saved_artists": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "saved_playlists": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "playlists": {
+      "count": 7,
+      "sha256": "a015beed6af5b869a7f110aacccd0114af354a86f32c252cd6e103b77b4a16be"
+    },
+    "playlist_items": {
+      "count": 75,
+      "sha256": "29f169cab4ee19ee8aef88ef469c4ba3eddbe7d7837eeeb88569dd89c935c265"
+    },
+    "playback_sessions": {
+      "count": 9,
+      "sha256": "a0b8f9f51d57ca9db0ee7268bf2915b6e503732d9ef938abec4f8217ac4c75d8"
+    },
+    "queue_entries": {
+      "count": 14,
+      "sha256": "8a0cc98241d3f7ed2df3fafe80965519d9ab63aee649406bf0942c5d41486917"
+    }
+  },
+  "tracks": [
+    {
+      "id": "6ad33e47-d22e-4ad1-85fa-df4fd9d621b9",
+      "artistId": "7fde1a27-d48b-4369-9387-4a446152154c",
+      "albumId": "21e6a19e-ce7a-4347-94f6-f8bdece8db1d",
+      "artist": "The Weeknd",
+      "title": "Blinding Lights",
+      "album": "After Hours",
+      "audioSha256": "f9d328a3f8923833ade91fc4fafd09e4c58253e520e244716911d4ed978fcad9",
+      "completeness": "unknown"
+    },
+    {
+      "id": "52232972-3d26-4d0e-8d48-eede62846ca3",
+      "artistId": "fd77efc4-f311-4f57-bdba-d2829b7c7edf",
+      "albumId": "ae4d2bf8-2368-43a4-a981-b57796c11405",
+      "artist": "Shawn Mendes",
+      "title": "Treat You Better",
+      "album": "Illuminate",
+      "audioSha256": "2bcb90994134c4793a8f97283ff1b897f9c6aff271ed11a021bf0a0829a1ced7",
+      "completeness": "unknown"
+    },
+    {
+      "id": "7be309e8-b1d1-4671-9c7e-3c81b23778bf",
+      "artistId": "d5f84f00-8228-4519-ab94-d15c89af566a",
+      "albumId": "5956b123-3064-42b1-aa8d-29fdd18d8102",
+      "artist": "Eminem",
+      "title": "Mockingbird",
+      "album": "Encore (Deluxe Version)",
+      "audioSha256": "94d597ea55b22a57f1cf004e215400680882d1bd1cbdcca6077b77c72bbb0fce",
+      "completeness": "unknown"
+    },
+    {
+      "id": "d5187db5-3b80-4a87-a79f-abc85a7df9cc",
+      "artistId": "7fde1a27-d48b-4369-9387-4a446152154c",
+      "albumId": "21e6a19e-ce7a-4347-94f6-f8bdece8db1d",
+      "artist": "The Weeknd",
+      "title": "Save Your Tears",
+      "album": "After Hours",
+      "audioSha256": "a4e5d3ae1d5d1c2a13e82b66b854fd7b7b3f60625791d716a7b952eeac294df3",
+      "completeness": "unknown"
+    },
+    {
+      "id": "abed0fed-932e-4807-b039-373e91bdc1ae",
+      "artistId": "7fde1a27-d48b-4369-9387-4a446152154c",
+      "albumId": "82227a19-1490-4885-be05-c7bafa5b24a0",
+      "artist": "The Weeknd",
+      "title": "Starboy (feat. Daft Punk)",
+      "album": "Starboy",
+      "audioSha256": "a8c9d8b0d91e21ca458b74881b05ebafb38aebf11c5a97b8a27beb6909b9656f",
+      "completeness": "unknown"
+    },
+    {
+      "id": "8573cd49-b341-45b8-9b08-ddcfd3e7fb12",
+      "artistId": "7fde1a27-d48b-4369-9387-4a446152154c",
+      "albumId": "b0aebd8a-d414-448b-828a-333e630683f5",
+      "artist": "The Weeknd",
+      "title": "Can't Feel My Face",
+      "album": "Beauty Behind the Madness",
+      "audioSha256": "2bdd0720f208ff32fd14c965c68e9e9e1a2fc98c66651e3e95c4ad501e84255e",
+      "completeness": "unknown"
+    },
+    {
+      "id": "256fc745-54af-4542-9d94-60c2b7891dc6",
+      "artistId": "d5f84f00-8228-4519-ab94-d15c89af566a",
+      "albumId": "dc2e5002-f549-4a28-b9f5-8062eb1c6251",
+      "artist": "Eminem",
+      "title": "Lose Yourself",
+      "album": "8 Mile (Music from and Inspired By the Motion Picture)",
+      "audioSha256": "60e1b779a6d4c2ab4fe42fa5f92db62134807f7807b0437db0524b8ab668c5a2",
+      "completeness": "unknown"
+    },
+    {
+      "id": "660cff47-ad67-4349-9d70-37f083f18854",
+      "artistId": "d5f84f00-8228-4519-ab94-d15c89af566a",
+      "albumId": "a3ed5d7e-3e97-42e6-82ea-51c69af10059",
+      "artist": "Eminem",
+      "title": "Without Me",
+      "album": "The Eminem Show",
+      "audioSha256": "64c5107de30d8f9a0070c1b8dfe8f0ea7ab2ce515b183a36639279cfff12d90c",
+      "completeness": "unknown"
+    },
+    {
+      "id": "8ae6c038-ae31-47a8-bce3-abadb2c87061",
+      "artistId": "d5f84f00-8228-4519-ab94-d15c89af566a",
+      "albumId": "950c9451-e20b-4d46-bb40-402c1775918d",
+      "artist": "Eminem",
+      "title": "The Real Slim Shady",
+      "album": "The Marshall Mathers LP",
+      "audioSha256": "1a35c04533c6b1bb5f306d33b5dcf120e7db2167579a7c89b52a1ae3f2f57848",
+      "completeness": "unknown"
+    },
+    {
+      "id": "99a00547-cfb4-480b-8637-2f2e6f42fd42",
+      "artistId": "fd77efc4-f311-4f57-bdba-d2829b7c7edf",
+      "albumId": "1c8e8926-d1ad-4b87-bcbf-05cc63391694",
+      "artist": "Shawn Mendes",
+      "title": "Stitches",
+      "album": "Handwritten (Revisited)",
+      "audioSha256": "e28c9e156a38f30934e933b274b130ba223a05a4e35902b1f3e7507f4c732bc6",
+      "completeness": "unknown"
+    },
+    {
+      "id": "ada209a0-8a08-47d0-859f-64e4d2e80664",
+      "artistId": "fd77efc4-f311-4f57-bdba-d2829b7c7edf",
+      "albumId": "deaa8eca-1fcb-40ce-b641-4ea7a3e88a73",
+      "artist": "Shawn Mendes",
+      "title": "There's Nothing Holdin' Me Back",
+      "album": "Illuminate (10th Anniversary Edition)",
+      "audioSha256": "fb752ccc133edcafbba96bb7bbcac7e00a4edb0004e982a88775040ecc39cb9b",
+      "completeness": "unknown"
+    },
+    {
+      "id": "ac928bfb-7804-4107-92f8-cc89676e763b",
+      "artistId": "fd77efc4-f311-4f57-bdba-d2829b7c7edf",
+      "albumId": "48051351-0bc3-4b9b-bf28-391e69d7d25a",
+      "artist": "Shawn Mendes",
+      "title": "Señorita",
+      "album": "Señorita - Single",
+      "audioSha256": "25b3cc76ece20d2cce3a51f181d6443ef2b3589a076b03bd8986bbc0228f2c6b",
+      "completeness": "unknown"
+    },
+    {
+      "id": "3f201e61-a619-41b6-a3c6-52f51d9d39b1",
+      "artistId": "fe2aab84-2c06-4b96-a690-3730e8ae6e17",
+      "albumId": "3496fafb-2d7e-41cd-a2a3-0aa017ebf9a4",
+      "artist": "Billie Eilish",
+      "title": "bad guy",
+      "album": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+      "audioSha256": "29f3e49034a2e75c9396393f688c8ac8df59ed11bfbffac3c2104dd607d85559",
+      "completeness": "unknown"
+    },
+    {
+      "id": "baeba4f2-91e4-4eb5-8ef1-5b1c0674a340",
+      "artistId": "fe2aab84-2c06-4b96-a690-3730e8ae6e17",
+      "albumId": "8dd9bd45-49a6-401e-963d-1f4f3c8c55bb",
+      "artist": "Billie Eilish",
+      "title": "lovely",
+      "album": "lovely - Single",
+      "audioSha256": "4c8095659fa9b724e35afd8801c7ebbdbe3722800baa4e1675906360cff9f84d",
+      "completeness": "unknown"
+    },
+    {
+      "id": "6422ab71-eb22-44a6-9507-8d5398086558",
+      "artistId": "cc7e81f4-029a-4a4f-b667-c81259016113",
+      "albumId": "5acddb9d-1073-45fa-8ade-6f8cdadc5806",
+      "artist": "Ed Sheeran",
+      "title": "Shape of You",
+      "album": "÷ (Deluxe)",
+      "audioSha256": "60440d1f0d9e7e188eaf4c7e68781301b85dbed00a3e5c1ab7d572776cc27087",
+      "completeness": "unknown"
+    },
+    {
+      "id": "84103095-08a5-4f72-b0a3-8a2eb595e0a1",
+      "artistId": "cc7e81f4-029a-4a4f-b667-c81259016113",
+      "albumId": "5acddb9d-1073-45fa-8ade-6f8cdadc5806",
+      "artist": "Ed Sheeran",
+      "title": "Perfect",
+      "album": "÷ (Deluxe)",
+      "audioSha256": "565c30bccf9b321a3816e7ca2d733faa557979df12698002d97bc061fb258185",
+      "completeness": "unknown"
+    },
+    {
+      "id": "56e12606-1b1c-40a4-83ad-85de391a4b31",
+      "artistId": "cc9f8e4d-ff65-401b-954e-5651f6a9b832",
+      "albumId": "ea398f71-497c-4ce0-9e3e-b35546eb8b1b",
+      "artist": "Taylor Swift",
+      "title": "Cruel Summer",
+      "album": "Lover",
+      "audioSha256": "091bf61a455662d9e19eb309036596975236593e92937c0929607d1be9029ad1",
+      "completeness": "unknown"
+    },
+    {
+      "id": "212a0489-9477-4c59-a583-641b966060e5",
+      "artistId": "cc9f8e4d-ff65-401b-954e-5651f6a9b832",
+      "albumId": "83602148-1afd-46f8-bc6a-b25aae1aef62",
+      "artist": "Taylor Swift",
+      "title": "Blank Space",
+      "album": "1989",
+      "audioSha256": "29f9a7117b5a20d8b44bd91b3120dc8b67ed3bbb1f431cb709e8449d8c9fb94a",
+      "completeness": "unknown"
+    },
+    {
+      "id": "175cbcdf-6f17-404e-bc86-d5ac8e67b02a",
+      "artistId": "cbeef4e6-a674-4889-9343-54678e339411",
+      "albumId": "8319123d-00ae-486b-b826-cdc3333bf5f9",
+      "artist": "Bruno Mars",
+      "title": "Just the Way You Are",
+      "album": "Doo-Wops & Hooligans",
+      "audioSha256": "9cb0cdfffe137d45bb884e23d4d76d5be64fe84ab34ff169a5840633ed52c801",
+      "completeness": "unknown"
+    },
+    {
+      "id": "7c2e80cf-543a-472e-807f-091fe9e5dc5a",
+      "artistId": "cbeef4e6-a674-4889-9343-54678e339411",
+      "albumId": "71428f5d-4025-4b5f-97c3-ac6f70897369",
+      "artist": "Bruno Mars",
+      "title": "Locked Out of Heaven",
+      "album": "Unorthodox Jukebox",
+      "audioSha256": "09b0ccd813ef32d5afa56e959cb230baf3cbec87cb4f5207f7e744ef890ecf2d",
+      "completeness": "unknown"
+    },
+    {
+      "id": "a8ae52a2-70bc-4601-b33f-1e89df988ed0",
+      "artistId": "b69827dd-1843-4b96-bc65-d91bb46794b2",
+      "albumId": "58287176-42ff-45da-9644-c6af8f6304a8",
+      "artist": "Sabrina Carpenter",
+      "title": "Espresso",
+      "album": "Espresso - Single",
+      "audioSha256": "7c2915bb545f362ec481ddd0170540f8315ee9d4aa8844d6a6cbc30e4d027c66",
+      "completeness": "unknown"
+    },
+    {
+      "id": "4469768d-437c-41de-b48e-385e2b05fce8",
+      "artistId": "c8f87494-7427-4673-9aac-8227c5a8e58e",
+      "albumId": "fce0e11e-4580-4ebf-a898-61a895aee55a",
+      "artist": "Harry Styles",
+      "title": "As It Was",
+      "album": "Harry's House",
+      "audioSha256": "198cf6cdac2b5bbba47412804bdfe0c958a22aa792ef4c06de2b35ccc3ca8bfc",
+      "completeness": "unknown"
+    },
+    {
+      "id": "26e958bc-ceae-477b-bb35-afe4885035ca",
+      "artistId": "c8f87494-7427-4673-9aac-8227c5a8e58e",
+      "albumId": "260d17f5-cc8e-40e4-91d1-b9f488bf2713",
+      "artist": "Harry Styles",
+      "title": "Watermelon Sugar",
+      "album": "Fine Line",
+      "audioSha256": "511a0649aed24addcbaf883951ffb64bd2a8ae8df3bad1f423b2d3c819137f8e",
+      "completeness": "unknown"
+    },
+    {
+      "id": "82e538fb-7513-4a5d-b66a-42eb698b8a12",
+      "artistId": "a2e4b6e8-2ad0-45a1-926f-5d3f397cafa5",
+      "albumId": "ab73e6ea-d693-4ad4-8064-83a4fc24253e",
+      "artist": "Post Malone",
+      "title": "Sunflower (Spider-Man: Into the Spider-Verse)",
+      "album": "Spider-Man: Into the Spider-Verse (Soundtrack From & Inspired by the Motion Picture)",
+      "audioSha256": "de8c1407cef82b7a2f895b305cba421807036e1456ce0adb6f7a15fafbdfca81",
+      "completeness": "unknown"
+    },
+    {
+      "id": "ed320295-6a9b-476b-a203-d307c168ea82",
+      "artistId": "e47daa53-fce3-4d1b-abaf-ea526f4aaca5",
+      "albumId": "8a0b4687-661d-4ee8-b9c7-294dafb98a49",
+      "artist": "Adele",
+      "title": "Rolling in the Deep",
+      "album": "21",
+      "audioSha256": "bdaf33cbecd22f09f04a62dccf9858c594f6e272fe326c1bbe9395bd5a66d356",
+      "completeness": "unknown"
+    },
+    {
+      "id": "0982becd-8330-4713-94de-13e992cc4900",
+      "artistId": "ee294550-f5ae-487b-b970-0d9e7070edc2",
+      "albumId": "d3c8b885-e311-42de-bca9-140f332128b1",
+      "artist": "Dua Lipa",
+      "title": "New Rules",
+      "album": "Dua Lipa (Complete Edition)",
+      "audioSha256": "9d31c3c1aa5be328ec01cd4c779c63265391151d50dcc27c08a5484a5e251011",
+      "completeness": "unknown"
+    },
+    {
+      "id": "232e0d29-f6bb-4437-b461-7c76d936bf04",
+      "artistId": "b69827dd-1843-4b96-bc65-d91bb46794b2",
+      "albumId": "a271961e-d14f-4eb9-a2b7-355ee9063d2e",
+      "artist": "Sabrina Carpenter",
+      "title": "Nonsense",
+      "album": "emails i can't send",
+      "audioSha256": "e378e3774717105c614afff94fa595f9c47186e89f32cf2ec74a8216cdcd4ef1",
+      "completeness": "unknown"
+    },
+    {
+      "id": "28d429a5-018a-456e-9ba4-df02a0b3f861",
+      "artistId": "a2e4b6e8-2ad0-45a1-926f-5d3f397cafa5",
+      "albumId": "932f1203-192f-41eb-a787-b6cd7e335d36",
+      "artist": "Post Malone",
+      "title": "Better Now",
+      "album": "beerbongs & bentleys",
+      "audioSha256": "08f3bdfa72ba8d29e7e61cc1382a32c05efdeba96380e4ee2c62716b05902c21",
+      "completeness": "unknown"
+    },
+    {
+      "id": "86c2d3df-f3c3-4f5f-94d0-debdc8f88ad2",
+      "artistId": "e47daa53-fce3-4d1b-abaf-ea526f4aaca5",
+      "albumId": "8a0b4687-661d-4ee8-b9c7-294dafb98a49",
+      "artist": "Adele",
+      "title": "Someone Like You",
+      "album": "21",
+      "audioSha256": "420c8f907804fda190b04c849b025ebd1f105e2b7a312e860c9c423f8a8b062e",
+      "completeness": "unknown"
+    },
+    {
+      "id": "16333fde-7ed9-49cd-aa76-7107d996331c",
+      "artistId": "ee294550-f5ae-487b-b970-0d9e7070edc2",
+      "albumId": "0f1db5c2-ab98-4356-b369-fab29ecea0b4",
+      "artist": "Dua Lipa",
+      "title": "Physical (feat. Troye Sivan)",
+      "album": "Physical (feat. Troye Sivan) - Single",
+      "audioSha256": "1504c1e52d85763aae9ac2e46708f69b80840831d49c25515834474d579c9ac6",
+      "completeness": "unknown"
+    }
+  ]
+}

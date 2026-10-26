@@ -28,3 +28,11 @@ Cursor checkpoints now use a revision-guarded endpoint that does not increment m
 Verification: 3 deterministic writer tests; API test covering cursor/revision preservation, stale writes, foreign entries/accounts and unauthenticated/extra fields; phone-width browser delayed-restore/new-selection and held-cursor/shuffle tests pass. Existing player/seek/repeat/shuffle and paused-resume browser tests pass. Lint and typecheck pass. One intermediate browser run was contaminated by a live source reload; stable-source rerun passed. These are functional browser results, not physical-device timing claims.
 
 Remaining V06: persistent cached Home (V05), offline/bootstrap cache measurements and release-device timings. V08 source behavior is implemented; physical responsiveness remains part of V47.
+
+## C01 — preserved personal catalog inventory
+
+Created a full stopped-service database/media backup at `apps/api/data/catalog-backups/v2-2026-10-26T12-28-51-204Z/`. A separate validation copy passed the migration with identical hashes for protected account/library/playlist/queue tables and identical recording-to-audio IDs. All 60 provenance audio/artwork hashes passed. The phone service restarted successfully and the existing APK aliases remain valid. See `catalog-inventory-v2.json`: 30 full recordings, 12 artists, 27 releases, plus 12 explicitly classified fixtures. Completeness stays unknown pending source-backed release manifests; no album is falsely marked complete.
+
+## V14.1 — consistent collection shuffle
+
+Collection shuffle now uses the same Fisher–Yates model as player shuffle and enables the visible shuffle state. It retains canonical order for disabling shuffle in the current session, keeps duplicate recording entries distinct, and maps row selection through availability/explicit filters. Five queue tests, lint and typecheck pass. Durable canonical order across restarts and the full native repeat/transition matrix remain open under V14.

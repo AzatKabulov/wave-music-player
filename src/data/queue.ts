@@ -1,4 +1,47 @@
-import type { QueueEntry } from "./types";
+import type { QueueEntry, QueueState, Track } from "./types";
+export function contextQueue(
+  tracks: Track[],
+  options: {
+    revision: string;
+    start: number;
+    shuffle: boolean;
+    explicitAllowed: boolean;
+  },
+  uuid: () => string,
+  random = Math.random,
+): { state: QueueState; canonical: QueueEntry[] } {
+  const eligible = tracks
+    .map((track, index) => ({ track, index }))
+    .filter(
+      ({ track }) =>
+        track.available && (options.explicitAllowed || !track.explicit),
+    );
+  const canonical = eligible.map(({ track }) => ({
+    id: uuid(),
+    trackId: track.id,
+    origin: "context" as const,
+  }));
+  const entries = options.shuffle
+    ? shuffleEntries(canonical, null, random)
+    : canonical;
+  return {
+    canonical,
+    state: {
+      revision: options.revision,
+      entries,
+      positionMs: 0,
+      repeat: "none",
+      shuffle: options.shuffle,
+      currentId:
+        (options.shuffle
+          ? entries[0]?.id
+          : entries[eligible.findIndex((item) => item.index === options.start)]
+              ?.id) ||
+        entries[0]?.id ||
+        null,
+    },
+  };
+}
 export function moveEntry<T extends { id: string }>(
   entries: T[],
   id: string,

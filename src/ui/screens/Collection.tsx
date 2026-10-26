@@ -172,9 +172,7 @@ export function Collection({
             icon={Shuffle}
             label="Shuffle collection"
             disabled={!tracks.length || m.pending}
-            onPress={() =>
-              void m.playTracks([...tracks].sort(() => Math.random() - 0.5))
-            }
+            onPress={() => void m.playTracks(tracks, 0, true)}
           />
           <Button
             i18n

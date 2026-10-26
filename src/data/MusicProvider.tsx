@@ -18,7 +18,12 @@ import { AppState, Platform } from "react-native";
 import { http } from "./http";
 import { setRepeat } from "./audioCommands";
 import { mock } from "./mock";
-import { insertExplicit, moveEntry, shuffleEntries } from "./queue";
+import {
+  contextQueue,
+  insertExplicit,
+  moveEntry,
+  shuffleEntries,
+} from "./queue";
 import { deviceStorage } from "./storage";
 import { sourceUpdate } from "./sourceUpdate";
 import { sourcePatch } from "./sourcePatch";
@@ -547,30 +552,20 @@ function useMusicController() {
     return () => listener.remove();
   }, [refresh, command]);
   const playTracks = useCallback(
-    (tracks: Track[], start = 0) =>
+    (tracks: Track[], start = 0, shuffle = false) =>
       command((current) => {
-        const eligible = tracks
-          .map((track, index) => ({ track, index }))
-          .filter(
-            ({ track }) =>
-              track.available &&
-              (snapshot?.preferences.explicitAllowed || !track.explicit),
-          );
-        const entries = eligible.map(({ track }) => ({
-          id: randomUUID(),
-          trackId: track.id,
-          origin: "context" as const,
-        }));
-        canonical.current = entries;
-        return {
-          ...emptyQueue(),
-          revision: current.revision,
-          entries,
-          currentId:
-            entries[eligible.findIndex((item) => item.index === start)]?.id ||
-            entries[0]?.id ||
-            null,
-        };
+        const result = contextQueue(
+          tracks,
+          {
+            revision: current.revision,
+            start,
+            shuffle,
+            explicitAllowed: !!snapshot?.preferences.explicitAllowed,
+          },
+          randomUUID,
+        );
+        canonical.current = result.canonical;
+        return result.state;
       }, true),
     [command, snapshot?.preferences.explicitAllowed],
   );
