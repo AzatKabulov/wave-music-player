@@ -1,5 +1,7 @@
 # Musify: mobile design, motion, and performance improvement plan
 
+> **2026-10-26 — active cycle 2:** The owner requested a new comprehensive improvement and catalog plan after testing 0.2.0. Read [improvement-plan-v2.md](improvement-plan-v2.md), [catalog-expansion-plan-v2.md](catalog-expansion-plan-v2.md), and the [Cycle 2 backlog](todo.md#cycle-2--implementation-backlog). The first-cycle plan below is retained as historical scope and acceptance criteria; its initial “no redesign implemented” statements describe 2026-10-25. Current delivered status is in [implementation-status.md](implementation-status.md).
+
 Date: 2026-10-25. Status: proposed implementation plan; no redesign implemented in this planning pass.
 
 ## 1. Outcome and confirmed direction

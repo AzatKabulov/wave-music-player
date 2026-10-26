@@ -1,6 +1,6 @@
 # Implementation status
 
-Updated 2026-10-26. The redesign is packaged as a personal-test candidate. The original 30-task plan is not fully accepted: physical-device motion, accessibility, audio and performance criteria remain open.
+Updated 2026-10-26. A new owner-requested second-cycle plan is now recorded in [improvement-plan-v2.md](improvement-plan-v2.md), with a [catalog plan](catalog-expansion-plan-v2.md) and 66 pending tasks in the [Cycle 2 backlog](todo.md#cycle-2--implementation-backlog). This planning pass changes documentation only; the delivered app remains 0.2.0. The redesign is packaged as a personal-test candidate. The original 30-task plan is not fully accepted: physical-device motion, accessibility, audio and performance criteria remain open.
 
 Implemented and committed: near-black/mint design tokens; responsive listening screens; animated press feedback with reduced-motion support; player and sheet transitions; persistent tabs/mini-player; native seek controls; virtualized lists; cached/resized artwork; EN/RU/TK dictionaries with device-language selection and Settings override; optimistic serialized saves; queue reconciliation, measured drag targets and undo; paginated full-catalog search; independent hydration of saved/recent/queue/playlist references; request timeouts, cancellation and connection recovery.
 

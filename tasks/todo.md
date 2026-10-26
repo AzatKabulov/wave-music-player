@@ -1,5 +1,7 @@
 # Musify improvement tasks
 
+> Active second-cycle plan: [improvement-plan-v2.md](improvement-plan-v2.md). New ordered tasks are in [Cycle 2](#cycle-2--implementation-backlog); the first-cycle checklist below is retained.
+
 Status: implementation active since 2026-10-26. See [implementation-status.md](implementation-status.md) for delivered code and evidence. An unchecked task can have its software implemented while still awaiting the explicit native/device acceptance criteria; these checkboxes do not mean no work has happened. Read [plan.md](plan.md) for the screen, motion, performance and acceptance contracts. Estimates below describe scope, not elapsed-time promises. Paths are relative to the app repository. Preserve the separate unfinished production backlog in `replica/tasks/todo.md`.
 
 Common verification: run lint/typecheck for source changes, focused behavior tests for changed logic, and the affected flow on the relevant platform. Run broader regression checks at milestones. For new native dependencies, verify SDK compatibility and both platform exports. Screenshots prove appearance only; gestures, haptics, sound and frame times need appropriate device evidence.
@@ -298,3 +300,951 @@ Common verification: run lint/typecheck for source changes, focused behavior tes
 ## Candidate handoff update — 2026-10-26
 
 T30 packaging is now available: signed 0.2.0 APK with verified hash, emulator install/startup, working private HTTP download, validated SDK-58 iPhone manifest/bundle and retained 0.1.0 rollback. Physical Android and redesigned-iPhone main-flow acceptance remain open, so T30 is not marked fully accepted. See `implementation-status.md` for the current implemented scope and device limitations. The catalog additionally contains 30 popular recordings plus 12 engineering fixtures; `catalog-expansion.md` records the import and all-track checks.
+
+## Cycle 2 — implementation backlog
+
+Prepared 2026-10-26 against 0.2.0 (`5cf66f2`). Active plan: [improvement-plan-v2.md](improvement-plan-v2.md); catalog plan: [catalog-expansion-plan-v2.md](catalog-expansion-plan-v2.md). All tasks below are pending. The original T01–T30 checkboxes above retain their historical state; source implementation and completed evidence are summarized in `implementation-status.md`.
+
+The order below satisfies dependencies. Phase letters refer to the main plan; catalog preparation is deliberately interleaved. The first 60 tasks (V01–V48 and C01–C12) define the planned personal music experience; E01–E06 track later ecosystem work and include specification/prototype gates rather than pretending to be single-session full products.
+
+**Sizing rule:** each implementation slice is S (1–2 files) or M (3–5 files including focused tests); data-only batches change manifests/assets/reports. File lists are intended boundaries, with proposed modules marked new. If the actual change exceeds five source/test files or combines independent capabilities, split it into numbered child tasks before implementation and keep the parent open. Final audits produce bounded repair tasks; an audit passing is not inferred from the existence of its report.
+
+**Common verification for source changes:** focused behavior tests, `npm run lint`, `npm run typecheck`, formatting, and relevant API/E2E/platform checks. New UI includes EN/RU/TK, large-text and reduced-motion acceptance in its own slice. Avoid re-running unrelated expensive suites without a reason. Performance tasks use matched baseline/result measurements. Catalog batches follow the complete acceptance and backup rules in the catalog plan.
+
+**Checkpoint rule:** after each three tasks, verify the resulting slice remains usable; record measured/observed outcomes and unresolved constraints. Dependency/input gates are resolved when reached. Reviewable work continues under existing authorization; checkpoints do not impose blanket permission requests.
+
+### [ ] V01 — Freeze references and reconcile feature status
+
+**Phase:** A. **Dependencies:** None. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Capture matched Home, Search, Library, album, playlist, artist, player, queue and menu references; update stale feature claims using source and observed behavior.
+
+**Acceptance:** Every surface has platform/version/state and observed/inferred/unknown status; existing functionality is not reclassified as missing from stale CSV notes.
+
+**Verification:** Review paired screen inventory and current routes; run the parity script only after feature statuses are reconciled, and label unobserved native behavior.
+
+**Likely files:** tasks/reference-map.md; replica/features.csv; tasks/v2-reference-audit.md.
+
+### [ ] V02 — Establish release-device performance baselines
+
+**Phase:** A. **Dependencies:** V01. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Instrument and measure the defined listening journey on Android release and iPhone preview/own-build lanes separately.
+
+**Acceptance:** Startup, touch, search, audio start, frame and memory results include device/build/cache/network metadata; unavailable physical measurements remain pending.
+
+**Verification:** Repeat the plan's sample counts; save raw traces and timings plus variance, without substituting emulator or web timing for phone results.
+
+**Likely files:** scripts/measure-mobile.mjs (new); tasks/v2-performance-baseline.md; tasks/evidence/v2/ (artifacts).
+
+### [ ] V03 — Prove advanced audio capability
+
+**Phase:** A. **Dependencies:** V02. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Spike playlist insertion/removal, current-source preservation, preload, gapless transitions, crossfade feasibility and background controls using isolated test audio.
+
+**Acceptance:** A capability matrix distinguishes iOS/Android/Expo Go/own build; each engine decision has a recorded native test or explicit unresolved prerequisite.
+
+**Verification:** Record track boundaries and queue edits; check SDK-58 APIs and installed native implementation; do not replace the production engine during the spike.
+
+**Likely files:** tasks/v2-audio-capabilities.md; scripts/audio-capability-fixture.mjs (new); disposable test harness.
+
+#### Checkpoint 01 — after V01, V02, V03
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] C01 — Audit and preserve the existing catalog
+
+**Phase:** E. **Dependencies:** V01. **Scope:** Data/report batch; bounded intake tooling as needed.
+
+**Work:** Inventory the thirty recordings, twelve fixtures, IDs, source metadata, album completeness, art and private user references before changing intake.
+
+**Acceptance:** Baseline counts/hashes and user references are captured; partial albums and uncertain editions/explicit states are identified without renaming IDs.
+
+**Verification:** Compare provenance with API and a safely captured database inventory; verify the backup procedure while no second PGlite process is open.
+
+**Likely files:** tasks/catalog-baseline-v2.md; private batch manifest; catalog inventory helper (new).
+
+### [ ] C02 — Add canonical catalog and completeness fields
+
+**Phase:** E. **Dependencies:** C01. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Introduce release types/completeness, recording credits/aliases, fixture classification and scope-aware rendition fields using additive migrations.
+
+**Acceptance:** Existing saved/queue IDs resolve after migration; normal feeds can exclude fixtures without deleting them and partial releases are labeled accurately.
+
+**Verification:** Migrate a backup copy of 0.2.0 data; test release editions, mixed credits, unknown explicit state and fixture visibility.
+
+**Likely files:** new additive catalog migration; apps/api/src/catalog.mjs; apps/api/src/catalog-query.mjs; src/data/types.ts; migration/catalog tests.
+
+### [ ] C03 — Prepare a ranked source-backed wishlist
+
+**Phase:** E. **Dependencies:** C02. **Scope:** Data/report batch; bounded intake tooling as needed.
+
+**Work:** Create the C1 artist/release wishlist and source adapters with a dry-run manifest that distinguishes audio, metadata, artwork and lyrics.
+
+**Acceptance:** Each candidate has intended identity/version and source status; ambiguous or unavailable matches remain unpublished rather than substituted silently.
+
+**Verification:** Review first candidate pack for exact editions and source provenance; repeat dry run to confirm stable candidate IDs.
+
+**Likely files:** catalog wishlist/report; intake adapter module (new); private candidate manifests; adapter tests.
+
+#### Checkpoint 02 — after C01, C02, C03
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V04 — Bound bootstrap and Home metadata
+
+**Phase:** B. **Dependencies:** V01,C02. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Introduce versioned summary/page contracts so initial Home does not embed every saved playlist's track graph.
+
+**Acceptance:** A useful first page is bounded independently of catalog size; saved and queued identities remain recoverable and account-isolated.
+
+**Verification:** API regressions with 150 playlists, 500 saves and 1k-item collections; measure response bytes and query count against the 250KiB proposal.
+
+**Likely files:** apps/api/src/catalog.mjs; apps/api/src/app.mjs; src/data/types.ts; src/data/http.ts; apps/api/test/catalog-hydration.test.mjs.
+
+### [ ] V05 — Persist account-scoped metadata cache
+
+**Phase:** B. **Dependencies:** V04. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add a versioned disk bootstrap cache with quotas, expiry and explicit account-switch invalidation.
+
+**Acceptance:** Restart can render a coherent cached feed; another account never sees private cached state and corrupt cache recovers cleanly.
+
+**Verification:** Cache restore/corruption/expiry/account-switch tests; inspect stored data for absence of bearer tokens and grants.
+
+**Likely files:** src/data/bootstrapCache.ts (new); src/data/bootstrapCache.test.ts (new); src/data/storage.ts; src/data/MusicProvider.tsx.
+
+### [ ] V06 — Separate usable Home from queue restoration
+
+**Phase:** B. **Dependencies:** V05. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Show cached useful content promptly and schedule refresh, detail hydration and queue restoration without a global blocking spinner.
+
+**Acceptance:** Cached Home remains usable while restoration is slow; late restore cannot replace a new user-selected queue.
+
+**Verification:** Cold/warm start tests with delayed/failing queue requests and immediate user playback; compare matched startup traces.
+
+**Likely files:** src/data/MusicProvider.tsx; src/ui/Screens.tsx; src/data/bootstrap.test.ts (new); e2e startup cases.
+
+#### Checkpoint 03 — after V04, V05, V06
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V07 — Trace playback latency stages
+
+**Phase:** B. **Dependencies:** V02. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add bounded local timing markers for tap, queued command, server acknowledgement, grant, native install and audible-start observation.
+
+**Acceptance:** Every slow start is attributable to a stage; diagnostics contain IDs/timings without credentials and do not flood release logs.
+
+**Verification:** Inspect one normal and one delayed request trace; validate clock units and instrumentation overhead.
+
+**Likely files:** src/data/playbackTiming.ts (new); src/data/MusicProvider.tsx; apps/api/src/app.mjs; tasks/v2-performance-experiments.md.
+
+### [ ] V08 — Prioritize interactive commands
+
+**Phase:** B. **Dependencies:** V07. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Separate periodic position persistence from the interactive queue pipeline; coalesce redundant checkpoints and bound pending work.
+
+**Acceptance:** Rapid taps do not wait behind obsolete checkpoint writes; final acknowledged state and position remain correct after retries.
+
+**Verification:** Inject slow checkpoint responses while skipping/seeking; test latest-wins coalescing, ordering and account change.
+
+**Likely files:** src/data/commandScheduler.ts (new); src/data/commandScheduler.test.ts (new); src/data/MusicProvider.tsx; src/data/http.ts.
+
+### [ ] V09 — Make authorized transport responsive
+
+**Phase:** B. **Dependencies:** V03,V08,V04. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Design and implement the acknowledged/pre-authorized queue window needed for prompt local transport and later server reconciliation.
+
+**Acceptance:** No new source plays without valid access; pause/seek and eligible transitions respond promptly while stale revisions recover without duplicate entries.
+
+**Verification:** Delayed network and expired-grant tests plus native sound timing; reject the change if speed comes from bypassing access or losing queue correctness.
+
+**Likely files:** src/data/MusicProvider.tsx; src/data/http.ts; apps/api/src/app.mjs; src/data/types.ts; focused queue/lease regression tests.
+
+#### Checkpoint 04 — after V07, V08, V09
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V10 — Preserve active audio during queue changes
+
+**Phase:** B. **Dependencies:** V03,V09. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Apply the proven native source-edit strategy, bounded upcoming sources and explicit recovery state machine.
+
+**Acceptance:** Unrelated edits preserve current ID/position/play state; gapless-capable fixtures and real-track transitions are measured rather than assumed.
+
+**Verification:** Native recording of enqueue, reorder, remove, repeat, lease renewal and failure recovery on both platforms; sourcePatch regressions.
+
+**Likely files:** src/data/sourcePatch.ts; src/data/sourceUpdate.ts; src/data/MusicProvider.tsx; src/data/sourcePatch.test.ts; tasks/v2-audio-results.md.
+
+### [ ] V11 — Paginate collection and library detail
+
+**Phase:** B. **Dependencies:** V04. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add bounded detail/library/history/release page contracts with summary counts and stable cursors; migrate consumers in a first vertical collection slice.
+
+**Acceptance:** No source is silently truncated at the discovery cap; opening a long collection does not hydrate all its tracks before first paint.
+
+**Verification:** 1k-item page traversal, cursor invalidation, saved-reference and two-account access tests; first-page byte/latency check.
+
+**Likely files:** apps/api/src/catalog-query.mjs; apps/api/src/app.mjs; src/data/types.ts; src/data/http.ts; API pagination tests.
+
+### [ ] V12 — Improve search plans and ranked retrieval
+
+**Phase:** B. **Dependencies:** V04. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Measure the existing substring query and implement justified indexed canonical/alias matching with stable pagination.
+
+**Acceptance:** Exact artist/title matches rank predictably across EN/RU/TK; no index or search service is added without a before/after query plan and latency result.
+
+**Verification:** 10k/100k metadata fixtures, absent terms, aliases and identical titles; compare query plans and p95 with unchanged visibility rules.
+
+**Likely files:** apps/api/src/catalog-query.mjs; new additive search migration; apps/api/test/search.test.mjs; scripts/measure-search.mjs.
+
+#### Checkpoint 05 — after V10, V11, V12
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V13 — Reduce measured render and list work
+
+**Phase:** B. **Dependencies:** V02,V06,V11. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Profile providers and active screens; normalize hot lookups and isolate subscriptions or list windows where the trace justifies it.
+
+**Acceptance:** Progress and unrelated saves do not rerender entire shelves; virtualized rows retain correct state, dynamic height and accessibility.
+
+**Verification:** React/native traces before and after one change at a time; long-list navigation and account-switch regression.
+
+**Likely files:** src/data/MusicProvider.tsx; src/data/catalogCache.ts; src/ui/MusicList.tsx; src/ui/screens/common.tsx; performance evidence.
+
+### [ ] V14 — Unify shuffle and repeat semantics
+
+**Phase:** B. **Dependencies:** V09. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Replace biased collection sorting with the shared shuffle engine; preserve canonical order, duplicate entry identity and current song.
+
+**Acceptance:** Collection and player shuffle controls agree; turning shuffle off restores the remaining canonical context without restarting the current track.
+
+**Verification:** Deterministic seeded permutation/invariant tests; repeat-one/all/off and rapid mode-change native checks.
+
+**Likely files:** src/data/queue.ts; src/data/queue.test.ts; src/data/MusicProvider.tsx; src/ui/screens/Collection.tsx.
+
+### [ ] V15 — Refine shared visual primitives
+
+**Phase:** C. **Dependencies:** V01. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Tune type roles, icon weight, compact rows, spacing and pressed/selected/loading states against the frozen references.
+
+**Acceptance:** Normal rows feel consistent across screens; 48-unit targets, contrast and 130/160% text layouts remain usable.
+
+**Verification:** Component state board in EN/RU/TK and paired captures; no global token change accepted from one screenshot alone.
+
+**Likely files:** src/design/tokens.json; src/design/Primitives.tsx; src/ui/TrackRow.tsx; src/ui/screens/common.tsx; DESIGN.md.
+
+#### Checkpoint 06 — after V13, V14, V15
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] C04 — Build audio validation and rendition staging
+
+**Phase:** E. **Dependencies:** C03. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Turn the personal preparation prototype into bounded resumable staging with full decode, checksum, duration/version checks and truthful rendition metadata.
+
+**Acceptance:** Corrupt, partial, preview and mislabeled files cannot publish; replay reuses validated staged assets without duplicate downloads.
+
+**Verification:** Fixtures for HTML response, truncated MP4/MP3, wrong duration/version, network interruption and failed decode; inspect rendition output.
+
+**Likely files:** audio intake module (new); media inspection module (new); staged manifest schema; intake tests.
+
+### [ ] C05 — Prepare artwork and artist enrichment
+
+**Phase:** E. **Dependencies:** C02,C03. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Build correct release/portrait mappings, art variants, palettes and source-attributed biographies/credits for the accepted artist packages.
+
+**Acceptance:** Artist portrait and release-cover identities stay separate; variants decode, palettes pass contrast and missing information stays honest.
+
+**Verification:** Mixed aspect ratios, cover replacement, duplicate image hashes, no-portrait and low-resolution fixtures.
+
+**Likely files:** artwork intake module (new); artwork-variants.mjs; metadata manifest schema; enrichment tests.
+
+### [ ] V16 — Use real artwork palettes and image identities
+
+**Phase:** C. **Dependencies:** C05,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Wire persisted cover palettes and stable asset versions into rows, headers, mini-player and full player.
+
+**Acceptance:** Covered content uses its own palette; missing/changed art falls back without flash and text contrast is preserved.
+
+**Verification:** Variant/cache-hit checks, cover replacement and no-art cases; inspect image memory under repeated navigation.
+
+**Likely files:** src/data/types.ts; apps/api/src/catalog-query.mjs; src/design/Artwork.tsx; src/data/artworkSource.ts; artwork tests.
+
+#### Checkpoint 07 — after C04, C05, V16
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V17 — Finish the Home experience
+
+**Phase:** C. **Dependencies:** V04,V13,V16. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Build bounded virtualized shelves, useful shortcuts and category/release destinations with independent loading.
+
+**Acceptance:** No duplicate shortcut IDs or normal-feed engineering fixtures; warm tab return preserves position and shelf failure leaves other music usable.
+
+**Verification:** First-listener and returning-listener flows; slow one shelf, expand beyond 100 tracks and compare matched Home frames.
+
+**Likely files:** src/ui/screens/Home.tsx; src/ui/screens/common.tsx; src/data/homeFeed.ts (new); apps/api/src/app.mjs; Home E2E cases.
+
+### [ ] V18 — Build a dedicated album page
+
+**Phase:** C. **Dependencies:** V11,V16. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add release-specific header, sticky title/play actions, disc/track numbering, credits and explicit completeness state.
+
+**Acceptance:** Order matches the chosen edition; partial albums show available/total and Play does not silently claim a complete release.
+
+**Verification:** Complete/partial/multi-disc/withdrawn/long-title fixtures; play a track and return to the same row.
+
+**Likely files:** src/ui/screens/Collection.tsx; src/ui/screens/Album.tsx (new); src/ui/MusicList.tsx; src/data/types.ts; album E2E cases.
+
+### [ ] V19 — Finish Now Playing layout and context
+
+**Phase:** C. **Dependencies:** V10,V16,V18. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add actual playback-source context, responsive controls, smooth seek/progress display and meaningful lower panels.
+
+**Acceptance:** Context returns to the initiating playlist/album/search; seek preview never fights stale status and controls stay reachable on short/large-text screens.
+
+**Verification:** Start from four context types; rapid seek/skip and source removal tests; native player recordings.
+
+**Likely files:** src/ui/player/NowPlaying.tsx; src/ui/Seek.tsx; src/data/types.ts; src/data/MusicProvider.tsx; player tests.
+
+#### Checkpoint 08 — after V17, V18, V19
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V20 — Coordinate mini-player and player motion
+
+**Phase:** C. **Dependencies:** V15,V19. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Implement a reliable expansion/collapse transition and refine mini-player progress, art and touch geometry.
+
+**Acceptance:** Interrupted gestures settle correctly; tab/seek/scroll gestures are not stolen and reduced motion keeps the same actions.
+
+**Verification:** Repeated open/cancel/dismiss/rotate and reduced-motion recordings; verify no engine remount or cover flash.
+
+**Likely files:** src/ui/player/MiniPlayer.tsx; src/ui/player/NowPlaying.tsx; src/design/Motion.tsx; relevant route layout; motion evidence.
+
+### [ ] V21 — Complete contextual action sheets
+
+**Phase:** C. **Dependencies:** V14,V15,V20. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Replace placeholder collection overflow behavior with typed menus; add save/next/last/artist/album/credits and working local share where supported.
+
+**Acceptance:** Each visible action is contextual and functional; sheets return focus and retain source-screen context, and pending writes affect only their row.
+
+**Verification:** Track/artist/album/owned/read-only playlist menus; Back/backdrop/keyboard/rapid actions and invalid deep link checks.
+
+**Likely files:** src/ui/screens/Playback.tsx; src/ui/screens/Collection.tsx; src/ui/sheets/Sheet.tsx; src/data/actions.ts (new); menu tests.
+
+### [ ] V22 — Build rich artist pages
+
+**Phase:** C. **Dependencies:** C05,V11,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Create portrait hero, follow/play, ordered popular selection, typed discography and factual about/credit sections.
+
+**Acceptance:** Artist pages extend beyond initial catalog limits; missing portraits/bios use honest fallbacks and no fabricated statistics.
+
+**Verification:** Artist with several editions, no art, mixed credits and long Cyrillic/Turkmen name; native scroll/header review.
+
+**Likely files:** src/ui/screens/Artist.tsx (new); src/ui/screens/Collection.tsx; src/data/types.ts; apps/api/src/catalog-query.mjs; artist tests.
+
+#### Checkpoint 09 — after V20, V21, V22
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V23 — Correct Library ordering and persistence
+
+**Phase:** C. **Dependencies:** V11,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Expose timestamped library entries and implement true recently-added/last-played/title/creator order with coherent list/grid state.
+
+**Acceptance:** Mixed entity kinds sort by real dates; layout/filter preferences restore with the correct scope and saves update visible ordering immediately.
+
+**Verification:** Save album/artist/playlist in interleaved order, restart and switch account; inspect both list/grid layouts.
+
+**Likely files:** src/ui/screens/Library.tsx; src/data/types.ts; apps/api/src/catalog.mjs; src/data/libraryState.ts; library tests.
+
+### [ ] V24 — Add Library search and pins
+
+**Phase:** C. **Dependencies:** V23. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Implement account-scoped collection search and persistent pinned order with accessible pin/unpin controls.
+
+**Acceptance:** Pinned items remain stable across sorting/restart; search finds the entire library rather than only the current page.
+
+**Verification:** 150-collection library, duplicate titles, removing a pinned item and account isolation tests.
+
+**Likely files:** src/ui/screens/Library.tsx; new library-pin migration; apps/api/src/app.mjs; src/data/http.ts; pin/search tests.
+
+### [ ] V25 — Finish mixed search presentation
+
+**Phase:** C. **Dependencies:** V12,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add a useful top result, bounded sections and dedicated type results; refine focus, clear, recent history and keyboard behavior.
+
+**Acceptance:** A relevant artist/album is not buried beneath every track; stale pages cannot replace a newer query and history persists only for its account.
+
+**Verification:** Exact/empty/slow/absent/multilingual searches; selecting from each type and returning preserves query/filter/position.
+
+**Likely files:** src/ui/screens/Search.tsx; src/data/useCatalogSearch.ts; src/ui/screens/common.tsx; search UI tests.
+
+#### Checkpoint 10 — after V23, V24, V25
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V26 — Make genre and alias discovery complete
+
+**Phase:** C. **Dependencies:** C02,V12,V25. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add real paginated category pages and canonical aliases/transliteration ranking; keep editorial freshness labels distinct.
+
+**Acceptance:** Categories include matching items outside bootstrap; ambiguous aliases do not merge different artists and explicit/hidden availability is respected.
+
+**Verification:** 10k metadata with out-of-page genres, diacritics, Cyrillic/Latin aliases and withdrawn tracks.
+
+**Likely files:** apps/api/src/catalog-query.mjs; src/ui/screens/Search.tsx; src/ui/screens/Category.tsx (new); src/data/types.ts; category/search tests.
+
+### [ ] V27 — Finish playlist detail and internal search
+
+**Phase:** C. **Dependencies:** V11,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add cover/mosaic, owner/context, sticky transport, internal search and view sorting with preserved source order.
+
+**Acceptance:** View sorting never rewrites stored playlist order; playback context follows the declared filtered/sorted selection and duplicate entries remain distinct.
+
+**Verification:** Large playlist, duplicate tracks, filtered play, read-only access and return-position tests.
+
+**Likely files:** src/ui/screens/Playlist.tsx (new); src/ui/screens/Collection.tsx; src/ui/MusicList.tsx; src/data/types.ts; playlist detail tests.
+
+### [ ] V28 — Upgrade playlist editing
+
+**Phase:** C. **Dependencies:** V27. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add cover selection, multi-select operations, drag edge-scroll and explicit stale-revision reconciliation.
+
+**Acceptance:** Edit saves once or cancels without loss; another writer's changes cannot be silently overwritten and upload failures retain the prior cover.
+
+**Verification:** Duplicate entries, large lists, concurrent edits, failed save, discard and cover replacement; focused API ownership tests.
+
+**Likely files:** src/ui/screens/PlaylistForm.tsx; src/data/http.ts; apps/api/src/app.mjs; playlist mutation module (new); edit tests.
+
+#### Checkpoint 11 — after V26, V27, V28
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V29 — Finish add-to-playlist workflow
+
+**Phase:** C. **Dependencies:** V27,V28,V21. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Virtualize the picker, show artwork/membership and support create-and-add without leaving listening context unnecessarily.
+
+**Acceptance:** A successful add keeps the source screen and confirms the destination; duplicate policy is explicit and retries do not add unintended copies.
+
+**Verification:** Add existing/new/duplicate, cancel and delayed response cases with ongoing playback.
+
+**Likely files:** src/ui/screens/Playback.tsx; src/ui/screens/PlaylistForm.tsx; src/data/actions.ts; picker tests.
+
+### [ ] V30 — Finish queue gestures and grouping
+
+**Phase:** C. **Dependencies:** V10,V14,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Separate current/manual/context/history rows; add reliable edge-scroll drag, swipe remove and scoped clear/undo.
+
+**Acceptance:** Current audio survives moves/removals elsewhere; undo restores the exact entry and group while conflicts produce a coherent state.
+
+**Verification:** Long dynamic-height queue, duplicate song entries, drag cancel, reduced motion, failed save and undo after a concurrent edit.
+
+**Likely files:** src/ui/screens/Playback.tsx; src/data/queueDropTarget.ts; src/data/queue.ts; queue tests; native gesture evidence.
+
+### [ ] V31 — Upgrade Liked Songs
+
+**Phase:** C. **Dependencies:** V23,V24,V27. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add internal search/sort, count/duration, clear play context and select-to-playlist with unsave undo.
+
+**Acceptance:** Unsave does not accidentally change album/artist follows; filtered/sorted playback and restoration remain predictable.
+
+**Verification:** Empty/500-liked/long-text/withdrawn tracks and undo/retry cases.
+
+**Likely files:** liked route; src/ui/MusicList.tsx; src/data/libraryState.ts; liked-song tests.
+
+#### Checkpoint 12 — after V29, V30, V31
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V32 — Polish account and Settings foundations
+
+**Phase:** C. **Dependencies:** V15,V23. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Finish auth validation, keyboard/autofill, editable profile and grouped settings; establish per-account versus device preference scope.
+
+**Acceptance:** No first-run form or account error traps the user; settings shown as active have real persistence and account-switch cleanup.
+
+**Verification:** Invalid/expired/offline auth, interrupted profile save, first-run language and sign-out/delete cache isolation.
+
+**Likely files:** src/ui/screens/Auth.tsx; src/ui/screens/Settings.tsx; src/data/http.ts; account/profile handler; account E2E cases.
+
+### [ ] C06 — Publish and roll back validated batches
+
+**Phase:** E. **Dependencies:** C04,C05,V11. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Implement dry run, transactional publish, deterministic deduplication, resume and manifest rollback through the existing DB owner connection or stopped-server maintenance.
+
+**Acceptance:** A replay creates no duplicates; failures leave old catalog and user data intact and no two processes open personal PGlite.
+
+**Verification:** Fault injection before/after asset copy and during DB commit; replay, user-reference inventory and rollback on a backup copy.
+
+**Likely files:** catalog batch module (new); personal intake entry point (new); batch manifest schema; batch integration tests.
+
+### [ ] C07 — Reach the first useful catalog gate
+
+**Phase:** E. **Dependencies:** C06. **Scope:** Data/report batch; bounded intake tooling as needed.
+
+**Work:** Publish accepted content toward 150 tracks, 25 artists and ten complete releases, deepening core existing artists first.
+
+**Acceptance:** Every count includes validated available content only; every partial album is declared and all existing user references survive.
+
+**Verification:** Run batch acceptance from catalog plan; API search/hash/ranges plus sampled native start/seek/transition checks and preservation inventory.
+
+**Likely files:** private C1 manifests/media; tasks/catalog-c1-report.md; catalog verification helper.
+
+#### Checkpoint 13 — after V32, C06, C07
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] C08 — Publish coherent editorial collections
+
+**Phase:** E. **Dependencies:** C07,V17. **Scope:** Data/report batch; bounded intake tooling as needed.
+
+**Work:** Create eight useful editorial playlists with covers, descriptions, ordering and overlap review; wire sections into Home/categories.
+
+**Acceptance:** Playlists have real distinct intent and working contents; new-to-Musify and release-date labels are accurate.
+
+**Verification:** Open/play each collection, inspect first/last tracks and covers, compare overlap and check Home duplication/ordering.
+
+**Likely files:** editorial manifests; tasks/catalog-c1-report.md; editorial ingestion/validation helper.
+
+#### Scoped 0.3 candidate — after C08
+
+- [ ] Package the responsive core and completed screen work with the C1 catalog using the V45–V48 verification procedure scoped to this candidate.
+- [ ] Record physical-device results or their explicit pending status; keep the full-cycle V45–V48 parents open.
+- [ ] Collect owner feedback on Home → collection → player → save/queue before moving deeper into optional daily-use features.
+
+### [ ] V33 — Add a reliable sleep timer
+
+**Phase:** D. **Dependencies:** V10,V19. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Implement selected duration and end-of-track timer using a persistent deadline and supported native background behavior.
+
+**Acceptance:** The timer pauses once at the intended boundary, cancels clearly and does not resume audio after expiry.
+
+**Verification:** Accelerated deadline tests plus real background/lock-screen tests; distinguish Expo Go preview from own-build behavior.
+
+**Likely files:** src/data/sleepTimer.ts (new); src/data/sleepTimer.test.ts (new); src/ui/player/NowPlaying.tsx; playback integration.
+
+### [ ] V34 — Record useful listening history
+
+**Phase:** D. **Dependencies:** V11,V32. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Introduce qualified listening events and date-grouped paginated history with replay protection and clear-history control.
+
+**Acceptance:** Failed starts/retries do not become duplicate listens; genuine repeated plays retain timestamps and clearing history updates recommendations appropriately.
+
+**Verification:** Interrupted start, repeat, reconnect replay, pagination boundaries and account isolation tests.
+
+**Likely files:** new listening-events migration; API history module; src/data/MusicProvider.tsx; history screen/route; history tests.
+
+#### Checkpoint 14 — after C08, V33, V34
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V35 — Add song/artist radio and autoplay
+
+**Phase:** D. **Dependencies:** C08,V10,V34. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Build deterministic available-catalog radio and a separate autoplay preference with bounded next-track selection.
+
+**Acceptance:** Queues diversify artists, avoid immediate repeats and honor explicit/hidden choices; empty candidate sets stop or offer a clear fallback.
+
+**Verification:** Small and 500-track fixtures; exhausted queue, skip loops, unavailable candidates and autoplay-off behavior.
+
+**Likely files:** apps/api/src/recommendations.mjs (new); src/data/MusicProvider.tsx; src/ui/screens/Playback.tsx; src/ui/screens/Settings.tsx; recommendation tests.
+
+### [ ] V36 — Add recommendation feedback and personal mixes
+
+**Phase:** D. **Dependencies:** V17,V34,V35. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Use follows/saves/listening signals and hide/less-like-this feedback for explainable personal shelves and optional recommendation shuffle.
+
+**Acceptance:** Inserted recommendations are identified and removable; ordinary shuffle is independent and cold-start output is labeled editorial.
+
+**Verification:** Deterministic ranking fixtures, diversity/repeat tests and feedback persistence; review actual personal usefulness before claiming personalization quality.
+
+**Likely files:** recommendation module; src/ui/screens/Home.tsx; src/ui/screens/Playback.tsx; preference/feedback contract; ranking tests.
+
+### [ ] V37 — Define offline manifests and access lifecycle
+
+**Phase:** D. **Dependencies:** V03,C02,V04. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Implement download-capable rendition manifests with checksums, account scope, expiry/withdrawal policy and versioned status.
+
+**Acceptance:** A cached metadata row cannot authorize a download; manifest changes reconcile without marking an incomplete file playable.
+
+**Verification:** Unauthorized/expired/withdrawn/account-switch tests and a clear own-build platform capability record.
+
+**Likely files:** new download-manifest module; apps/api/src/app.mjs; src/data/types.ts; src/data/http.ts; download contract tests.
+
+#### Checkpoint 15 — after V35, V36, V37
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V38 — Implement the bounded download manager
+
+**Phase:** D. **Dependencies:** V37. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add resumable staged transfers, checksum verification, atomic completion, quotas and recovery after process termination.
+
+**Acceptance:** Completed means fully verified; retries/resume cannot corrupt files and active/pinned audio survives disposable-cache eviction.
+
+**Verification:** Interrupt at multiple byte offsets, fill storage, corrupt a chunk, restart and cancel; native file/transfer tests.
+
+**Likely files:** src/data/downloads.ts (new); src/data/downloadStorage.ts (new); src/data/downloads.test.ts (new); download provider/integration.
+
+### [ ] V39 — Deliver offline playback and download UI
+
+**Phase:** D. **Dependencies:** V38,V10,V27. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Wire download states into collections/library and route playback to validated local files; provide pause/resume/remove management.
+
+**Acceptance:** Completed music plays in airplane mode; absent files are visibly unavailable and local playback preserves queue/seek behavior.
+
+**Verification:** Own-build airplane-mode album/playlist journey, low storage, file removal, account switch and restart.
+
+**Likely files:** src/ui/screens/Downloads.tsx (new); src/ui/screens/Library.tsx; collection actions; src/data/MusicProvider.tsx; offline journey tests.
+
+### [ ] C10 — Prepare verified lyrics and discovery metadata
+
+**Phase:** E. **Dependencies:** C05,C07. **Scope:** Data/report batch; bounded intake tooling as needed.
+
+**Work:** Acquire and match source-backed plain/timed lyrics where available and improve genre/mood/credit fields for the accepted recordings.
+
+**Acceptance:** Recording edition/language mappings are explicit; missing or conflicting lyrics remain unavailable and editorial tags have a defined meaning.
+
+**Verification:** Known-version match/mismatch fixtures, timed-line validation and native-language spot review where available.
+
+**Likely files:** private enrichment manifests; lyrics/metadata validation helper; tasks/catalog-enrichment-report.md.
+
+#### Checkpoint 16 — after V38, V39, C10
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V40 — Add matched plain lyrics
+
+**Phase:** D. **Dependencies:** C10,V19. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Implement a source-backed recording/edition/language lyrics contract and lower-player/full-screen presentation.
+
+**Acceptance:** Wrong-version lyrics are rejected or unavailable; no-content and untimed states are clear and scrolling does not break dismissal.
+
+**Verification:** Known matched, mismatched, absent and multilingual fixtures with navigation/accessibility checks.
+
+**Likely files:** lyrics API module (new); src/data/types.ts; src/data/http.ts; lyrics screen/panel (new); lyrics tests.
+
+### [ ] V41 — Add timed lyrics interaction
+
+**Phase:** D. **Dependencies:** V40. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Support active-line following, user scroll override, return-to-current and seek-by-line for verified timing data.
+
+**Acceptance:** Seek/track change repositions correctly; long lyrics do not create a global per-frame rerender and reduced motion is usable.
+
+**Verification:** Timing-boundary, manual-scroll, seek/skip and large-text tests; native frame trace with lyrics open.
+
+**Likely files:** lyrics screen/panel; src/data/lyricTiming.ts (new); src/data/lyricTiming.test.ts (new); Now Playing integration.
+
+### [ ] V42 — Deliver proven track transitions
+
+**Phase:** D. **Dependencies:** V03,V10. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Implement measured gapless refinements and, only where the engine spike proves it, adjustable crossfade with correct overlapping-source lifecycle.
+
+**Acceptance:** Transitions preserve queue/repeat/seek behavior; unsupported crossfade remains an explicit capability gap rather than a decorative setting.
+
+**Verification:** Recorded boundaries on local and streamed fixtures; rapid skip during overlap, interruptions and background transitions.
+
+**Likely files:** audio transition adapter (new); src/data/MusicProvider.tsx; src/ui/screens/Settings.tsx; transition tests; native results.
+
+#### Checkpoint 17 — after V40, V41, V42
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V43 — Implement truthful playback quality controls
+
+**Phase:** D. **Dependencies:** C04,V03,V37. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Expose real available renditions and data-saving choices; evaluate normalization only with usable loudness metadata and native support.
+
+**Acceptance:** Quality selection changes delivered bytes without relabeling the same file; normalization has measured behavior or remains a tracked gap.
+
+**Verification:** Compare selected rendition MIME/bytes/bitrate, switching/retry behavior and loudness samples where implemented.
+
+**Likely files:** rendition resolver; src/data/http.ts; src/data/types.ts; src/ui/screens/Settings.tsx; quality tests.
+
+### [ ] V44 — Finish storage and data settings
+
+**Phase:** D. **Dependencies:** V32,V38,V39,V43. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Show actual streaming-cache/download usage, clear-cache scope, Wi-Fi/mobile-data preferences and useful connection diagnostics.
+
+**Acceptance:** Displayed usage matches stored files; clear-cache preserves user-pinned downloads and active playback, and preference changes affect transfers.
+
+**Verification:** Storage inventory comparison, low-disk and clear-cache tests during playback; localized confirmation and failure states.
+
+**Likely files:** src/ui/screens/Settings.tsx; src/data/downloadStorage.ts; src/data/downloads.ts; storage/settings tests.
+
+### [ ] C09 — Expand to a substantial personal library
+
+**Phase:** E. **Dependencies:** C07,C08,V12,V35. **Scope:** Data/report batch; bounded intake tooling as needed.
+
+**Work:** Add accepted batches toward 500 tracks, 60 artists and thirty complete releases; grow to fifteen editorial collections.
+
+**Acceptance:** Core artists have useful depth and catalog diversity increases; search/feed/audio budgets still pass after publication.
+
+**Verification:** Repeat intake/rollback checks and 10k/100k metadata scale tests; review radio repeat/diversity behavior with the expanded real catalog.
+
+**Likely files:** private C2 manifests/media; tasks/catalog-c2-report.md; coverage/scale evidence.
+
+#### Checkpoint 18 — after V43, V44, C09
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+#### Scoped 0.4 candidate — after C09
+
+- [ ] Package the accepted daily-use additions and C2 catalog with the same bounded release checks.
+- [ ] List any capability still awaiting engine/content/device prerequisites; retain the last stable APK and data backup.
+- [ ] Expand to C3 only after quality, usefulness and performance gates remain satisfied.
+
+### [ ] C11 — Reach discovery-scale coverage
+
+**Phase:** E. **Dependencies:** C09,V11,V12. **Scope:** Data/report batch; bounded intake tooling as needed.
+
+**Work:** Publish accepted batches toward 1,500 tracks, 120 artists, eighty complete releases and twenty-five playlists only after C2 quality gates pass.
+
+**Acceptance:** The catalog remains browsable beyond bootstrap limits; coverage growth does not introduce empty artists, duplicate recordings or budget failures.
+
+**Verification:** Batch acceptance, full page traversal, storage accounting, 100k synthetic metadata test and device journeys on the actual larger catalog.
+
+**Likely files:** private C3 manifests/media; tasks/catalog-c3-report.md; coverage/storage/scale evidence.
+
+### [ ] C12 — Establish ongoing catalog maintenance
+
+**Phase:** E. **Dependencies:** C06,C11. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Add a dated freshness/withdrawal/duplicate report, source-health checks and safe orphan retention/cleanup workflow.
+
+**Acceptance:** Withdrawn content stops new playback/downloads consistently; reports distinguish pending/rejected/published and preserve rollback mappings.
+
+**Verification:** Withdraw a staged test recording, verify caches/search/queue state, restore via manifest and audit an orphan-cleanup dry run.
+
+**Likely files:** catalog maintenance helper (new); availability handler; catalog operations tests; tasks/catalog-operations.md.
+
+### [ ] V45 — Audit all locales and accessibility
+
+**Phase:** F. **Dependencies:** V20,V30,V32,V39,V41,V44. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Run the full EN/RU/TK, large-text, reduced-motion, VoiceOver/TalkBack and keyboard/focus matrix; file bounded repair tasks per defect.
+
+**Acceptance:** Every changed screen has explicit results; no critical or major accessibility/localization defect is silently waived.
+
+**Verification:** Real screen-reader journeys and 130/160% text checks; native-speaker review recorded where available; rerun only affected flows after repairs.
+
+**Likely files:** tasks/v2-accessibility-report.md; src/i18n/messages.ts; bounded 1–3 affected UI files per repair.
+
+#### Checkpoint 19 — after C11, C12, V45
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] V46 — Run full functional and visual regression
+
+**Phase:** F. **Dependencies:** V45,C11. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Reconcile the feature matrix and run normal/failure/scale/migration journeys, paired screen captures and motion review.
+
+**Acceptance:** No critical/major defect remains in the chosen release scope; visual, functional and catalog coverage are reported independently.
+
+**Verification:** npm test, relevant npm run test:e2e, lint/typecheck/format/export; upgrade a backup copy of 0.2.0 data and inject service failures.
+
+**Likely files:** replica/features.csv; regression tests; tasks/v2-review-report.md; tasks/evidence/v2/ (artifacts).
+
+### [ ] V47 — Prove phone performance and audio endurance
+
+**Phase:** F. **Dependencies:** V46,V02. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Repeat the exact baseline journey, budgets and 30-minute audio session on physical reference devices.
+
+**Acceptance:** Targets have measured pass/fail with matched conditions; no noisy/unmeasured speedup or Expo Go release-performance claim is accepted.
+
+**Verification:** Repeat sampling, interruptions/headphones/background and memory-pressure tests; unresolved failures become scoped repair tasks and are remeasured.
+
+**Likely files:** tasks/v2-performance-results.md; tasks/v2-audio-results.md; tasks/v2-performance-experiments.md; native traces.
+
+### [ ] V48 — Package the accepted candidate
+
+**Phase:** F. **Dependencies:** V46,V47. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
+
+**Work:** Create a signed versioned Android test APK and appropriate iPhone preview/own-build handoff; preserve previous artifacts and data rollback.
+
+**Acceptance:** Artifact hash/package/version match tested source; user instructions and remaining capability gaps are current and upgrade preserves data.
+
+**Verification:** Signature/archive/install/main-flow checks on reference devices; validate links and server readiness, plus iPhone bundle/runtime.
+
+**Likely files:** app.json; eas.json; replica/personal-testing.md; sibling testing guide; versioned artifact evidence.
+
+#### Checkpoint 20 — after V46, V47, V48
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] E01 — Plan and implement sharing beyond the LAN
+
+**Phase:** G. **Dependencies:** V48. **Scope:** S/M: bounded specification/prototype; decompose before full implementation.
+
+**Work:** Define hosted app links and content previews, authenticated opening and public/private visibility before enabling remote sharing.
+
+**Acceptance:** Shared URLs contain stable content IDs rather than media leases; private items remain private and unsupported/deleted links recover safely.
+
+**Verification:** Installed/uninstalled/logged-out/private/deleted content link matrix; verify domain association on real devices after hosting is chosen.
+
+**Likely files:** sharing ADR; link router; public preview route; sharing contract/tests; domain configuration.
+
+### [ ] E02 — Specify collaborative playlist editing
+
+**Phase:** G. **Dependencies:** E01,V28. **Scope:** S/M: bounded specification/prototype; decompose before full implementation.
+
+**Work:** Define owner/editor/viewer roles, invitation lifecycle and revision/conflict behavior; implement the smallest two-account edit slice.
+
+**Acceptance:** Invites can be revoked; edits cannot escape role scope and concurrent changes are visible rather than silently overwritten.
+
+**Verification:** Two-account invite/edit/revoke/conflict tests and audit of persisted playlist ownership.
+
+**Likely files:** collaboration spec; additive membership migration; invitation API; collaboration UI slice; permission tests.
+
+### [ ] E03 — Specify Musify device handoff
+
+**Phase:** G. **Dependencies:** E01,V09. **Scope:** S/M: bounded specification/prototype; decompose before full implementation.
+
+**Work:** Design presence, active-device ownership, acknowledged transfer and reconnect behavior before a small two-device prototype.
+
+**Acceptance:** Only the intended active session plays after transfer; stale devices cannot hijack the queue and position handoff is measured.
+
+**Verification:** Disconnect/reconnect during transfer, two simultaneous transfers, expired session and offline device tests.
+
+**Likely files:** device-session ADR; presence/transfer contract; prototype transport adapter; two-device test harness.
+
+#### Checkpoint 21 — after E01, E02, E03
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
+
+### [ ] E04 — Specify shared listening sessions
+
+**Phase:** G. **Dependencies:** E02,E03. **Scope:** S/M: bounded specification/prototype; decompose before full implementation.
+
+**Work:** Define host/guest queue permissions, authoritative timeline, drift limits and failure behavior for a shared-listening prototype.
+
+**Acceptance:** Participants receive clear join/leave/host-change states; synchronization is measured and queue permissions are enforced.
+
+**Verification:** Two-device delay/jitter/disconnect/rejoin scenarios; report drift and recovery rather than claiming synchronized playback from matching UI.
+
+**Likely files:** shared-listening spec; realtime prototype; session permission tests; timing evidence.
+
+### [ ] E05 — Evaluate recap and advanced discovery products
+
+**Phase:** G. **Dependencies:** V34,V36. **Scope:** S/M: bounded specification/prototype; decompose before full implementation.
+
+**Work:** Write separate bounded specs for a listening recap and an optional conversational/DJ experiment using real history and measured recommendation usefulness.
+
+**Acceptance:** Recap counts are reproducible and private; an AI experiment has a cost/evaluation/data contract before integration.
+
+**Verification:** Replay known listening fixtures for statistics; evaluate discovery relevance, exclusions, empty context and failure/cost behavior.
+
+**Likely files:** recap spec; discovery experiment spec; evaluation fixtures/report.
+
+### [ ] E06 — Map remaining platform and media gaps
+
+**Phase:** G. **Dependencies:** V48,V03. **Scope:** S/M: bounded specification/prototype; decompose before full implementation.
+
+**Work:** Create separate future specs for equalizer/output routing, local files, animated art/video, podcasts/audiobooks, car/watch/TV clients and commercial billing/ads.
+
+**Acceptance:** Each capability has a real platform/content prerequisite and an explicit scope decision; no unsupported settings or fake destinations are added to the current app.
+
+**Verification:** Official platform/API checks and a dependency/effort review per capability; implementation begins only as a separately bounded vertical slice.
+
+**Likely files:** ecosystem roadmap; per-capability ADR/spec files; compatibility notes.
+
+#### Checkpoint 22 — after E04, E05, E06
+
+- [ ] The three task-specific acceptance/verification records are complete or their exact external dependencies are still explicitly open.
+- [ ] The core browse/play/save journey remains usable; relevant regressions pass.
+- [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
