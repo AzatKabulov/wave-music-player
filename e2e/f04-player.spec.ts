@@ -31,6 +31,8 @@ test("F04-H1 transport, seek, repeat and shuffle", async ({ page }) => {
   ).toBeVisible();
   await page.getByRole("button", { name: "Next track", exact: true }).click();
   await expect(
-    page.getByText("First Light", { exact: true }).filter({ visible: true }),
+    page
+      .getByTestId("player-surface")
+      .getByText("First Light", { exact: true }),
   ).toBeVisible();
 });

@@ -23,20 +23,15 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { GestureDetector, usePanGesture } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
-import { scheduleOnRN } from "react-native-worklets";
+import { GestureDetector } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 import { useMusic, usePlaybackStatus } from "../../data/MusicProvider";
-import { Artwork } from "../../design/Artwork";
-import { Touch, useMotion } from "../../design/Motion";
+import { PlayerArtwork } from "./PlayerArtwork";
+import { Touch } from "../../design/Motion";
 import { Button, IconButton, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
-import { back, go, ui } from "../Shell";
+import { go, ui } from "../Shell";
+import { usePlayerSurface } from "./usePlayerSurface";
 import { Seek } from "../Seek";
 import { formatTime } from "../screens/common";
 
@@ -84,7 +79,6 @@ export function Player() {
   const { tx } = useLocale();
   const status = usePlaybackStatus();
   const { width, height, fontScale } = useWindowDimensions();
-  const { reduced } = useMotion();
   const atmosphere = useMemo(
     () =>
       artworkSurface(
@@ -94,33 +88,27 @@ export function Player() {
       ),
     [m.track?.artworkColor],
   );
-  const y = useSharedValue(0);
-  const pan = usePanGesture({
-    activeOffsetY: 12,
-    failOffsetX: [-24, 24],
-    maxPointers: 1,
-    onUpdate: (event) => {
-      y.value = Math.max(0, event.translationY);
-    },
-    onDeactivate: (event) => {
-      if (
-        !event.canceled &&
-        (event.translationY > 130 || event.velocityY > 900)
-      ) {
-        y.value = withTiming(
-          height,
-          { duration: reduced ? 0 : 180 },
-          (finished) => {
-            if (finished) scheduleOnRN(back);
-          },
-        );
-      } else y.value = withSpring(0, { damping: 26, stiffness: 260 });
-    },
-  });
-  const drag = useAnimatedStyle(() => ({
-    transform: [{ translateY: reduced ? 0 : y.value }],
-  }));
+  const surface = usePlayerSurface(height, atmosphere);
   const track = m.track;
+  const currentIndex = m.queue.entries.findIndex(
+    (entry) => entry.id === m.activeEntry?.id,
+  );
+  const neighbor = (direction: number) => {
+    let index = currentIndex + direction;
+    if (index < 0 || index >= m.queue.entries.length) {
+      if (m.queue.repeat !== "all" || m.queue.entries.length < 2) return;
+      index = (index + m.queue.entries.length) % m.queue.entries.length;
+    }
+    const entry = m.queue.entries[index];
+    const track = m.snapshot?.catalog.tracks.find(
+      (track) => track.id === entry?.trackId,
+    );
+    return entry &&
+      track?.available &&
+      (m.snapshot?.preferences.explicitAllowed || !track.explicit)
+      ? { id: entry.id, track }
+      : undefined;
+  };
   const saved = !!track && m.snapshot!.library.tracks.includes(track.id);
   const size = Math.min(
     400,
@@ -128,200 +116,216 @@ export function Player() {
     Math.max(200, (height * 0.42) / Math.max(1, fontScale * 0.8)),
   );
   return (
-    <LinearGradient
-      colors={[atmosphere, t.color.bg]}
-      locations={[0, 0.85]}
-      style={s.root}
+    <Animated.View
+      testID="player-surface"
+      onAccessibilityEscape={surface.close}
+      style={[s.root, s.surface, surface.style]}
     >
-      <SafeAreaView edges={["top", "bottom", "left", "right"]} style={s.root}>
-        <Animated.View style={[s.root, drag]}>
-          <GestureDetector gesture={pan}>
-            <Animated.View style={s.dragArea}>
-              <View style={s.header}>
-                <IconButton
-                  icon={ChevronDown}
-                  label="Close player"
-                  onPress={back}
-                />
-                <View style={s.context}>
-                  <Label
-                    i18n
-                    type="sm"
-                    accessibilityRole="header"
-                    style={s.contextTitle}
-                  >
-                    Now playing
-                  </Label>
-                  <Label type="xs" color="text-muted" numberOfLines={1}>
-                    {track?.album || tx("Your music")}
-                  </Label>
-                </View>
-                <IconButton
-                  icon={MoreHorizontal}
-                  label={
-                    track
-                      ? tx("Actions for {title}", { title: track.title })
-                      : tx("Track options")
-                  }
-                  disabled={!track}
-                  onPress={() => track && go(`/actions/${track.id}`)}
-                />
-              </View>
-              {track ? (
-                <View style={s.art}>
-                  <Artwork
-                    uri={track.artworkUrl}
-                    palette={track.palette}
-                    size={size}
+      <LinearGradient
+        colors={["transparent", t.color.bg]}
+        locations={[0, 0.85]}
+        style={s.root}
+      >
+        <SafeAreaView edges={["top", "bottom", "left", "right"]} style={s.root}>
+          <View style={s.root}>
+            <GestureDetector gesture={surface.pan}>
+              <Animated.View testID="player-drag-area" style={s.dragArea}>
+                <View style={s.header}>
+                  <IconButton
+                    icon={ChevronDown}
+                    label="Close player"
+                    onPress={surface.close}
+                  />
+                  <View style={s.context}>
+                    <Label
+                      i18n
+                      type="sm"
+                      accessibilityRole="header"
+                      style={s.contextTitle}
+                    >
+                      Now playing
+                    </Label>
+                    <Label type="xs" color="text-muted" numberOfLines={1}>
+                      {track?.album || tx("Your music")}
+                    </Label>
+                  </View>
+                  <IconButton
+                    icon={MoreHorizontal}
+                    label={
+                      track
+                        ? tx("Actions for {title}", { title: track.title })
+                        : tx("Track options")
+                    }
+                    disabled={!track}
+                    onPress={() => track && go(`/actions/${track.id}`)}
                   />
                 </View>
-              ) : null}
-            </Animated.View>
-          </GestureDetector>
-          {track ? (
-            <ScrollView
-              contentContainerStyle={s.controls}
-              showsVerticalScrollIndicator={false}
-            >
-              <View style={ui.row}>
-                <View style={ui.grow}>
-                  <Label type="xl" numberOfLines={2}>
-                    {track.title}
-                  </Label>
-                  <Touch
-                    accessibilityRole="button"
-                    accessibilityLabel={tx("Visit {artist}", {
-                      artist: track.artist,
-                    })}
-                    onPress={() => go(`/artist/${track.artistId}`)}
-                    style={s.artist}
-                  >
-                    <Label color="text-muted" numberOfLines={2}>
-                      {track.artist}
+                {track ? (
+                  <View style={s.art}>
+                    <PlayerArtwork
+                      current={{ id: m.activeEntry?.id || track.id, track }}
+                      previous={neighbor(-1)}
+                      next={neighbor(1)}
+                      size={size}
+                      onSelect={(id, expected) => {
+                        if (m.activeEntry?.id === expected)
+                          m.jumpQueue(id, status.playing);
+                      }}
+                    />
+                  </View>
+                ) : null}
+              </Animated.View>
+            </GestureDetector>
+            {track ? (
+              <ScrollView
+                contentContainerStyle={s.controls}
+                showsVerticalScrollIndicator={false}
+              >
+                <View style={ui.row}>
+                  <View style={ui.grow}>
+                    <Label type="xl" numberOfLines={2}>
+                      {track.title}
                     </Label>
+                    <Touch
+                      accessibilityRole="button"
+                      accessibilityLabel={tx("Visit {artist}", {
+                        artist: track.artist,
+                      })}
+                      onPress={() => go(`/artist/${track.artistId}`)}
+                      style={s.artist}
+                    >
+                      <Label color="text-muted" numberOfLines={2}>
+                        {track.artist}
+                      </Label>
+                    </Touch>
+                  </View>
+                  <IconButton
+                    icon={saved ? CheckCircle2 : CirclePlus}
+                    label={
+                      saved ? "Unsave current track" : "Save current track"
+                    }
+                    selected={saved}
+                    onPress={() => void m.save("tracks", track.id, !saved)}
+                  />
+                </View>
+                <View>
+                  <Seek
+                    key={m.activeEntry?.id}
+                    value={status.currentTime}
+                    max={status.duration || track.durationMs / 1000}
+                    onChange={m.seek}
+                  />
+                  <View style={ui.h}>
+                    <Label type="xs" color="text-muted">
+                      {formatTime(status.currentTime)}
+                    </Label>
+                    <Label type="xs" color="text-muted">
+                      {formatTime(status.duration || track.durationMs / 1000)}
+                    </Label>
+                  </View>
+                </View>
+                <View style={s.transport}>
+                  <IconButton
+                    icon={Shuffle}
+                    label={
+                      m.queue.shuffle ? "Disable shuffle" : "Enable shuffle"
+                    }
+                    selected={m.queue.shuffle}
+                    onPress={() => void m.shuffle()}
+                  />
+                  <IconButton
+                    icon={SkipBack}
+                    size="lg"
+                    label="Previous track"
+                    onPress={m.previous}
+                  />
+                  <Touch
+                    haptic
+                    accessibilityRole="button"
+                    accessibilityLabel={tx(status.playing ? "Pause" : "Play")}
+                    onPress={m.toggle}
+                    style={s.play}
+                  >
+                    {status.playing ? (
+                      <Pause fill={t.color.bg} color={t.color.bg} size={32} />
+                    ) : (
+                      <Play fill={t.color.bg} color={t.color.bg} size={32} />
+                    )}
                   </Touch>
+                  <IconButton
+                    icon={SkipForward}
+                    size="lg"
+                    label="Next track"
+                    onPress={m.next}
+                  />
+                  <IconButton
+                    icon={m.queue.repeat === "single" ? Repeat1 : Repeat}
+                    label={tx("Repeat: {mode}", { mode: tx(m.queue.repeat) })}
+                    selected={m.queue.repeat !== "none"}
+                    onPress={() => void m.repeat()}
+                  />
                 </View>
-                <IconButton
-                  icon={saved ? CheckCircle2 : CirclePlus}
-                  label={saved ? "Unsave current track" : "Save current track"}
-                  selected={saved}
-                  onPress={() => void m.save("tracks", track.id, !saved)}
-                />
-              </View>
-              <View>
-                <Seek
-                  key={m.activeEntry?.id}
-                  value={status.currentTime}
-                  max={status.duration || track.durationMs / 1000}
-                  onChange={m.seek}
-                />
                 <View style={ui.h}>
-                  <Label type="xs" color="text-muted">
-                    {formatTime(status.currentTime)}
-                  </Label>
-                  <Label type="xs" color="text-muted">
-                    {formatTime(status.duration || track.durationMs / 1000)}
-                  </Label>
-                </View>
-              </View>
-              <View style={s.transport}>
-                <IconButton
-                  icon={Shuffle}
-                  label={m.queue.shuffle ? "Disable shuffle" : "Enable shuffle"}
-                  selected={m.queue.shuffle}
-                  onPress={() => void m.shuffle()}
-                />
-                <IconButton
-                  icon={SkipBack}
-                  size="lg"
-                  label="Previous track"
-                  onPress={m.previous}
-                />
-                <Touch
-                  haptic
-                  accessibilityRole="button"
-                  accessibilityLabel={tx(status.playing ? "Pause" : "Play")}
-                  onPress={m.toggle}
-                  style={s.play}
-                >
-                  {status.playing ? (
-                    <Pause fill={t.color.bg} color={t.color.bg} size={32} />
-                  ) : (
-                    <Play fill={t.color.bg} color={t.color.bg} size={32} />
-                  )}
-                </Touch>
-                <IconButton
-                  icon={SkipForward}
-                  size="lg"
-                  label="Next track"
-                  onPress={m.next}
-                />
-                <IconButton
-                  icon={m.queue.repeat === "single" ? Repeat1 : Repeat}
-                  label={tx("Repeat: {mode}", { mode: tx(m.queue.repeat) })}
-                  selected={m.queue.repeat !== "none"}
-                  onPress={() => void m.repeat()}
-                />
-              </View>
-              <View style={ui.h}>
-                <Label
-                  type="sm"
-                  color="text-muted"
-                  i18n
-                  accessibilityLiveRegion="polite"
-                >
-                  {status.isBuffering
-                    ? "Loading audio…"
-                    : status.playing
-                      ? "Playing"
-                      : "Paused"}
-                </Label>
-                <Touch
-                  labelIsUI
-                  accessibilityRole="button"
-                  accessibilityLabel="Queue"
-                  onPress={() => go("/queue")}
-                  style={s.queue}
-                >
-                  <ListMusic color={t.color.text} size={22} />
-                  <Label i18n type="sm">
-                    Queue
-                  </Label>
-                </Touch>
-              </View>
-              {m.error ? (
-                <View accessibilityRole="alert" style={s.error}>
-                  <Label i18n color="danger">
-                    {m.error}
+                  <Label
+                    type="sm"
+                    color="text-muted"
+                    i18n
+                    accessibilityLiveRegion="polite"
+                  >
+                    {status.isBuffering
+                      ? "Loading audio…"
+                      : status.playing
+                        ? "Playing"
+                        : "Paused"}
                   </Label>
                   <Touch
                     labelIsUI
                     accessibilityRole="button"
-                    accessibilityLabel="Dismiss error"
-                    onPress={() => m.setError("")}
+                    accessibilityLabel="Queue"
+                    onPress={() => go("/queue")}
+                    style={s.queue}
                   >
-                    <Label i18n>Dismiss</Label>
+                    <ListMusic color={t.color.text} size={22} />
+                    <Label i18n type="sm">
+                      Queue
+                    </Label>
                   </Touch>
                 </View>
-              ) : null}
-              {status.isBuffering || !status.isLoaded ? (
-                <PlaybackRecovery key={m.activeEntry?.id} />
-              ) : null}
-            </ScrollView>
-          ) : (
-            <StateView
-              title="Choose your first track"
-              message="Start a track from Home, Search, or your library."
-              action="Find music"
-              onAction={() => go("/search")}
-            />
-          )}
-        </Animated.View>
-      </SafeAreaView>
-    </LinearGradient>
+                {m.error ? (
+                  <View accessibilityRole="alert" style={s.error}>
+                    <Label i18n color="danger">
+                      {m.error}
+                    </Label>
+                    <Touch
+                      labelIsUI
+                      accessibilityRole="button"
+                      accessibilityLabel="Dismiss error"
+                      onPress={() => m.setError("")}
+                    >
+                      <Label i18n>Dismiss</Label>
+                    </Touch>
+                  </View>
+                ) : null}
+                {status.isBuffering || !status.isLoaded ? (
+                  <PlaybackRecovery key={m.activeEntry?.id} />
+                ) : null}
+              </ScrollView>
+            ) : (
+              <StateView
+                title="Choose your first track"
+                message="Start a track from Home, Search, or your library."
+                action="Find music"
+                onAction={() => go("/search")}
+              />
+            )}
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
+    </Animated.View>
   );
 }
 const s = StyleSheet.create({
+  surface: { overflow: "hidden", borderRadius: 20 },
   root: { flex: 1 },
   dragArea: { width: "100%", maxWidth: 480, alignSelf: "center" },
   header: {

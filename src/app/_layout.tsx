@@ -39,9 +39,10 @@ function AppStack() {
       <Stack.Screen
         name="player"
         options={{
-          presentation: "fullScreenModal",
-          animation: reduced ? "fade" : "slide_from_bottom",
-          gestureDirection: "vertical",
+          presentation: "transparentModal",
+          animation: "none",
+          gestureEnabled: false,
+          contentStyle: { backgroundColor: "transparent" },
         }}
       />
       <Stack.Screen

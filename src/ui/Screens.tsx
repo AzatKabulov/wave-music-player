@@ -10,7 +10,7 @@ import { useMusic } from "../data/MusicProvider";
 import type { Track } from "../data/types";
 import { Skeleton, StateView } from "../design/Primitives";
 import { theme as t } from "../design/theme";
-import { Shell, go, ui } from "./Shell";
+import { Shell, ScreenChrome, go, ui } from "./Shell";
 
 import { Auth, Recovery } from "./screens/Auth";
 import { Collection } from "./screens/Collection";
@@ -118,7 +118,10 @@ export default function RouteScreen(props: { screen?: string }) {
   const root = useRootNavigationState();
   const state =
     root?.routes.find((item) => item.name === "__root")?.state || root;
-  const modal = path.startsWith("/actions/") || path.startsWith("/add/");
+  const modal =
+    path === "/player" ||
+    path.startsWith("/actions/") ||
+    path.startsWith("/add/");
   const background = modal
     ? state?.routes
         .slice(0, state.index)
@@ -148,6 +151,12 @@ export default function RouteScreen(props: { screen?: string }) {
       }}
     >
       <Screens {...props} />
+      {show &&
+      !["player", "actions", "add"].includes(
+        (props.screen || route.name).split("/")[0],
+      ) ? (
+        <ScreenChrome />
+      ) : null}
     </View>
   );
 }

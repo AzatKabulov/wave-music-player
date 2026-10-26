@@ -43,7 +43,6 @@ export function NavigationFrame({ children }: { children: React.ReactNode }) {
   const m = useMusic();
   const path = usePathname();
   const wide = useWindowDimensions().width >= 960;
-  const insets = useSafeAreaInsets();
   const immersive =
     path === "/player" ||
     path.startsWith("/actions/") ||
@@ -99,40 +98,49 @@ export function NavigationFrame({ children }: { children: React.ReactNode }) {
           />
         </SafeAreaView>
       ) : null}
-      <View style={s.main}>
-        {children}
-        {visible ? (
-          <View style={[s.chrome, { paddingBottom: insets.bottom }]}>
-            <MiniPlayer />
-            {!wide ? (
-              <View style={s.bottom} accessibilityRole="tablist">
-                {destinations.map((d) => {
-                  const selected = path === d.path;
-                  return (
-                    <Touch
-                      key={d.path}
-                      accessibilityRole="tab"
-                      accessibilityLabel={tx(d.name)}
-                      accessibilityState={{ selected }}
-                      onPress={() => router.navigate(d.path as never)}
-                      style={s.destination}
-                    >
-                      <d.icon
-                        size={25}
-                        color={selected ? t.color.text : t.color["text-muted"]}
-                        strokeWidth={selected ? 2.4 : 1.7}
-                      />
-                      <Label type="xs" color={selected ? "text" : "text-muted"}>
-                        {tx(d.name)}
-                      </Label>
-                    </Touch>
-                  );
-                })}
-              </View>
-            ) : null}
-          </View>
-        ) : null}
-      </View>
+      <View style={s.main}>{children}</View>
+    </View>
+  );
+}
+
+// Keep chrome in its browse scene so the player overlay cannot resize the
+// surface beneath it. MusicProvider still owns one engine above every route.
+export function ScreenChrome() {
+  const { tx } = useLocale();
+  const m = useMusic();
+  const path = usePathname();
+  const wide = useWindowDimensions().width >= 960;
+  const insets = useSafeAreaInsets();
+  if (!m.snapshot?.profile) return null;
+  return (
+    <View style={[s.chrome, { paddingBottom: insets.bottom }]}>
+      <MiniPlayer />
+      {!wide ? (
+        <View style={s.bottom} accessibilityRole="tablist">
+          {destinations.map((d) => {
+            const selected = path === d.path;
+            return (
+              <Touch
+                key={d.path}
+                accessibilityRole="tab"
+                accessibilityLabel={tx(d.name)}
+                accessibilityState={{ selected }}
+                onPress={() => router.navigate(d.path as never)}
+                style={s.destination}
+              >
+                <d.icon
+                  size={25}
+                  color={selected ? t.color.text : t.color["text-muted"]}
+                  strokeWidth={selected ? 2.4 : 1.7}
+                />
+                <Label type="xs" color={selected ? "text" : "text-muted"}>
+                  {tx(d.name)}
+                </Label>
+              </Touch>
+            );
+          })}
+        </View>
+      ) : null}
     </View>
   );
 }

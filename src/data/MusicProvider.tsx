@@ -779,11 +779,12 @@ function useMusicController() {
             (e) => e.origin !== "explicit" || e.id === q.currentId,
           ),
         })),
-      jumpQueue: (id: string) => {
+      jumpQueue: (id: string, play = true) => {
         const index = queue.entries.findIndex((e) => e.id === id);
         if (index >= 0) {
           engine.skipTo(index);
-          engine.play();
+          if (play) engine.play();
+          else engine.pause();
         }
       },
       repeat: () =>

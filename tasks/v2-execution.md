@@ -109,3 +109,9 @@ All 58 tracks passed exact search, full served audio/artwork hashes, 128-pixel t
 Client source is tagged in configuration as 0.2.1/build 3. All-platform production export passes (native Hermes bundles ~6.6 MB each). The restarted iPhone Expo Go endpoint serves an SDK-58 manifest for 0.2.1 and a 13,966,234-byte iOS bundle containing the intended API, metadata cache and local timing code. This verifies delivery from the PC, not physical iPhone rendering/audio. See `evidence/v2/performance/iphone-v021-delivery.json`.
 
 Android build `113eedf7-450a-4a8b-81c7-039401094061` was submitted to the existing personal Expo project with versionCode 3 and the same package. The old 0.2.0 APK remains served until the new artifact passes integrity, signature, package/API and download verification. No new APK is claimed available while Expo queues it. The post-submit backend-only queue batching change is excluded from the mobile archive and is already served by the PC API.
+
+## Owner player-motion addition and scheduled continuation
+
+The owner added specific player-motion and seek complaints and requested artwork swipes right-next / left-previous. The still-queued Android build above was successfully canceled before it ran, so its replacement can contain these fixes. See `player-motion-v2.md` for the specification and current verified expansion/dismissal/artwork implementation. Seek repair and replacement packaging remain pending; the old APK remains served.
+
+At the owner's request, an active one-time continuation named `resume-musify-improvements-after-reset` was created in this same chat for 2026-10-27 **09:07 Asia/Singapore**, after the usage reset reported by the account tool at 09:06:41. The prompt resumes these files and the working tree, avoids duplicate services/builds and retains the 50–70 track scope. PC/app must remain available for local work. This schedule is a continuation, not a pause request; work continues now.
