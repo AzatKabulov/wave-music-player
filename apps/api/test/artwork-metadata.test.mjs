@@ -24,3 +24,23 @@ test("cover metadata is measured from decoded pixels, not inferred from an artis
     inspectArtwork(bytes.subarray(0, bytes.length / 2)),
   );
 });
+
+test("a dark border does not erase a cover's representative color", async () => {
+  const blue = await sharp({
+    create: { width: 200, height: 600, channels: 3, background: "#2255bb" },
+  })
+    .png()
+    .toBuffer();
+  const cover = await sharp({
+    create: { width: 600, height: 600, channels: 3, background: "#080808" },
+  })
+    .composite([{ input: blue, left: 400, top: 0 }])
+    .png()
+    .toBuffer();
+  const { dominantColor } = await inspectArtwork(cover);
+  assert.ok(
+    parseInt(dominantColor.slice(5, 7), 16) >
+      parseInt(dominantColor.slice(1, 3), 16) + 80,
+    dominantColor,
+  );
+});

@@ -18,18 +18,40 @@ export async function inspectArtwork(bytes) {
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
-  const stats = await sharp(decoded.data, { raw: decoded.info })
+  const sample = await sharp(decoded.data, { raw: decoded.info })
     .resize({ width: 64, height: 64, fit: "inside" })
-    .stats();
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const bins = new Map();
+  for (let at = 0; at < sample.data.length; at += sample.info.channels) {
+    const [r, g, b] = sample.data.subarray(at, at + 3);
+    const high = Math.max(r, g, b),
+      chroma = high - Math.min(r, g, b);
+    if (high < 64 || chroma < 20) continue;
+    const key = `${r >> 5}:${g >> 5}:${b >> 5}`;
+    const bin = bins.get(key) || { r: 0, g: 0, b: 0, count: 0, weight: 0 };
+    bin.r += r;
+    bin.g += g;
+    bin.b += b;
+    bin.count++;
+    bin.weight += 1 + chroma / 255;
+    bins.set(key, bin);
+  }
+  // Ignore black borders and neutral lettering when choosing the atmosphere;
+  // retain a neutral dominant fallback for genuinely monochrome covers.
+  const best = [...bins.values()].sort((a, b) => b.weight - a.weight)[0];
+  const fallback = best
+    ? null
+    : (await sharp(sample.data, { raw: sample.info }).stats()).dominant;
+  const color = best
+    ? [best.r, best.g, best.b].map((n) => Math.round(n / best.count))
+    : [fallback.r, fallback.g, fallback.b];
   return {
     width: decoded.info.width,
     height: decoded.info.height,
     dominantColor:
-      "#" +
-      [stats.dominant.r, stats.dominant.g, stats.dominant.b]
-        .map((n) => n.toString(16).padStart(2, "0"))
-        .join(""),
+      "#" + color.map((n) => n.toString(16).padStart(2, "0")).join(""),
     sha256: createHash("sha256").update(bytes).digest("hex"),
-    paletteVersion: 1,
+    paletteVersion: 2,
   };
 }

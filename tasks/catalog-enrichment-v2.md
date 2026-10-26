@@ -1,6 +1,6 @@
 # Catalog presentation enrichment
 
-Applied 2026-10-26T12:51:31.667Z.
+Applied 2026-10-26T18:39:18.663Z.
 
 - 30 existing covers fully decoded; dimensions, content hashes and dominant colors measured.
 - 27 releases have expected track counts from their cached Apple metadata; incomplete releases are labelled partial. Matching count alone never marks an album complete.
