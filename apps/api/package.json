@@ -6,7 +6,7 @@
   "packageManager": "npm@11.8.0",
   "scripts": {
     "start": "node --env-file-if-exists=.env.local src/start.mjs",
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "migrate": "node --env-file-if-exists=.env.local src/migrate.mjs"
   },
   "dependencies": {
