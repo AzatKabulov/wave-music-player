@@ -449,6 +449,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V07 — Trace playback latency stages
 
+**Execution:** V07.1 tracing is implemented with three deterministic tests and normal/delayed browser evidence. Native status is an explicitly labelled proxy; physical audible-start and release-device overhead measurements remain pending.
+
 **Phase:** B. **Dependencies:** V02. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Add bounded local timing markers for tap, queued command, server acknowledgement, grant, native install and audible-start observation.

@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-27",
+  "scope": "Phone-width browser development build; one sample per condition; player status is a proxy, not physical audible-start timing",
+  "samples": [
+    {
+      "test": "V07 playback stages attribute a 0ms queue response delay",
+      "project": "phone-web",
+      "delay": 0,
+      "traces": [
+        {
+          "id": 1,
+          "action": "playSelection",
+          "marks": {
+            "tap": 0,
+            "commandStarted": 50.1,
+            "requestStarted": 50.3,
+            "serverAcknowledged": 92.4,
+            "grantStarted": 92.4,
+            "grantReady": 115,
+            "installStarted": 115.2,
+            "installed": 116.7,
+            "playbackObserved": 1657.7
+          },
+          "entryId": "b2e96694-4ab7-44e1-839c-a211185ca0ad",
+          "trackId": "10000000-0000-4000-8000-000000000301"
+        }
+      ]
+    },
+    {
+      "test": "V07 playback stages attribute a 350ms queue response delay",
+      "project": "phone-web",
+      "delay": 350,
+      "traces": [
+        {
+          "id": 1,
+          "action": "playSelection",
+          "marks": {
+            "tap": 0,
+            "commandStarted": 54.3,
+            "requestStarted": 54.6,
+            "serverAcknowledged": 458,
+            "grantStarted": 458,
+            "grantReady": 485.4,
+            "installStarted": 485.7,
+            "installed": 487.1,
+            "playbackObserved": 1385.7
+          },
+          "entryId": "d4bf03c3-af1e-42de-9446-65d3004720d6",
+          "trackId": "10000000-0000-4000-8000-000000000301"
+        }
+      ]
+    }
+  ]
+}

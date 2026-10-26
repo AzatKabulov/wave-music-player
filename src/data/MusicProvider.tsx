@@ -30,6 +30,7 @@ import { sourcePatch } from "./sourcePatch";
 import { savedIds } from "./libraryState";
 import { mergeCatalog, refreshCatalog } from "./catalogCache";
 import { createLatestWriter } from "./latestWriter";
+import { playbackTiming } from "./playbackTiming";
 import type {
   MusicData,
   Library,
@@ -196,8 +197,17 @@ function useMusicController() {
     }),
     status = useAudioPlaylistStatus(engine);
   const statusRef = useRef(status);
+  const activeTiming = useRef<number | null>(null);
   useEffect(() => {
     statusRef.current = status;
+    const entry = queueRef.current.entries[status.currentIndex];
+    if (entry)
+      playbackTiming.observe(
+        activeTiming.current,
+        entry.id,
+        status.playing && status.isLoaded && !status.isBuffering,
+        status.currentTime,
+      );
   }, [status]);
   const activeEntry = queue.entries[status.currentIndex],
     track = snapshot?.catalog.tracks.find((t) => t.id === activeEntry?.trackId);
@@ -398,12 +408,18 @@ function useMusicController() {
     }
   }, [ensureLease, install]);
   const command = useCallback(
-    (change: (current: QueueState) => QueueState, play?: boolean) => {
+    (
+      change: (current: QueueState) => QueueState,
+      play?: boolean,
+      action: "playSelection" | "queueEdit" = "queueEdit",
+    ) => {
+      const timing = playbackTiming.start(action);
       restorationVersion.current++;
       setPending((p) => p + 1);
       const next = pipeline.current
         .catch(() => {})
         .then(async () => {
+          playbackTiming.mark(timing, "commandStarted");
           const old = queueRef.current,
             s = statusRef.current;
           const state = change({
@@ -411,12 +427,25 @@ function useMusicController() {
             currentId: old.entries[s.currentIndex]?.id || old.currentId,
             positionMs: Math.floor(s.currentTime * 1000),
           });
+          playbackTiming.mark(timing, "requestStarted");
           const committed = await data.queue(installation.current, state);
+          playbackTiming.mark(timing, "serverAcknowledged");
+          playbackTiming.mark(timing, "grantStarted");
           await ensureLease();
+          playbackTiming.mark(timing, "grantReady");
+          const selected = committed.entries.find(
+            (entry) => entry.id === committed.currentId,
+          );
+          if (selected)
+            playbackTiming.bind(timing, selected.id, selected.trackId);
+          playbackTiming.mark(timing, "installStarted");
           install(committed, play ?? s.playing, lease.current);
+          playbackTiming.mark(timing, "installed");
+          activeTiming.current = timing;
           return true;
         })
         .catch(async (e) => {
+          playbackTiming.mark(timing, "failed");
           setError(
             e instanceof Error ? e.message : "Could not update the queue.",
           );
@@ -559,22 +588,26 @@ function useMusicController() {
   }, [refresh, command]);
   const playTracks = useCallback(
     (tracks: Track[], start = 0, shuffle = false) =>
-      command((current) => {
-        const result = contextQueue(
-          tracks,
-          {
-            revision: current.revision,
-            start,
-            shuffle,
-            explicitAllowed: !!snapshot?.preferences.explicitAllowed,
-          },
-          randomUUID,
-        );
-        if (!result.state.entries.length)
-          throw Error("No playable tracks in this collection.");
-        canonical.current = result.canonical;
-        return result.state;
-      }, true),
+      command(
+        (current) => {
+          const result = contextQueue(
+            tracks,
+            {
+              revision: current.revision,
+              start,
+              shuffle,
+              explicitAllowed: !!snapshot?.preferences.explicitAllowed,
+            },
+            randomUUID,
+          );
+          if (!result.state.entries.length)
+            throw Error("No playable tracks in this collection.");
+          canonical.current = result.canonical;
+          return result.state;
+        },
+        true,
+        "playSelection",
+      ),
     [command, snapshot?.preferences.explicitAllowed],
   );
   const enqueueTracks = useCallback(
@@ -610,6 +643,8 @@ function useMusicController() {
     engine.clear();
     lease.current = "";
     loadedLease.current = "";
+    activeTiming.current = null;
+    playbackTiming.clear();
     queueRef.current = emptyQueue();
     setQueue(emptyQueue());
   }, [cancelSeek, engine, positions]);

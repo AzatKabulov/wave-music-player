@@ -71,3 +71,15 @@ Native startup can display the last coherent account snapshot before refreshing 
 The cache contains metadata only; playback still requires current server authorization. Oversized or corrupt records become cache misses without deleting installation identity or preferences. The current full snapshot remains a scaling limit until V04's bounded bootstrap contract lands; the cache does not mark V04 or the whole V05 complete.
 
 Verification: seven cache tests cover restore, account isolation, secret exclusion, expiry/corruption, malformed nested values, Unicode byte quota, storage failure and write/logout ordering. Four focused phone-width browser account/resume/race checks passed. Typecheck and Android/iOS/web exports passed. The initial restricted Hermes export failed; the same export succeeded outside the sandbox. Actual native cached-start latency is unmeasured and remains in V47.
+
+## V07.1 — bounded playback-stage diagnostics
+
+Local diagnostics retain at most 32 attempts with relative monotonic milliseconds and allowlisted recording/entry UUIDs. They mark the tap handler, pipeline start, queue request/acknowledgement, grant, synchronous native install calls and the first loaded/nonbuffering advancing player-status observation. No network/disk sink or release-log stream is added. Diagnostics are enabled for development/personal testing, and cleared with playback on logout. The debug inspector is `globalThis.__musifyPlaybackTimings()`.
+
+Three deterministic tests cover timing, injected delay attribution, invalid/nonadvancing status, retention, copy isolation, ID sanitization and the zero-clock-work disabled path. Four browser cases pass: normal and 350 ms delayed queue traces plus delayed restore and stalled cursor regressions. The queue stage grows from 42.1 ms to 403.4 ms in these individual browser samples, identifying the injected delay. These are development browser samples, not native budgets or physical audible-start measurements; the status proxy also includes the 500 ms polling cadence. Evidence: `evidence/v2/performance/playback-before-v2.json`.
+
+Full API verification now passes 35/35 cases with one embedded-database worker. The earlier parallel suite exhausted host memory; the serial run also needed loopback access for its controlled import HTTP server. Every case remains enabled.
+
+## Owner catalog scope update — 2026-10-27
+
+The owner reduced personal testing to **50–70 popular recordings**. Target approximately 60 total, including the existing 30. The 181-candidate wishlist remains useful intake preparation; larger C1/C2/C3 milestones are deferred and no longer block this personal test batch. Keep per-file validation and accurate version/artwork requirements. Selected popular songs do not imply complete playable albums.

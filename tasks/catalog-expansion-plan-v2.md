@@ -1,5 +1,7 @@
 # Musify catalog expansion plan v2
 
+**Owner update, 2026-10-27:** Personal testing now needs **50–70 popular tracks**, targeting about 60 total including the existing 30. The larger 150 → 500 → 1,500 stages below are deferred growth plans, not prerequisites for this test build. Accurate metadata, source provenance and complete-file validation still apply. Prioritize a focused selection of familiar songs over completing ten albums at this stage.
+
 Prepared 2026-10-26. Planning document; no additional audio was downloaded or published in this planning pass.
 
 Part of the [second improvement cycle](improvement-plan-v2.md). Implementation tasks C01–C12 are in [todo.md](todo.md#cycle-2--implementation-backlog).
