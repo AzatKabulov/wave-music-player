@@ -29,6 +29,8 @@ export const test = base.extend<{ listener: void }>({
       page.on("response", (r) => {
         if (r.status() >= 500) failures.push(`${r.status()} ${r.url()}`);
       });
+      const reset = await context.request.post(`${api}/__qa/reset-auth-window`);
+      expect(reset.ok()).toBeTruthy();
       const response = await context.request.post(`${api}/auth/demo`, {
         headers,
         data: {},
