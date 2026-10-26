@@ -246,7 +246,7 @@ export async function createApp({
         async (c) =>
           (
             await c.query(
-              `select storage_key,mime_type,byte_size from music.media_assets a
+              `select storage_key,mime_type,byte_size,sha256 from music.media_assets a
        where a.id=$1 and a.kind='image' and a.status='ready' and (
          exists(select 1 from music.albums al where al.cover_asset_id=a.id and al.status='published') or
          exists(select 1 from music.artists ar where ar.image_asset_id=a.id and ar.status='published'))`,
@@ -261,10 +261,19 @@ export async function createApp({
         Number(asset.byte_size) > 10485760
       )
         fail(404, "not_found", "This artwork is unavailable.");
-      const width = z
-        .object({ w: z.enum(["128", "320", "768"]).optional() })
+      const artworkQuery = z
+        .object({
+          w: z.enum(["128", "320", "768"]).optional(),
+          v: z
+            .string()
+            .regex(/^[a-f0-9]{64}$/)
+            .optional(),
+        })
         .strict()
-        .parse(req.query).w;
+        .parse(req.query);
+      if (artworkQuery.v && artworkQuery.v !== asset.sha256)
+        fail(404, "not_found", "This artwork version is unavailable.");
+      const width = artworkQuery.w;
       if (width) {
         const buffer = await artworkVariant(
           fileURLToPath(new URL(asset.storage_key.slice(9), personalMediaRoot)),

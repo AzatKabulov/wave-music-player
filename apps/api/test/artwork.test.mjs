@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { mkdtemp, writeFile, unlink, rmdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -19,10 +19,11 @@ test("personal artwork is linked to a published album and never exposes audio as
     .png()
     .toBuffer();
   await writeFile(join(dir, `${id}.png`), png);
+  const version = createHash("sha256").update(png).digest("hex");
   await db.admin(async (c) => {
     await c.query(
-      "insert into music.media_assets(id,source_id,kind,storage_key,mime_type,byte_size,status) values($1,'10000000-0000-4000-8000-000000000998','image',$2,'image/png',$3,'ready')",
-      [id, `personal/${id}.png`, png.length],
+      "insert into music.media_assets(id,source_id,kind,storage_key,mime_type,byte_size,status,sha256) values($1,'10000000-0000-4000-8000-000000000998','image',$2,'image/png',$3,'ready',$4)",
+      [id, `personal/${id}.png`, png.length, version],
     );
     await c.query(
       "update music.albums set cover_asset_id=$1 where id=(select id from music.albums limit 1)",
@@ -48,6 +49,26 @@ test("personal artwork is linked to a published album and never exposes audio as
     assert.equal(response.statusCode, 200);
     assert.equal(response.headers["content-type"], "image/png");
     assert.deepEqual(response.rawPayload, png);
+    const versioned = await app.inject({
+      method: "GET",
+      url: `/v1/artwork/${id}?v=${version}&w=320`,
+    });
+    assert.equal(versioned.statusCode, 200, versioned.body);
+    assert.equal((await sharp(versioned.rawPayload).metadata()).width, 320);
+    assert.equal(
+      (
+        await app.inject({
+          method: "GET",
+          url: `/v1/artwork/${id}?v=${"0".repeat(64)}`,
+        })
+      ).statusCode,
+      404,
+    );
+    assert.equal(
+      (await app.inject({ method: "GET", url: `/v1/artwork/${id}?v=invalid` }))
+        .statusCode,
+      422,
+    );
     const thumbnail = await app.inject({
       method: "GET",
       url: `/v1/artwork/${id}?w=128`,
@@ -96,7 +117,8 @@ test("personal artwork is linked to a published album and never exposes audio as
     assert.ok(
       snapshot.catalog.albums.some(
         (album) =>
-          album.artworkUrl === `http://192.168.0.4:4103/v1/artwork/${id}`,
+          album.artworkUrl ===
+          `http://192.168.0.4:4103/v1/artwork/${id}?v=${version}`,
       ),
     );
     await db.admin((c) =>
@@ -119,9 +141,12 @@ test("personal artwork is linked to a published album and never exposes audio as
     await ordinary.close();
     await db.close();
     await unlink(join(dir, `${id}.png`));
-    await unlink(join(dir, "variants", `${id}-128.jpg`)).catch((error) => {
-      if (error.code !== "ENOENT") throw error;
-    });
+    for (const width of [128, 320])
+      await unlink(join(dir, "variants", `${id}-${width}.jpg`)).catch(
+        (error) => {
+          if (error.code !== "ENOENT") throw error;
+        },
+      );
     await rmdir(join(dir, "variants")).catch((error) => {
       if (error.code !== "ENOENT") throw error;
     });
