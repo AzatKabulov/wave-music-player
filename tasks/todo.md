@@ -381,7 +381,9 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 **Likely files:** new additive catalog migration; apps/api/src/catalog.mjs; apps/api/src/catalog-query.mjs; src/data/types.ts; migration/catalog tests.
 
-### [ ] C03 — Prepare a ranked source-backed wishlist
+### [x] C03 — Prepare a ranked source-backed wishlist
+
+**Execution:** Ranked 181 stable candidates across ten complete metadata release manifests and thirteen three-track artist packages. The validated adapter separates metadata/artwork identification from missing audio/lyrics. Repeated cached dry runs preserve candidate IDs and output; no new audio is published. C02's remaining credits/rendition fields do not prevent this metadata preparation. See `catalog-intake-v2.md`.
 
 **Phase:** E. **Dependencies:** C02. **Scope:** Data/report batch; bounded intake tooling as needed.
 

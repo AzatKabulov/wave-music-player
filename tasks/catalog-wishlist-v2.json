@@ -1,0 +1,553 @@
+{
+  "date": "2026-10-27",
+  "milestone": "C1",
+  "scope": "Personal catalog preparation. Metadata does not establish audio availability or a commercial grant.",
+  "releases": [
+    {
+      "priority": 1,
+      "artist": "The Weeknd",
+      "title": "After Hours",
+      "requestedTitle": "After Hours",
+      "sourceCollectionId": "1499378108",
+      "existingAlbumId": "21e6a19e-ce7a-4347-94f6-f8bdece8db1d",
+      "expectedTrackCount": 14,
+      "manifestTrackCount": 14,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1499378108&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1499378115",
+        "1499378125",
+        "1499378134",
+        "1499378135",
+        "1499378588",
+        "1499378596",
+        "1499378597",
+        "1499378601",
+        "1499378607",
+        "1499378612",
+        "1499378613",
+        "1499378614",
+        "1499378615",
+        "1499378860"
+      ]
+    },
+    {
+      "priority": 2,
+      "artist": "Shawn Mendes",
+      "title": "Illuminate",
+      "requestedTitle": "Illuminate",
+      "sourceCollectionId": "1440904104",
+      "existingAlbumId": "ae4d2bf8-2368-43a4-a981-b57796c11405",
+      "expectedTrackCount": 13,
+      "manifestTrackCount": 13,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1440904104&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1440904105",
+        "1440904107",
+        "1440904108",
+        "1440904109",
+        "1440904110",
+        "1440904111",
+        "1440904112",
+        "1440904114",
+        "1440904116",
+        "1440904118",
+        "1440904119",
+        "1440904421",
+        "1440904422"
+      ]
+    },
+    {
+      "priority": 3,
+      "artist": "Eminem",
+      "title": "The Eminem Show",
+      "requestedTitle": "The Eminem Show",
+      "sourceCollectionId": "1440821542",
+      "existingAlbumId": "a3ed5d7e-3e97-42e6-82ea-51c69af10059",
+      "expectedTrackCount": 19,
+      "manifestTrackCount": 19,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1440821542&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1440821551",
+        "1440821557",
+        "1440821623",
+        "1440821625",
+        "1440821630",
+        "1440821632",
+        "1440821638",
+        "1440821640",
+        "1440821643",
+        "1440821645",
+        "1440821647",
+        "1440821832",
+        "1440821833",
+        "1440821835",
+        "1440821837",
+        "1440821840",
+        "1440821843",
+        "1440821845",
+        "1440821846"
+      ]
+    },
+    {
+      "priority": 4,
+      "artist": "Billie Eilish",
+      "title": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+      "requestedTitle": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+      "sourceCollectionId": "1450695723",
+      "existingAlbumId": "3496fafb-2d7e-41cd-a2a3-0aa017ebf9a4",
+      "expectedTrackCount": 14,
+      "manifestTrackCount": 14,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1450695723&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1450695729",
+        "1450695739",
+        "1450695742",
+        "1450695745",
+        "1450695867",
+        "1450695871",
+        "1450695872",
+        "1450695875",
+        "1450695877",
+        "1450695881",
+        "1450695884",
+        "1450695888",
+        "1450695895",
+        "1450696020"
+      ]
+    },
+    {
+      "priority": 5,
+      "artist": "Ed Sheeran",
+      "title": "÷ (Deluxe)",
+      "requestedTitle": "÷ (Deluxe)",
+      "sourceCollectionId": "1193701079",
+      "existingAlbumId": "5acddb9d-1073-45fa-8ade-6f8cdadc5806",
+      "expectedTrackCount": 16,
+      "manifestTrackCount": 16,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1193701079&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1193701326",
+        "1193701328",
+        "1193701329",
+        "1193701392",
+        "1193701400",
+        "1193701436",
+        "1193701439",
+        "1193701440",
+        "1193701441",
+        "1193701442",
+        "1193701449",
+        "1193701511",
+        "1193701517",
+        "1193701519",
+        "1193701520",
+        "1193701521"
+      ]
+    },
+    {
+      "priority": 6,
+      "artist": "Taylor Swift",
+      "title": "Lover",
+      "requestedTitle": "Lover",
+      "sourceCollectionId": "1468058165",
+      "existingAlbumId": "ea398f71-497c-4ce0-9e3e-b35546eb8b1b",
+      "expectedTrackCount": 18,
+      "manifestTrackCount": 18,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1468058165&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1468058169",
+        "1468058171",
+        "1468058173",
+        "1468058176",
+        "1468058177",
+        "1468058178",
+        "1468058180",
+        "1468058181",
+        "1468058184",
+        "1468058185",
+        "1468058696",
+        "1468058699",
+        "1468058701",
+        "1468058704",
+        "1468058705",
+        "1468058706",
+        "1468058707",
+        "1468058708"
+      ]
+    },
+    {
+      "priority": 7,
+      "artist": "Bruno Mars",
+      "title": "Doo-Wops & Hooligans",
+      "requestedTitle": "Doo-Wops & Hooligans",
+      "sourceCollectionId": "576654788",
+      "existingAlbumId": "8319123d-00ae-486b-b826-cdc3333bf5f9",
+      "expectedTrackCount": 10,
+      "manifestTrackCount": 10,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=576654788&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "576655094",
+        "576655095",
+        "576655096",
+        "576655097",
+        "576655098",
+        "576655099",
+        "576655100",
+        "576655101",
+        "576655102",
+        "576655103"
+      ]
+    },
+    {
+      "priority": 8,
+      "artist": "Sabrina Carpenter",
+      "title": "emails i can't send",
+      "requestedTitle": "emails i can't send",
+      "sourceCollectionId": "1631578046",
+      "existingAlbumId": "a271961e-d14f-4eb9-a2b7-355ee9063d2e",
+      "expectedTrackCount": 13,
+      "manifestTrackCount": 13,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1631578046&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1631578054",
+        "1631578511",
+        "1631578515",
+        "1631578522",
+        "1631578530",
+        "1631578750",
+        "1631578762",
+        "1631578768",
+        "1631579019",
+        "1631579025",
+        "1631579042",
+        "1631579045",
+        "1631579248"
+      ]
+    },
+    {
+      "priority": 9,
+      "artist": "Harry Styles",
+      "title": "Harry's House",
+      "requestedTitle": "Harry's House",
+      "sourceCollectionId": "1615584999",
+      "existingAlbumId": "fce0e11e-4580-4ebf-a898-61a895aee55a",
+      "expectedTrackCount": 13,
+      "manifestTrackCount": 13,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1615584999&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1615585001",
+        "1615585006",
+        "1615585007",
+        "1615585008",
+        "1615585009",
+        "1615585011",
+        "1615585012",
+        "1615585091",
+        "1615585098",
+        "1615585099",
+        "1615585100",
+        "1615585101",
+        "1615585102"
+      ]
+    },
+    {
+      "priority": 10,
+      "artist": "Adele",
+      "title": "21",
+      "requestedTitle": "21",
+      "sourceCollectionId": "1544491232",
+      "existingAlbumId": "8a0b4687-661d-4ee8-b9c7-294dafb98a49",
+      "expectedTrackCount": 12,
+      "manifestTrackCount": 12,
+      "manifestComplete": true,
+      "manifestWarnings": [],
+      "metadataSource": "https://itunes.apple.com/lookup?id=1544491232&entity=song&country=US&limit=200",
+      "reason": "Complete a recognizable release and deepen an existing artist",
+      "audioAvailability": "Pending normal-source intake and full validation",
+      "tracks": [
+        "1544491233",
+        "1544491234",
+        "1544491235",
+        "1544491987",
+        "1544491988",
+        "1544491989",
+        "1544491992",
+        "1544491994",
+        "1544491995",
+        "1544491996",
+        "1544491998",
+        "1544492001"
+      ]
+    }
+  ],
+  "artistPackages": [
+    {
+      "priority": 11,
+      "artist": "Ariana Grande",
+      "requestedTracks": [
+        "thank u, next",
+        "7 rings",
+        "we can't be friends (wait for your love)"
+      ],
+      "tracks": [
+        "1450334169",
+        "1450334168",
+        "1725878242"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Ariana%20Grande&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 12,
+      "artist": "Justin Bieber",
+      "requestedTracks": [
+        "Ghost",
+        "Sorry",
+        "Love Yourself"
+      ],
+      "tracks": [
+        "1556170100",
+        "1440826320",
+        "1440826328"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Justin%20Bieber&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 13,
+      "artist": "Olivia Rodrigo",
+      "requestedTracks": [
+        "vampire",
+        "drivers license",
+        "good 4 u"
+      ],
+      "tracks": [
+        "1694768031",
+        "1560735480",
+        "1560735856"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Olivia%20Rodrigo&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 14,
+      "artist": "Rihanna",
+      "requestedTracks": [
+        "Diamonds",
+        "Umbrella",
+        "We Found Love"
+      ],
+      "tracks": [
+        "1444321282",
+        "1441154437",
+        "1440758945"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Rihanna&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 15,
+      "artist": "SZA",
+      "requestedTracks": [
+        "Kill Bill",
+        "Snooze",
+        "Good Days"
+      ],
+      "tracks": [
+        "1657869393",
+        "1658650499",
+        "1546390013"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=SZA&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 16,
+      "artist": "Lana Del Rey",
+      "requestedTracks": [
+        "Summertime Sadness",
+        "Young and Beautiful",
+        "Born To Die"
+      ],
+      "tracks": [
+        "1440812085",
+        "1440857081",
+        "1440811598"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Lana%20Del%20Rey&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 17,
+      "artist": "Frank Ocean",
+      "requestedTracks": [
+        "Pink + White",
+        "Thinkin Bout You",
+        "White Ferrari"
+      ],
+      "tracks": [
+        "1146195714",
+        "1440766128",
+        "1146195725"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Frank%20Ocean&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 18,
+      "artist": "Kendrick Lamar",
+      "requestedTracks": [
+        "HUMBLE.",
+        "DNA.",
+        "All The Stars"
+      ],
+      "tracks": [
+        "1440882165",
+        "1440908096",
+        "1440903307"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Kendrick%20Lamar&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 19,
+      "artist": "Drake",
+      "requestedTracks": [
+        "One Dance",
+        "God's Plan",
+        "Passionfruit"
+      ],
+      "tracks": [
+        "1440841384",
+        "1406109863",
+        "1440892167"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Drake&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 20,
+      "artist": "Travis Scott",
+      "requestedTracks": [
+        "goosebumps",
+        "SICKO MODE",
+        "HIGHEST IN THE ROOM"
+      ],
+      "tracks": [
+        "1151481750",
+        "1421658123",
+        "1482217453"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Travis%20Scott&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 21,
+      "artist": "Coldplay",
+      "requestedTracks": [
+        "Viva La Vida",
+        "The Scientist",
+        "Fix You"
+      ],
+      "tracks": [
+        "1122773680",
+        "1122776155",
+        "1123076826"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Coldplay&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 22,
+      "artist": "Imagine Dragons",
+      "requestedTracks": [
+        "Believer",
+        "Thunder",
+        "Radioactive"
+      ],
+      "tracks": [
+        "1411628233",
+        "1411629089",
+        "1440873126"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Imagine%20Dragons&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    },
+    {
+      "priority": 23,
+      "artist": "Avicii",
+      "requestedTracks": [
+        "Wake Me Up",
+        "The Nights",
+        "Hey Brother"
+      ],
+      "tracks": [
+        "1440872929",
+        "1440829549",
+        "1440873108"
+      ],
+      "metadataSource": "https://itunes.apple.com/search?term=Avicii&entity=song&limit=200&country=US",
+      "reason": "Broaden international pop, rap, alternative and dance coverage",
+      "audioAvailability": "Pending normal-source intake and full validation"
+    }
+  ],
+  "deferredMetadata": [
+    {
+      "artist": "Frank Ocean",
+      "titles": [
+        "Lost",
+        "Nights"
+      ],
+      "reason": "No exact intended recording returned by the US metadata searches; White Ferrari selected for this package"
+    }
+  ],
+  "failures": []
+}
