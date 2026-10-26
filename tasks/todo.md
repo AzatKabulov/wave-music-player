@@ -369,6 +369,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] C02 — Add canonical catalog and completeness fields
 
+**Execution:** C02.1 implemented: additive metadata migration and tracked runner; legacy identity/isolation tests. Live-data migration and remaining C02 contracts pending. See [execution record](v2-execution.md).
+
 **Phase:** E. **Dependencies:** C01. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Introduce release types/completeness, recording credits/aliases, fixture classification and scope-aware rendition fields using additive migrations.

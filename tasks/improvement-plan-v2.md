@@ -2,7 +2,7 @@
 
 Prepared 2026-10-26 against Musify 0.2.0, source checkpoint `5cf66f2`.
 
-**Status: planning complete; implementation pending.** This is the second improvement cycle, responding to the owner's report that the app is better but still feels raw, incomplete and slow. It extends the first plan and carries forward its unfinished device acceptance. It does not mark the first plan's unchecked tasks complete.
+**Status: implementation in progress.** See [execution record](v2-execution.md) for verified slices and remaining acceptance. This is the second improvement cycle, responding to the owner's report that the app is better but still feels raw, incomplete and slow. It extends the first plan and carries forward its unfinished device acceptance. It does not mark the first plan's unchecked tasks complete.
 
 Companion documents: [catalog expansion plan](catalog-expansion-plan-v2.md), [ordered implementation tasks](todo.md#cycle-2--implementation-backlog), [current implementation evidence](implementation-status.md), and [existing performance evidence](performance-results.md).
 

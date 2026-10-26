@@ -3,6 +3,7 @@ import { mkdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
 import { seedLocal } from "./seed.mjs";
+import { applyMigrations } from "./migrations.mjs";
 const migration = new URL("../migrations/001_music.sql", import.meta.url);
 export async function createDatabase({
   mode = "local",
@@ -33,6 +34,12 @@ export async function createDatabase({
     create table local_auth.sessions(token_hash text primary key,user_id uuid not null references auth.users(id) on delete cascade,expires_at timestamptz not null,created_at timestamptz not null default now());
     create index local_session_user_idx on local_auth.sessions(user_id);`);
       await seedLocal(raw);
+    }
+    try {
+      await applyMigrations(raw);
+    } catch (error) {
+      await raw.close();
+      throw error;
     }
     const tx = (role, user, fn) =>
       raw.transaction(async (client) => {

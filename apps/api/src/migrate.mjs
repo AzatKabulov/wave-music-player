@@ -1,5 +1,5 @@
-import { readFile } from "node:fs/promises";
 import pg from "pg";
+import { applyMigrations } from "./migrations.mjs";
 if (!process.env.DATABASE_MIGRATION_URL)
   throw Error(
     "Set DATABASE_MIGRATION_URL for your own staging project. Runtime identities must be different.",
@@ -13,13 +13,12 @@ const client = new pg.Client({
 });
 await client.connect();
 try {
-  await client.query(
-    await readFile(
-      new URL("../migrations/001_music.sql", import.meta.url),
-      "utf8",
-    ),
+  const applied = await applyMigrations(client);
+  process.stdout.write(
+    applied.length
+      ? `Applied: ${applied.join(", ")}\n`
+      : "Database is current.\n",
   );
-  process.stdout.write("Migration 001 applied.\n");
 } finally {
   await client.end();
 }
