@@ -425,6 +425,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V06 — Separate usable Home from queue restoration
 
+**Execution:** V06.1 implemented and browser-tested: Home no longer waits for queue restoration; a newer selection wins. Persistent cache and physical timings remain pending.
+
 **Phase:** B. **Dependencies:** V05. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Show cached useful content promptly and schedule refresh, detail hydration and queue restoration without a global blocking spinner.
@@ -454,6 +456,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 **Likely files:** src/data/playbackTiming.ts (new); src/data/MusicProvider.tsx; apps/api/src/app.mjs; tasks/v2-performance-experiments.md.
 
 ### [ ] V08 — Prioritize interactive commands
+
+**Execution:** Implemented cursor-only revision-guarded API and coalesced independent client writer. Writer/API and delayed-response browser tests pass; see execution record.
 
 **Phase:** B. **Dependencies:** V07. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 

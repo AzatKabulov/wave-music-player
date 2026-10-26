@@ -24,6 +24,7 @@ import { sourceUpdate } from "./sourceUpdate";
 import { sourcePatch } from "./sourcePatch";
 import { savedIds } from "./libraryState";
 import { mergeCatalog, refreshCatalog } from "./catalogCache";
+import { createLatestWriter } from "./latestWriter";
 import type {
   MusicData,
   Library,
@@ -61,6 +62,7 @@ function useMusicController() {
     canonical = useRef<QueueEntry[]>([]);
   const seekTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const seekVersion = useRef(0);
+  const restorationVersion = useRef(0);
   const cancelSeek = useCallback(() => {
     seekVersion.current++;
     if (seekTimer.current) clearTimeout(seekTimer.current);
@@ -68,6 +70,35 @@ function useMusicController() {
   const mounted = useRef(true),
     generation = useRef(0);
   const snapshotRef = useRef(snapshot);
+  type PositionWrite = {
+    owner: string;
+    installation: string;
+    state: QueueState;
+    reportError: boolean;
+  };
+  const writePosition = useCallback(async (value: PositionWrite) => {
+    if (snapshotRef.current?.profile?.id !== value.owner) return;
+    await data.position(value.installation, value.state);
+  }, []);
+  const positionError = useCallback((_error: unknown, value: PositionWrite) => {
+    if (
+      value.reportError &&
+      mounted.current &&
+      snapshotRef.current?.profile?.id === value.owner
+    )
+      setError("Could not save this playback position. Try seeking again.");
+  }, []);
+  const positions = useRef<ReturnType<
+    typeof createLatestWriter<PositionWrite>
+  > | null>(null);
+  useEffect(() => {
+    const writer = createLatestWriter(writePosition, positionError);
+    positions.current = writer;
+    return () => {
+      writer.clear();
+      positions.current = null;
+    };
+  }, [writePosition, positionError]);
   useEffect(() => {
     snapshotRef.current = snapshot;
   }, [snapshot]);
@@ -363,6 +394,7 @@ function useMusicController() {
   }, [ensureLease, install]);
   const command = useCallback(
     (change: (current: QueueState) => QueueState, play?: boolean) => {
+      restorationVersion.current++;
       setPending((p) => p + 1);
       const next = pipeline.current
         .catch(() => {})
@@ -394,6 +426,9 @@ function useMusicController() {
   );
   useEffect(() => {
     mounted.current = true;
+    let cancelled = false;
+    const version = restorationVersion.current;
+    const current = () => !cancelled && version === restorationVersion.current;
     void (async () => {
       try {
         let id = await deviceStorage.getItem("saz.installation");
@@ -408,46 +443,56 @@ function useMusicController() {
           interruptionMode: "doNotMix",
         });
         const account = await refresh();
+        if (cancelled) return;
+        // The browse surface is useful as soon as its metadata is available.
+        // Queue/media authorization restores independently and never wins over
+        // a newer explicit choice made while its network request was pending.
+        setLoading(false);
         if (account.profile) {
           const restored = await data.restoreQueue(id);
-          if (restored?.entries.length) {
+          if (restored?.entries.length && current()) {
             await ensureLease();
+            if (!current()) return;
             canonical.current = restored.entries;
             install(restored, false, lease.current);
           }
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Could not connect.");
+        if (current())
+          setError(e instanceof Error ? e.message : "Could not connect.");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
     return () => {
+      cancelled = true;
       mounted.current = false;
       cancelSeek();
     };
   }, [ensureLease, install, refresh, cancelSeek]);
   useEffect(() => {
     const timer = setInterval(() => {
-      if (!queueRef.current.entries.length || !installation.current) return;
-      pipeline.current = pipeline.current
-        .catch(() => {})
-        .then(async () => {
-          const old = queueRef.current,
-            s = statusRef.current;
-          const state = {
-            ...old,
-            currentId: old.entries[s.currentIndex]?.id || old.currentId,
-            positionMs: Math.floor(s.currentTime * 1000),
-          };
-          const committed = await data.queue(installation.current, state);
-          queueRef.current = committed;
-          setQueue(committed);
-        })
-        .catch(() => reconcile().catch(() => {}));
+      const owner = snapshotRef.current?.profile?.id;
+      if (!owner || !queueRef.current.entries.length || !installation.current)
+        return;
+      const old = queueRef.current,
+        s = statusRef.current;
+      positions.current?.submit({
+        owner,
+        installation: installation.current,
+        reportError: false,
+        state: {
+          ...old,
+          currentId: old.entries[s.currentIndex]?.id || old.currentId,
+          positionMs: Math.floor(s.currentTime * 1000),
+        },
+      });
     }, 10000);
-    return () => clearInterval(timer);
-  }, [reconcile]);
+    return () => {
+      clearInterval(timer);
+      positions.current?.clear();
+    };
+  }, [positions]);
   useEffect(() => {
     if (Platform.OS !== "web" && !expoGo && track) {
       engine.setActiveForLockScreen(true, {
@@ -530,14 +575,16 @@ function useMusicController() {
     [command, snapshot?.preferences.explicitAllowed],
   );
   const stop = useCallback(() => {
+    restorationVersion.current++;
     cancelSeek();
+    positions.current?.clear();
     engine.pause();
     engine.clear();
     lease.current = "";
     loadedLease.current = "";
     queueRef.current = emptyQueue();
     setQueue(emptyQueue());
-  }, [cancelSeek, engine]);
+  }, [cancelSeek, engine, positions]);
   const seek = useCallback(
     (seconds: number) => {
       const version = ++seekVersion.current;
@@ -557,32 +604,22 @@ function useMusicController() {
         .then(() => {
           if (!mounted.current || version !== seekVersion.current) return;
           seekTimer.current = setTimeout(() => {
-            // Serialize cursor writes with membership edits; do not apply an old seek to a new track.
-            pipeline.current = pipeline.current
-              .catch(() => {})
-              .then(async () => {
-                const old = queueRef.current;
-                if (
-                  !mounted.current ||
-                  version !== seekVersion.current ||
-                  !currentId ||
-                  old.entries[engine.currentIndex]?.id !== currentId
-                )
-                  return;
-                const committed = await data.queue(installation.current, {
-                  ...old,
-                  currentId,
-                  positionMs,
-                });
-                queueRef.current = committed;
-                if (mounted.current) setQueue(committed);
-              })
-              .catch(() => {
-                if (mounted.current && version === seekVersion.current)
-                  setError(
-                    "Could not save this playback position. Try seeking again.",
-                  );
-              });
+            const old = queueRef.current,
+              owner = snapshotRef.current?.profile?.id;
+            if (
+              !owner ||
+              !mounted.current ||
+              version !== seekVersion.current ||
+              !currentId ||
+              old.entries[engine.currentIndex]?.id !== currentId
+            )
+              return;
+            positions.current?.submit({
+              owner,
+              installation: installation.current,
+              reportError: true,
+              state: { ...old, currentId, positionMs },
+            });
           }, 250);
         })
         .catch(() => {
@@ -590,7 +627,7 @@ function useMusicController() {
             setError("Could not seek.");
         });
     },
-    [engine, track?.durationMs],
+    [engine, track?.durationMs, positions],
   );
   const music = useMemo(
     () => ({
@@ -725,6 +762,7 @@ function useMusicController() {
             [...saves.current.values()].map((entry) => entry.tail),
           );
           stop();
+          await positions.current?.idle();
           await data.signOut();
         }),
       deleteAccount: () =>
@@ -734,6 +772,7 @@ function useMusicController() {
             [...saves.current.values()].map((entry) => entry.tail),
           );
           stop();
+          await positions.current?.idle();
           await data.deleteAccount();
         }, "Account deletion requested."),
     }),
@@ -756,6 +795,7 @@ function useMusicController() {
       stop,
       resolve,
       search,
+      positions,
     ],
   );
   return { music, status };

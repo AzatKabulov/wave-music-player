@@ -192,14 +192,20 @@ export const http: MusicData = {
     await request("/v1/preferences", "PATCH", value);
   },
   async restoreQueue(id) {
+    const generation = authGeneration;
+    const previous = acknowledged.get(id);
+    const remember = (value: QueueState | null) => {
+      if (generation === authGeneration && acknowledged.get(id) === previous)
+        acknowledged.set(id, value);
+    };
     try {
       const raw = await request(`/v1/playback-sessions/${id}`);
       const value = raw ? fromWire(raw) : null;
-      acknowledged.set(id, value);
+      remember(value);
       return value;
     } catch (e) {
       if (e instanceof RequestError && e.status === 404) {
-        acknowledged.set(id, null);
+        remember(null);
         return null;
       }
       throw e;
@@ -219,11 +225,10 @@ export const http: MusicData = {
     const fresh = !acknowledged.has(id);
     if (fresh) await this.restoreQueue(id);
     const old = acknowledged.get(id);
-    const expectedRevision = fresh
-      ? (old?.revision ?? null)
-      : old
-        ? state.revision
-        : null;
+    // Restore may acknowledge a revision before the deferred UI restore runs.
+    // Membership writes still use the last server acknowledgement, never an
+    // optimistic local revision or a stale restore response.
+    const expectedRevision = old?.revision ?? null;
     const membershipChanged =
       !old || JSON.stringify(old.entries) !== JSON.stringify(state.entries);
     const payload = {
