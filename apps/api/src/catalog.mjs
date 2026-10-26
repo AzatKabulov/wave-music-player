@@ -7,11 +7,27 @@ import {
 const palettes = ["clay", "sea", "night", "sand", "berry", "forest"];
 export const palette = (id) =>
   palettes[parseInt(id.slice(-4), 16) % palettes.length];
-export async function catalog(client, userId, baseUrl = "", references = {}) {
+export async function catalog(
+  client,
+  userId,
+  baseUrl = "",
+  references = {},
+  { hideFixtures = false } = {},
+) {
+  const recordingFilter = hideFixtures ? " and content_kind='recording'" : "";
+  const artistFilter = hideFixtures
+    ? " and exists(select 1 from music.track_artists credit join music.tracks recording on recording.id=credit.track_id where credit.artist_id=music.artists.id and recording.status='published' and recording.content_kind='recording')"
+    : "";
+  const albumFilter = hideFixtures
+    ? " and exists(select 1 from music.album_tracks member join music.tracks recording on recording.id=member.track_id where member.album_id=music.albums.id and recording.status='published' and recording.content_kind='recording')"
+    : "";
+  const playlistFilter = hideFixtures
+    ? "p.kind='personal' or exists(select 1 from music.playlist_items member join music.tracks recording on recording.id=member.track_id where member.playlist_id=p.id and recording.status='published' and recording.content_kind='recording')"
+    : "true";
   const rows = (
     await client.query(
       `with initial as (
-    select id from music.tracks where status='published' order by created_at,id limit 100
+    select id from music.tracks where status='published'${recordingFilter} order by created_at,id limit 100
   ) select distinct on (t.id) t.id,t.title,t.duration_ms,t.explicit,t.language_code,t.genres,t.content_kind,t.explicit_state,t.version_label,a.id artist_id,a.name artist,
   al.id album_id,al.title album,al.cover_asset_id,at.disc_number,at.track_number from music.tracks t join music.track_artists ta on ta.track_id=t.id and ta.credit_role='primary' and ta.position=0
   join music.artists a on a.id=ta.artist_id left join music.album_tracks at on at.track_id=t.id left join music.albums al on al.id=at.album_id
@@ -45,7 +61,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
   const artists = (
     await client.query(
       `select id,name,bio,aliases,bio_source,image_asset_id from music.artists where status='published' and (
-    id in (select id from music.artists where status='published' order by created_at,id limit 100)
+    id in (select id from music.artists where status='published'${artistFilter} order by created_at,id limit 100)
     or id=any($1::uuid[])) order by created_at,id`,
       [
         [
@@ -65,7 +81,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
   const albums = (
     await client.query(
       `select id,title,cover_asset_id,release_type,release_date,edition,expected_track_count,completeness,extract(year from release_date)::int as year from music.albums where status='published' and (
-        id in (select id from music.albums where status='published' order by created_at,id limit 100)
+        id in (select id from music.albums where status='published'${albumFilter} order by created_at,id limit 100)
         or id=any($1::uuid[])) order by created_at,id`,
       [
         [
@@ -99,7 +115,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
   const lists = (
     await client.query(
       `select id,title,description,user_id,revision from music.playlists where
-        id in (select id from music.playlists order by updated_at desc,id limit 100)
+        id in (select p.id from music.playlists p where ${playlistFilter} order by p.updated_at desc,p.id limit 100)
         or user_id=$1 or id=any($2::uuid[]) order by updated_at desc,id`,
       [userId, references.playlists || []],
     )
@@ -136,7 +152,7 @@ export async function catalog(client, userId, baseUrl = "", references = {}) {
   });
   return withArtworkMetadata(client, { artists, albums, tracks, playlists });
 }
-export async function snapshot(db, identity, baseUrl = "") {
+export async function snapshot(db, identity, baseUrl = "", options = {}) {
   if (!identity)
     return {
       profile: null,
@@ -183,10 +199,16 @@ export async function snapshot(db, identity, baseUrl = "") {
         [identity.id],
       )
     ).rows.map((x) => x.id);
-    const cat = await catalog(c, identity.id, baseUrl, {
-      ...library,
-      tracks: [...new Set([...library.tracks, ...recents])],
-    });
+    const cat = await catalog(
+      c,
+      identity.id,
+      baseUrl,
+      {
+        ...library,
+        tracks: [...new Set([...library.tracks, ...recents])],
+      },
+      options,
+    );
     return {
       profile: {
         id: p.id,

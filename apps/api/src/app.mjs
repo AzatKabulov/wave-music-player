@@ -181,9 +181,13 @@ export async function createApp({
     });
   auth = createAuth({ db, mode, env, route, app, origin });
   const user = (req, fn) => db.user(req.identity.id, fn);
-  const getCatalog = (req) =>
-    user(req, (c) => catalog(c, req.identity.id, baseUrl));
-  const searchCatalog = createCatalogSearch(db, baseUrl);
+  const getCatalog = (req, hideFixtures = false) =>
+    user(req, (c) =>
+      catalog(c, req.identity.id, baseUrl, {}, { hideFixtures }),
+    );
+  const searchCatalog = createCatalogSearch(db, baseUrl, {
+    hideFixtures: personalTest,
+  });
   const getPlaylist = (req, id) =>
     user(req, async (c) => {
       const all = await catalog(c, req.identity.id, baseUrl),
@@ -222,7 +226,10 @@ export async function createApp({
     "/v1/snapshot",
     null,
     async (req) => ({
-      ...(await snapshot(db, req.identity, baseUrl)),
+      ...(await snapshot(db, req.identity, baseUrl, {
+        hideFixtures: personalTest,
+      })),
+      hideFixtures: personalTest,
       demoEnabled: mode === "local",
       accountProvider: mode === "local" ? "local" : "supabase",
     }),
@@ -311,19 +318,36 @@ export async function createApp({
         ),
     );
   route("GET", "/v1/home", null, async (req) => {
-    const c = await getCatalog(req);
+    const c = await getCatalog(req, personalTest);
+    const real = new Set(
+      c.tracks
+        .filter((track) => track.contentKind !== "fixture")
+        .map((track) => track.id),
+    );
+    const releaseIds = new Set(
+      c.tracks
+        .filter((track) => real.has(track.id))
+        .map((track) => track.albumId),
+    );
     return {
       collections: [
         {
           id: "releases",
           title: "Fresh perspectives",
-          items: c.albums.map((item) => ({ kind: "album", item })),
+          items: c.albums
+            .filter((item) => !personalTest || releaseIds.has(item.id))
+            .map((item) => ({ kind: "album", item })),
         },
         {
           id: "editorial",
           title: "Made for a moment",
           items: c.playlists
-            .filter((p) => !p.owner)
+            .filter(
+              (p) =>
+                !p.owner &&
+                (!personalTest ||
+                  p.items.some((item) => real.has(item.trackId))),
+            )
             .map((item) => ({ kind: "playlist", item })),
         },
       ],

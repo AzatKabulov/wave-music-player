@@ -28,6 +28,10 @@ test("personal artwork is linked to a published album and never exposes audio as
       "update music.albums set cover_asset_id=$1 where id=(select id from music.albums limit 1)",
       [id],
     );
+    await c.query(
+      "update music.tracks set content_kind='recording' where id=(select member.track_id from music.album_tracks member join music.albums release on release.id=member.album_id where release.cover_asset_id=$1 limit 1)",
+      [id],
+    );
   });
   const app = await createApp({
     db,

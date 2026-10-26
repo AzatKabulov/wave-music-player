@@ -126,7 +126,21 @@ export async function catalogGraph(
   return withArtworkMetadata(client, { tracks, artists, albums, playlists });
 }
 
-export function createCatalogSearch(db, baseUrl) {
+export function createCatalogSearch(
+  db,
+  baseUrl,
+  { hideFixtures = false } = {},
+) {
+  const trackFilter = hideFixtures ? " and t.content_kind='recording'" : "";
+  const albumFilter = hideFixtures
+    ? " and exists(select 1 from music.album_tracks member join music.tracks recording on recording.id=member.track_id where member.album_id=music.albums.id and recording.status='published' and recording.content_kind='recording')"
+    : "";
+  const artistFilter = hideFixtures
+    ? " and exists(select 1 from music.track_artists credit join music.tracks recording on recording.id=credit.track_id where credit.artist_id=music.artists.id and recording.status='published' and recording.content_kind='recording')"
+    : "";
+  const playlistFilter = hideFixtures
+    ? " where kind='personal' or exists(select 1 from music.playlist_items member join music.tracks recording on recording.id=member.track_id where member.playlist_id=music.playlists.id and recording.status='published' and recording.content_kind='recording')"
+    : "";
   const secret = randomBytes(32);
   const sign = (text) =>
     createHmac("sha256", secret).update(text).digest("base64url");
@@ -166,7 +180,7 @@ export function createCatalogSearch(db, baseUrl) {
     const needle = query.q.trim().normalize("NFKC").toLocaleLowerCase();
     const type = query.type || "all";
     const scope = hash(
-      JSON.stringify([owner, needle, type, query.locale || ""]),
+      JSON.stringify([owner, needle, type, query.locale || "", hideFixtures]),
     );
     const after = query.cursor ? decode(query.cursor, scope) : null;
     return db.user(owner, async (client) => {
@@ -175,10 +189,10 @@ export function createCatalogSearch(db, baseUrl) {
           `with candidates as (
         select 'track'::text kind,t.id,t.title,t.search_text || ' ' || a.name haystack from music.tracks t
           join music.track_artists ta on ta.track_id=t.id and ta.credit_role='primary' and ta.position=0
-          join music.artists a on a.id=ta.artist_id where t.status='published'
-        union all select 'album',id,title,search_text from music.albums where status='published'
-        union all select 'artist',id,name,search_text from music.artists where status='published'
-        union all select 'playlist',id,title,title || ' ' || description from music.playlists
+          join music.artists a on a.id=ta.artist_id where t.status='published'${trackFilter}
+        union all select 'album',id,title,search_text from music.albums where status='published'${albumFilter}
+        union all select 'artist',id,name,search_text from music.artists where status='published'${artistFilter}
+        union all select 'playlist',id,title,title || ' ' || description from music.playlists${playlistFilter}
       ), matched as (
         select kind,id,lower(normalize(title,NFKC)) title_key,
           case when lower(normalize(title,NFKC))=$1 then 0 when position($1 in lower(normalize(title,NFKC)))=1 then 1 else 2 end rank
