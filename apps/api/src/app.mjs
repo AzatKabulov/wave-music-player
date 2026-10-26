@@ -667,6 +667,32 @@ export async function createApp({
       return s ? sessionDto(c, s) : null;
     }),
   );
+  const mintPlaybackGrant = async (req) => {
+    const s = await user(req, (c) => readSession(req, c)),
+      token = randomBytes(32).toString("base64url");
+    // Without a validated territory resolver, production grants authorize wildcard coverage only.
+    const territory = mode === "local" ? "TM" : "ZZ";
+    const expires = await db.admin(async (c) => {
+      await c.query(
+        "update music.playback_grants set revoked_at=now() where id in (select id from music.playback_grants where user_id=$1 and session_id=$2 and revoked_at is null order by created_at desc offset 4)",
+        [req.identity.id, s.id],
+      );
+      return one(
+        c,
+        "insert into music.playback_grants(user_id,session_id,token_hash,territory,expires_at) values($1,$2,$3,$4,now()+interval '24 hours') returning expires_at",
+        [req.identity.id, s.id, hash(token), territory],
+      );
+    });
+    return {
+      token,
+      expiresAt: expires.expires_at,
+      mediaBaseUrl: `${baseUrl}/v1/media`,
+    };
+  };
+  const withRequestedGrant = async (req, state) =>
+    req.body.includeGrant
+      ? { ...state, playbackGrant: await mintPlaybackGrant(req) }
+      : state;
   const putSession = async (req) =>
     user(req, async (c) => {
       const b = req.body;
@@ -737,7 +763,7 @@ export async function createApp({
         [b.currentEntryId, b.positionMs, b.repeatMode, b.shuffle, s.id],
       );
       return sessionDto(c, next);
-    });
+    }).then((state) => withRequestedGrant(req, state));
   route(
     "PATCH",
     "/v1/playback-sessions/:installationId/position",
@@ -782,6 +808,7 @@ export async function createApp({
       positionMs: z.int().min(0).max(7200000).optional(),
       repeatMode: z.enum(["none", "all", "single"]).optional(),
       shuffle: z.boolean().optional(),
+      includeGrant: z.boolean().optional(),
     }),
     (req) =>
       user(req, async (c) => {
@@ -803,7 +830,7 @@ export async function createApp({
         if (!next.rows.length)
           fail(409, "revision_conflict", "Your queue changed.");
         return sessionDto(c, next.rows[0]);
-      }),
+      }).then((state) => withRequestedGrant(req, state)),
   );
   route(
     "POST",
@@ -857,27 +884,9 @@ export async function createApp({
     "/v1/playback-sessions/:installationId/grants",
     z.strictObject({}),
     async (req, reply) => {
-      const s = await user(req, (c) => readSession(req, c)),
-        token = randomBytes(32).toString("base64url");
-      // Without a validated territory resolver, production grants authorize wildcard coverage only.
-      const territory = mode === "local" ? "TM" : "ZZ";
-      const expires = await db.admin(async (c) => {
-        await c.query(
-          "update music.playback_grants set revoked_at=now() where id in (select id from music.playback_grants where user_id=$1 and session_id=$2 and revoked_at is null order by created_at desc offset 4)",
-          [req.identity.id, s.id],
-        );
-        return one(
-          c,
-          "insert into music.playback_grants(user_id,session_id,token_hash,territory,expires_at) values($1,$2,$3,$4,now()+interval '24 hours') returning expires_at",
-          [req.identity.id, s.id, hash(token), territory],
-        );
-      });
+      const grant = await mintPlaybackGrant(req);
       reply.code(201);
-      return {
-        token,
-        expiresAt: expires.expires_at,
-        mediaBaseUrl: `${baseUrl}/v1/media`,
-      };
+      return grant;
     },
   );
   route(

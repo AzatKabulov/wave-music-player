@@ -38,6 +38,7 @@ export const playbackInput = z
     positionMs: z.int().min(0).max(7200000),
     repeatMode: z.enum(["none", "all", "single"]),
     shuffle: z.boolean(),
+    includeGrant: z.boolean().optional(),
   })
   .refine(
     (s) =>

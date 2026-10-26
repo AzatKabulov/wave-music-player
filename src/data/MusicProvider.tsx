@@ -428,7 +428,11 @@ function useMusicController() {
             positionMs: Math.floor(s.currentTime * 1000),
           });
           playbackTiming.mark(timing, "requestStarted");
-          const committed = await data.queue(installation.current, state);
+          const committed = await data.queue(installation.current, state, {
+            includeGrant:
+              !lease.current ||
+              Date.now() - leaseMinted.current > 23 * 60 * 60 * 1000,
+          });
           playbackTiming.mark(timing, "serverAcknowledged");
           playbackTiming.mark(timing, "grantStarted");
           await ensureLease();

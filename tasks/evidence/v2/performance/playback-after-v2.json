@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-27",
+  "scope": "Browser development build; one sample per viewport/condition; player status is a proxy, not physical audible-start timing",
+  "samples": [
+    {
+      "test": "V07 playback stages attribute a 0ms queue response delay",
+      "project": "phone-web",
+      "delay": 0,
+      "traces": [
+        {
+          "id": 1,
+          "action": "playSelection",
+          "marks": {
+            "tap": 0,
+            "commandStarted": 44.4,
+            "requestStarted": 44.8,
+            "serverAcknowledged": 74.2,
+            "grantStarted": 74.2,
+            "grantReady": 74.2,
+            "installStarted": 74.4,
+            "installed": 76,
+            "playbackObserved": 1550.3
+          },
+          "entryId": "d3a6568b-864c-4db4-af8d-4abe084eb6d7",
+          "trackId": "10000000-0000-4000-8000-000000000301"
+        }
+      ]
+    },
+    {
+      "test": "V07 playback stages attribute a 350ms queue response delay",
+      "project": "phone-web",
+      "delay": 350,
+      "traces": [
+        {
+          "id": 1,
+          "action": "playSelection",
+          "marks": {
+            "tap": 0,
+            "commandStarted": 46,
+            "requestStarted": 46.2,
+            "serverAcknowledged": 436.7,
+            "grantStarted": 436.7,
+            "grantReady": 436.8,
+            "installStarted": 436.9,
+            "installed": 437.9,
+            "playbackObserved": 1326.2
+          },
+          "entryId": "3dbb13a6-ed4b-4906-a974-11ed23d8aba5",
+          "trackId": "10000000-0000-4000-8000-000000000301"
+        }
+      ]
+    },
+    {
+      "test": "V07 playback stages attribute a 0ms queue response delay",
+      "project": "desktop-web",
+      "delay": 0,
+      "traces": [
+        {
+          "id": 1,
+          "action": "playSelection",
+          "marks": {
+            "tap": 0,
+            "commandStarted": 53.4,
+            "requestStarted": 53.6,
+            "serverAcknowledged": 92.1,
+            "grantStarted": 92.1,
+            "grantReady": 92.2,
+            "installStarted": 92.3,
+            "installed": 93.4,
+            "playbackObserved": 1246.5
+          },
+          "entryId": "8cc68942-0e39-424a-80ee-eca4c5437db3",
+          "trackId": "10000000-0000-4000-8000-000000000301"
+        }
+      ]
+    },
+    {
+      "test": "V07 playback stages attribute a 350ms queue response delay",
+      "project": "desktop-web",
+      "delay": 350,
+      "traces": [
+        {
+          "id": 1,
+          "action": "playSelection",
+          "marks": {
+            "tap": 0,
+            "commandStarted": 49.1,
+            "requestStarted": 49.3,
+            "serverAcknowledged": 435.5,
+            "grantStarted": 435.5,
+            "grantReady": 435.6,
+            "installStarted": 435.7,
+            "installed": 436.8,
+            "playbackObserved": 1331.5
+          },
+          "entryId": "c30795d3-04c8-42e4-887b-85692d6e410e",
+          "trackId": "10000000-0000-4000-8000-000000000301"
+        }
+      ]
+    }
+  ]
+}

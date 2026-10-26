@@ -139,7 +139,11 @@ export interface MusicData {
   ): Promise<Playlist>;
   deletePlaylist(id: string, revision: string): Promise<void>;
   preferences(value: Preferences): Promise<void>;
-  queue(installationId: string, state: QueueState): Promise<QueueState>;
+  queue(
+    installationId: string,
+    state: QueueState,
+    options?: { includeGrant?: boolean },
+  ): Promise<QueueState>;
   position(installationId: string, state: QueueState): Promise<boolean>;
   restoreQueue(installationId: string): Promise<QueueState | null>;
   grant(installationId: string): Promise<string>;

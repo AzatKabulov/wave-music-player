@@ -231,4 +231,12 @@ The same API deployment runs a bounded worker loop against music.jobs with row l
 
 ## QA contract correction — 2026-10-24
 
-The implemented `GET /v1/playback-sessions/:installationId` returns HTTP 200 JSON `null` when this listener has no saved session for that installation. An existing own session returns the unchanged queue DTO. This treats normal first-run absence without an HTTP resource error and discloses no foreign queue. Authentication remains mandatory. Mutation, ownership and revision checks remain enforced; a nullable read is not permission to mutate another listener's session. Seek checkpoints now write a debounced cursor update through the same revision-controlled queue pipeline.
+The implemented `GET /v1/playback-sessions/:installationId` returns HTTP 200 JSON `null` when this listener has no saved session for that installation. An existing own session returns the unchanged queue DTO. This treats normal first-run absence without an HTTP resource error and discloses no foreign queue. Authentication remains mandatory. Mutation, ownership and revision checks remain enforced; a nullable read is not permission to mutate another listener's session.
+
+## Playback responsiveness additions — 2026-10-27
+
+`PATCH /v1/playback-sessions/:installationId/position` accepts `{expectedRevision,currentEntryId,positionMs}` and returns `{saved:boolean}`. It changes only an owned existing queue's cursor at the expected membership revision and does not advance that revision. Stale/foreign entry writes return `saved:false`. A background client writer coalesces these checkpoints independently of interactive commands.
+
+`PUT` and `PATCH /v1/playback-sessions/:installationId` accept an optional boolean `includeGrant` (omitted/false preserves the old response). After a successful queue commit and owned-session validation, true adds `playbackGrant:{token,expiresAt,mediaBaseUrl}` to the existing queue DTO. The grant has the same scope, expiry and revocation rules as the standalone POST grant endpoint. Failed or stale mutations do not mint a grant. Media requests still check current entry membership, profile/preferences and streaming permission. GET never returns a grant. If grant issuance fails after a committed queue write, clients reconcile the acknowledged server queue before retrying rather than assuming rollback.
+
+The client consumes an inline grant once from private process memory, checks its shape/expiry and clears it on account change. Grants never enter QueueState, snapshots, persistent caches or timing records. An absent/expired inline grant uses the existing POST grant endpoint. This removes one network round trip on first play while retaining access checks; it does not establish a physical audible-start timing claim.

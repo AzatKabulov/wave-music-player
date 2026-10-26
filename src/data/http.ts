@@ -14,6 +14,11 @@ const acknowledged = new Map<string, QueueState | null>();
 let tokenRefresh: Promise<void> | null = null;
 let authGeneration = 0;
 let snapshotVersion = 0;
+let offeredGrant: {
+  installationId: string;
+  token: string;
+  expiresAt: number;
+} | null = null;
 const metadataCache = createSnapshotCache(deviceStorage);
 async function cacheScope() {
   // Browser sessions use httpOnly cookies; their account cannot be identified
@@ -121,6 +126,7 @@ async function saveAuth(
   if (!renewal) {
     authGeneration++;
     snapshotVersion++;
+    offeredGrant = null;
     void metadataCache.clear();
   }
   const next = value?.accessToken
@@ -273,7 +279,8 @@ export const http: MusicData = {
       })
     ).saved;
   },
-  async queue(id, state) {
+  async queue(id, state, options = {}) {
+    const generation = authGeneration;
     const fresh = !acknowledged.has(id);
     if (fresh) await this.restoreQueue(id);
     const old = acknowledged.get(id);
@@ -289,17 +296,27 @@ export const http: MusicData = {
       positionMs: state.positionMs,
       repeatMode: state.repeat,
       shuffle: state.shuffle,
+      ...(options.includeGrant ? { includeGrant: true } : {}),
       ...(membershipChanged ? { entries: state.entries } : {}),
     };
     try {
-      const result = fromWire(
-        await request(
-          `/v1/playback-sessions/${id}`,
-          membershipChanged ? "PUT" : "PATCH",
-          payload,
-        ),
+      const raw = await request(
+        `/v1/playback-sessions/${id}`,
+        membershipChanged ? "PUT" : "PATCH",
+        payload,
       );
-      acknowledged.set(id, result);
+      const result = fromWire(raw);
+      if (generation === authGeneration) {
+        acknowledged.set(id, result);
+        const grant = raw.playbackGrant;
+        const expiresAt = Date.parse(grant?.expiresAt);
+        if (
+          options.includeGrant &&
+          /^[a-zA-Z0-9_-]{43}$/.test(grant?.token || "") &&
+          expiresAt > Date.now() + 60000
+        )
+          offeredGrant = { installationId: id, token: grant.token, expiresAt };
+      }
       return result;
     } catch (e) {
       if (e instanceof RequestError && e.status === 409)
@@ -308,6 +325,13 @@ export const http: MusicData = {
     }
   },
   async grant(id) {
+    const offered = offeredGrant;
+    offeredGrant = null;
+    if (
+      offered?.installationId === id &&
+      offered.expiresAt > Date.now() + 60000
+    )
+      return offered.token;
     return (await request(`/v1/playback-sessions/${id}/grants`, "POST", {}))
       .token;
   },
