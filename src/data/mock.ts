@@ -114,6 +114,21 @@ export const mock: MusicData = {
   async preferences(value) {
     snapshot.preferences = value;
   },
+  async position(id, state) {
+    const previous = queues.get(id);
+    if (
+      !previous ||
+      previous.revision !== state.revision ||
+      !previous.entries.some((entry) => entry.id === state.currentId)
+    )
+      return false;
+    queues.set(id, {
+      ...previous,
+      currentId: state.currentId,
+      positionMs: state.positionMs,
+    });
+    return true;
+  },
   async queue(id, state) {
     const previous = queues.get(id);
     if (previous && previous.revision !== state.revision)

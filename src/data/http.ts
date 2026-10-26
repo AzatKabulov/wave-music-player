@@ -205,6 +205,16 @@ export const http: MusicData = {
       throw e;
     }
   },
+  async position(id, state) {
+    if (!state.currentId) return false;
+    return (
+      await request(`/v1/playback-sessions/${id}/position`, "PATCH", {
+        expectedRevision: state.revision,
+        currentEntryId: state.currentId,
+        positionMs: state.positionMs,
+      })
+    ).saved;
+  },
   async queue(id, state) {
     const fresh = !acknowledged.has(id);
     if (fresh) await this.restoreQueue(id);
