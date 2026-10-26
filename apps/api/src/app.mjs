@@ -706,6 +706,34 @@ export async function createApp({
       return sessionDto(c, next);
     });
   route(
+    "PATCH",
+    "/v1/playback-sessions/:installationId/position",
+    z.strictObject({
+      expectedRevision: revision,
+      currentEntryId: uuid,
+      positionMs: z.int().min(0).max(7200000),
+    }),
+    (req) =>
+      user(req, async (c) => {
+        // Cursor-only writes do not advance membership revisions. A delayed
+        // checkpoint cannot overwrite a new queue, edit modes, or add media.
+        const result = await c.query(
+          `update music.playback_sessions s set current_queue_entry_id=$1,position_ms=$2
+         where s.installation_id=$3 and s.user_id=$4 and s.revision=$5
+         and exists(select 1 from music.queue_entries e where e.id=$1 and e.session_id=s.id and e.user_id=$4)
+         returning s.id`,
+          [
+            req.body.currentEntryId,
+            req.body.positionMs,
+            req.params.installationId,
+            req.identity.id,
+            req.body.expectedRevision,
+          ],
+        );
+        return { saved: result.rows.length === 1 };
+      }),
+  );
+  route(
     "PUT",
     "/v1/playback-sessions/:installationId",
     playbackInput,
