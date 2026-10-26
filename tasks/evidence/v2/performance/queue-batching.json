@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-27",
+  "fixture": "1000 distinct queue-entry UUIDs referencing three authorized recordings, with mixed context/explicit origins",
+  "scope": "Separate single in-memory PGlite/app.inject server samples. Counts are user-business SQL queries; excludes fixed admin/auth transaction overhead, network, rendering and audio.",
+  "before": { "userQueries": 2007, "serverMs": 1476.3802 },
+  "after": { "userQueries": 9, "serverMs": 118.486 },
+  "regressions": {
+    "distinctDuplicateEntryIdentitiesAndOrder": "passed",
+    "currentEntryAndPosition": "passed",
+    "unavailableRecordingRollsBack": "passed",
+    "immutableEntryRecordingWithEitherUuidCase": "passed",
+    "emptyQueue": "passed",
+    "queryBudgetAtMost12": "passed"
+  },
+  "nativeLatencyClaim": false
+}

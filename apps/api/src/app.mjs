@@ -729,22 +729,27 @@ export async function createApp({
           [s.id],
         )
       ).rows;
+      const oldTracks = new Map(old.map((entry) => [entry.id, entry.track_id]));
       if (
-        b.entries.some((e) =>
-          old.some((o) => o.id === e.id && o.track_id !== e.trackId),
-        )
+        b.entries.some((entry) => {
+          const track = oldTracks.get(entry.id.toLowerCase());
+          return track && track !== entry.trackId.toLowerCase();
+        })
       )
         fail(
           422,
           "identity_changed",
           "An existing queue entry cannot change its track.",
         );
-      for (const e of b.entries)
-        await one(
-          c,
-          "select t.id from music.tracks t where t.id=$1 and (not t.explicit or exists(select 1 from music.user_preferences p where p.user_id=$2 and p.explicit_allowed))",
-          [e.trackId, req.identity.id],
-        );
+      const trackIds = [
+        ...new Set(b.entries.map((entry) => entry.trackId.toLowerCase())),
+      ];
+      const allowed = await c.query(
+        "select t.id from music.tracks t where t.id=any($1::uuid[]) and (not t.explicit or exists(select 1 from music.user_preferences p where p.user_id=$2 and p.explicit_allowed))",
+        [trackIds, req.identity.id],
+      );
+      if (allowed.rows.length !== trackIds.length)
+        fail(404, "not_found", "A recording is not available.");
       await c.query(
         "update music.playback_sessions set current_queue_entry_id=null where id=$1",
         [s.id],
@@ -752,11 +757,12 @@ export async function createApp({
       await c.query("delete from music.queue_entries where session_id=$1", [
         s.id,
       ]);
-      for (const [position, e] of b.entries.entries())
-        await c.query(
-          "insert into music.queue_entries(id,session_id,user_id,track_id,position,origin) values($1,$2,$3,$4,$5,$6)",
-          [e.id, s.id, req.identity.id, e.trackId, position, e.origin],
-        );
+      await c.query(
+        `insert into music.queue_entries(id,session_id,user_id,track_id,position,origin)
+         select (entry->>'id')::uuid,$1,$2,(entry->>'trackId')::uuid,(ordinality-1)::int,entry->>'origin'
+         from jsonb_array_elements($3::jsonb) with ordinality as requested(entry,ordinality)`,
+        [s.id, req.identity.id, JSON.stringify(b.entries)],
+      );
       const next = await one(
         c,
         "update music.playback_sessions set current_queue_entry_id=$1,position_ms=$2,repeat_mode=$3,shuffle=$4,revision=revision+1 where id=$5 returning *",

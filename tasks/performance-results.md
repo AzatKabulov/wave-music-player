@@ -1,5 +1,9 @@
 # Candidate performance evidence
 
+Latest source checkpoint, 2026-10-27: the personal snapshot with 58 recordings is **87,474 bytes**. First play now needs **zero separate grant POSTs** when a valid grant accompanies queue acknowledgement, with one tested fallback POST for an expired response grant. Normal/delayed browser traces locate the 350 ms injected delay in the queue request stage; `evidence/v2/performance/playback-{before,after}-v2.json` retain individual samples. The after samples show ~0–0.1 ms for consuming the inline grant, rather than another network call. Native cached startup has bounded storage/identity tests, not a physical start-time measurement. None of these close the native latency, frame, memory or audible-continuity budgets.
+
+A separate queue-write regression with 1,000 entries reduced user SQL queries from **2,007 to nine**. Single in-memory samples were 1,476.4 ms before and 118.5 ms after. This measures a specific server bottleneck and does not predict a whole-app speedup. See `evidence/v2/performance/queue-batching.json`.
+
 2026-10-26. See evidence/candidate/search-scale.json for exact samples, host and scope.
 
 | Check | Result | Limit |

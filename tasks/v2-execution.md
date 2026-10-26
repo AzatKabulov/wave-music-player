@@ -92,6 +92,12 @@ Verification: the API test covers normal/optional issuance, failed and stale mut
 
 V09's full bounded pre-authorized native queue window and expired-active-source transition matrix remain open. This slice does not claim that whole task complete.
 
+## V09.2 — batch queue validation and insertion
+
+A 1,000-entry synthetic start exposed 2,007 user SQL queries in queue PUT. The server now validates distinct recording IDs with the same row-level access/preferences in one query and inserts ordered entries in one JSON-to-recordset statement within the existing transaction. An ID lookup also replaces the quadratic identity comparison and normalizes UUID case so an existing entry cannot change its recording by using uppercase letters.
+
+The regression proves order, duplicate recording entries with distinct IDs, cursor/modes, rollback for unavailable recordings, immutable entry identity with either UUID case, and clearing an empty queue. It caps the user-query count at 12; observed count is nine. Separate single in-memory server samples were 1,476.4 ms before and 118.5 ms after; these are synthetic samples, not p95 or physical sound timing. See `evidence/v2/performance/queue-batching.json`. All **39/39 API tests** and seven affected phone-width browser queue/grant/restore cases pass. The unchanged client previously passed the complete 58-case browser suite.
+
 ## Focused catalog test batch — 58 recordings
 
 Added 28 full-decoded popular recordings and matched decoded covers, bringing the personal catalog to **58 recordings, 24 artists, 51 release entries and six playlists**. A stopped-service backup and copied-database import preceded the live transaction. User/account/library/queue hashes stayed unchanged and all 75 existing playlist entry identities and positions were retained. The service restarted successfully.
