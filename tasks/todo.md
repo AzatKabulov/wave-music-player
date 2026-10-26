@@ -355,7 +355,7 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 - [ ] The core browse/play/save journey remains usable; relevant regressions pass.
 - [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
 
-### [ ] C01 — Audit and preserve the existing catalog
+### [x] C01 — Audit and preserve the existing catalog
 
 **Phase:** E. **Dependencies:** V01. **Scope:** Data/report batch; bounded intake tooling as needed.
 
@@ -369,7 +369,7 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] C02 — Add canonical catalog and completeness fields
 
-**Execution:** C02.1 implemented: additive metadata migration and tracked runner; legacy identity/isolation tests. Live-data migration and remaining C02 contracts pending. See [execution record](v2-execution.md).
+**Execution:** C02.1–2 implemented: tracked additive upgrades, backup-copy/live migration, release/artist/artwork contracts and access-isolation tests. Fixture feed policy, expanded credits and rendition capabilities remain open. See [execution record](v2-execution.md).
 
 **Phase:** E. **Dependencies:** C01. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
@@ -597,6 +597,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V16 — Use real artwork palettes and image identities
 
+**Execution:** V16.1: cover-derived contrast-checked colors and content-versioned image URLs implemented; 30 covers measured. Visual/native acceptance remains open.
+
 **Phase:** C. **Dependencies:** C05,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Wire persisted cover palettes and stable asset versions into rows, headers, mini-player and full player.
@@ -615,6 +617,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V17 — Finish the Home experience
 
+**Execution:** V17.1: virtualized horizontal shelves; scale/fixture-library browser tests pass at both widths. Independent Home feed pagination/context ranking remains pending.
+
 **Phase:** C. **Dependencies:** V04,V13,V16. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Build bounded virtualized shelves, useful shortcuts and category/release destinations with independent loading.
@@ -626,6 +630,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 **Likely files:** src/ui/screens/Home.tsx; src/ui/screens/common.tsx; src/data/homeFeed.ts (new); apps/api/src/app.mjs; Home E2E cases.
 
 ### [ ] V18 — Build a dedicated album page
+
+**Execution:** V18.1: dedicated adaptive album header, numbered/disc rows, partial-release labels and retained play control implemented. Phone web album/save/navigation/axe tests pass; credits and native review remain open.
 
 **Phase:** C. **Dependencies:** V11,V16. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
@@ -668,6 +674,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 **Likely files:** src/ui/player/MiniPlayer.tsx; src/ui/player/NowPlaying.tsx; src/design/Motion.tsx; relevant route layout; motion evidence.
 
 ### [ ] V21 — Complete contextual action sheets
+
+**Execution:** V21.1: working menus for album/artist/playlist play, shuffle, save/follow, queue-all and owner edit. Album menu/queue identity browser test passes; credits/share and platform acceptance remain open.
 
 **Phase:** C. **Dependencies:** V14,V15,V20. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
