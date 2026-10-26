@@ -2,14 +2,14 @@
   "expo": {
     "name": "Musify",
     "slug": "musify-personal-test",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "orientation": "default",
     "icon": "./assets/owaryn-icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.owarynmusic",
-      "buildNumber": "2"
+      "buildNumber": "3"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.example.owarynmusic",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/owaryn-icon.png"
