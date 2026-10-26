@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-27",
+  "decoder": "FFmpeg 9.0.2 portable; vendor archive SHA256 60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+  "cases": {
+    "genuineShortIntro": "passed",
+    "shortFileAgainstFullRecording": "rejected",
+    "wrongChecksum": "rejected",
+    "truncatedRealCompressedAudio": "rejected"
+  },
+  "stagedRecordings": 28,
+  "stagedFullDecodes": 28
+}

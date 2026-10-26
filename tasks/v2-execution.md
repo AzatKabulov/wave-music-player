@@ -83,3 +83,17 @@ Full API verification now passes 35/35 cases with one embedded-database worker. 
 ## Owner catalog scope update — 2026-10-27
 
 The owner reduced personal testing to **50–70 popular recordings**. Target approximately 60 total, including the existing 30. The 181-candidate wishlist remains useful intake preparation; larger C1/C2/C3 milestones are deferred and no longer block this personal test batch. Keep per-file validation and accurate version/artwork requirements. Selected popular songs do not imply complete playable albums.
+
+## V09.1 — first play saves the queue and obtains a grant in one response
+
+Queue PUT/PATCH can optionally include a grant after successful membership commit and owned-session validation. Existing grant scope, revocation and current-media checks remain enforced. The client consumes the response grant from private memory and excludes it from all queue/cache/timing DTOs. Missing/expired response grants use the existing endpoint. This removes the separate first-play grant round trip; pause/resume keeps using the loaded authorized source.
+
+Verification: the API test covers normal/optional issuance, failed and stale mutations, foreign accounts, removed entries, revocation and unauthenticated requests. Browser tests prove zero separate grant POSTs on ordinary first play and one fallback POST for an intentionally expired response grant. All **58/58** browser cases pass across phone/desktop widths. New traces in `evidence/v2/performance/playback-after-v2.json` show the grant stage using the response (~0–0.1 ms in four individual samples); physical audible speed remains unmeasured. The initial full browser run exposed ambiguous test selectors and shared auth-window exhaustion; QA now resets only its disposable auth bucket between cases. Normal API throttling and absence of that QA-only route have a dedicated regression test.
+
+V09's full bounded pre-authorized native queue window and expired-active-source transition matrix remain open. This slice does not claim that whole task complete.
+
+## Focused catalog test batch — 58 recordings
+
+Added 28 full-decoded popular recordings and matched decoded covers, bringing the personal catalog to **58 recordings, 24 artists, 51 release entries and six playlists**. A stopped-service backup and copied-database import preceded the live transaction. User/account/library/queue hashes stayed unchanged and all 75 existing playlist entry identities and positions were retained. The service restarted successfully.
+
+All 58 tracks passed exact search, full served audio/artwork hashes, 128-pixel thumbnails and beginning/end range checks using a deleted temporary verification account. The personal snapshot was 87,474 bytes. Replaying staging revalidated all 28 audio/cover files without downloading again. Reusable local media inspection and real short/truncated-audio evidence are documented in `audio-intake-v2.md`. The owner-requested 50–70 recording test scope is met; larger catalog expansion stays deferred.

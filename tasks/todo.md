@@ -477,6 +477,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V09 — Make authorized transport responsive
 
+**Execution:** V09.1 removes the first-play grant round trip through optional authorized queue-response grants; access, fallback and full browser tests pass. Bounded native queue windows and physical timing remain pending.
+
 **Phase:** B. **Dependencies:** V03,V08,V04. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Design and implement the acknowledged/pre-authorized queue window needed for prompt local transport and later server reconciliation.
@@ -578,6 +580,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 - [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
 
 ### [ ] C04 — Build audio validation and rendition staging
+
+**Execution:** Local bounded inspection, full FFmpeg decode, hashes and expected-duration checks validated 28 new recordings. Cached staging replay and real truncated/short-file tests pass. Interrupted-download/quarantine tests and alternate rendition staging remain open; see `audio-intake-v2.md`.
 
 **Phase:** E. **Dependencies:** C03. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 

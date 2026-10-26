@@ -1,0 +1,616 @@
+{
+  "date": "2026-10-27",
+  "recordings": 58,
+  "artists": 24,
+  "releases": 51,
+  "snapshotBytes": 87474,
+  "tracks": [
+    {
+      "artist": "The Weeknd",
+      "title": "Blinding Lights",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "Treat You Better",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Eminem",
+      "title": "Mockingbird",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "The Weeknd",
+      "title": "Save Your Tears",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "The Weeknd",
+      "title": "Starboy (feat. Daft Punk)",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "The Weeknd",
+      "title": "Can't Feel My Face",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Eminem",
+      "title": "Lose Yourself",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Eminem",
+      "title": "Without Me",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Eminem",
+      "title": "The Real Slim Shady",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "Stitches",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "There's Nothing Holdin' Me Back",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Shawn Mendes",
+      "title": "Señorita",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Billie Eilish",
+      "title": "bad guy",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Billie Eilish",
+      "title": "lovely",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Ed Sheeran",
+      "title": "Shape of You",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Ed Sheeran",
+      "title": "Perfect",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Taylor Swift",
+      "title": "Cruel Summer",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Taylor Swift",
+      "title": "Blank Space",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Bruno Mars",
+      "title": "Just the Way You Are",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Bruno Mars",
+      "title": "Locked Out of Heaven",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Sabrina Carpenter",
+      "title": "Espresso",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Harry Styles",
+      "title": "As It Was",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Harry Styles",
+      "title": "Watermelon Sugar",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Post Malone",
+      "title": "Sunflower (Spider-Man: Into the Spider-Verse)",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Adele",
+      "title": "Rolling in the Deep",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Dua Lipa",
+      "title": "New Rules",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Sabrina Carpenter",
+      "title": "Nonsense",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Post Malone",
+      "title": "Better Now",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Adele",
+      "title": "Someone Like You",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Dua Lipa",
+      "title": "Physical (feat. Troye Sivan)",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Ariana Grande",
+      "title": "thank u, next",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Ariana Grande",
+      "title": "7 rings",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Justin Bieber",
+      "title": "Love Yourself",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Olivia Rodrigo",
+      "title": "vampire",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Olivia Rodrigo",
+      "title": "drivers license",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Olivia Rodrigo",
+      "title": "good 4 u",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Rihanna",
+      "title": "Diamonds",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Rihanna",
+      "title": "Umbrella (feat. JAŸ-Z)",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "SZA",
+      "title": "Kill Bill",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "SZA",
+      "title": "Snooze",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "SZA",
+      "title": "Good Days",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Kendrick Lamar",
+      "title": "HUMBLE.",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Kendrick Lamar",
+      "title": "All The Stars",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Drake",
+      "title": "God's Plan",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Drake",
+      "title": "Passionfruit",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Coldplay",
+      "title": "Viva La Vida",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Coldplay",
+      "title": "The Scientist",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Coldplay",
+      "title": "Fix You",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Imagine Dragons",
+      "title": "Believer",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Imagine Dragons",
+      "title": "Thunder",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Imagine Dragons",
+      "title": "Radioactive",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Avicii",
+      "title": "Wake Me Up",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Avicii",
+      "title": "The Nights",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Avicii",
+      "title": "Hey Brother",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Lana Del Rey",
+      "title": "Summertime Sadness",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Travis Scott",
+      "title": "goosebumps",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Travis Scott",
+      "title": "SICKO MODE",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    },
+    {
+      "artist": "Travis Scott",
+      "title": "HIGHEST IN THE ROOM",
+      "search": true,
+      "audioHash": true,
+      "artworkHash": true,
+      "thumbnail": true,
+      "rangeStart": true,
+      "rangeEnd": true
+    }
+  ],
+  "mixes": [
+    {
+      "title": "Popular picks",
+      "tracks": 58
+    },
+    {
+      "title": "Pop essentials",
+      "tracks": 24
+    },
+    {
+      "title": "Rap rotation",
+      "tracks": 13
+    },
+    {
+      "title": "After dark",
+      "tracks": 12
+    },
+    {
+      "title": "Dance favorites",
+      "tracks": 7
+    },
+    {
+      "title": "Alternative favorites",
+      "tracks": 7
+    }
+  ],
+  "scope": "Temporary account against the private LAN API. Served bytes, metadata and ranges only; physical phone sound/performance is unmeasured."
+}
