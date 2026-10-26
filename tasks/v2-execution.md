@@ -103,3 +103,9 @@ The regression proves order, duplicate recording entries with distinct IDs, curs
 Added 28 full-decoded popular recordings and matched decoded covers, bringing the personal catalog to **58 recordings, 24 artists, 51 release entries and six playlists**. A stopped-service backup and copied-database import preceded the live transaction. User/account/library/queue hashes stayed unchanged and all 75 existing playlist entry identities and positions were retained. The service restarted successfully.
 
 All 58 tracks passed exact search, full served audio/artwork hashes, 128-pixel thumbnails and beginning/end range checks using a deleted temporary verification account. The personal snapshot was 87,474 bytes. Replaying staging revalidated all 28 audio/cover files without downloading again. Reusable local media inspection and real short/truncated-audio evidence are documented in `audio-intake-v2.md`. The owner-requested 50–70 recording test scope is met; larger catalog expansion stays deferred.
+
+## 0.2.1 delivery checkpoint
+
+Client source is tagged in configuration as 0.2.1/build 3. All-platform production export passes (native Hermes bundles ~6.6 MB each). The restarted iPhone Expo Go endpoint serves an SDK-58 manifest for 0.2.1 and a 13,966,234-byte iOS bundle containing the intended API, metadata cache and local timing code. This verifies delivery from the PC, not physical iPhone rendering/audio. See `evidence/v2/performance/iphone-v021-delivery.json`.
+
+Android build `113eedf7-450a-4a8b-81c7-039401094061` was submitted to the existing personal Expo project with versionCode 3 and the same package. The old 0.2.0 APK remains served until the new artifact passes integrity, signature, package/API and download verification. No new APK is claimed available while Expo queues it. The post-submit backend-only queue batching change is excluded from the mobile archive and is already served by the PC API.

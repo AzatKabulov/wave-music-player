@@ -867,6 +867,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] C07 — Reach the first useful catalog gate
 
+**Owner update:** The personal-test gate is now 50–70 popular tracks. It is met with 58 verified recordings and preserved user data; the original 150-track/25-artist/ten-complete-release C1 gate below is deferred, not falsely checked complete.
+
 **Phase:** E. **Dependencies:** C06. **Scope:** Data/report batch; bounded intake tooling as needed.
 
 **Work:** Publish accepted content toward 150 tracks, 25 artists and ten complete releases, deepening core existing artists first.

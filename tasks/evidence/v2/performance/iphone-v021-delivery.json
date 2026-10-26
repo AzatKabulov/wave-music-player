@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-27",
+  "apiStatus": 200,
+  "expoManifestStatus": 200,
+  "expoRuntime": "exposdk:58.0.0",
+  "version": "0.2.1",
+  "bundleStatus": 200,
+  "bundleBytes": 13966234,
+  "expectedApiEmbedded": true,
+  "nativeMetadataCacheIncluded": true,
+  "localPlaybackDiagnosticsIncluded": true,
+  "scope": "PC requests to private Wi-Fi interface; not physical iPhone playback or performance acceptance"
+}
