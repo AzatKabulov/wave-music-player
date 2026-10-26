@@ -145,6 +145,8 @@ export default function RouteScreen(props: { screen?: string }) {
         ? { inert: !focused || undefined, "aria-hidden": !focused || undefined }
         : {})}
       pointerEvents={focused ? "auto" : "none"}
+      accessibilityElementsHidden={!focused}
+      importantForAccessibility={focused ? "auto" : "no-hide-descendants"}
       style={{
         flex: 1,
         display: Platform.OS === "web" && !show ? "none" : "flex",

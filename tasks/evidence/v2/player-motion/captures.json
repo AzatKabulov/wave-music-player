@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-27",
+  "scope": "Browser layout and functional motion samples; physical iPhone/Android frame performance and audio acceptance remain open.",
+  "captures": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stage": "expanded",
+      "path": "tasks/evidence/v2/player-motion/phone-web-expanded.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stage": "artwork-drag",
+      "path": "tasks/evidence/v2/player-motion/phone-web-artwork-drag.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stage": "next",
+      "path": "tasks/evidence/v2/player-motion/phone-web-next.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stage": "seeking",
+      "path": "tasks/evidence/v2/player-motion/phone-web-seeking.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stage": "dismiss-drag",
+      "path": "tasks/evidence/v2/player-motion/phone-web-dismiss-drag.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "stage": "expanded",
+      "path": "tasks/evidence/v2/player-motion/wide-web-expanded.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "stage": "artwork-drag",
+      "path": "tasks/evidence/v2/player-motion/wide-web-artwork-drag.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "stage": "next",
+      "path": "tasks/evidence/v2/player-motion/wide-web-next.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "stage": "seeking",
+      "path": "tasks/evidence/v2/player-motion/wide-web-seeking.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "stage": "dismiss-drag",
+      "path": "tasks/evidence/v2/player-motion/wide-web-dismiss-drag.png"
+    }
+  ]
+}

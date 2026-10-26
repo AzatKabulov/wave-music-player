@@ -33,7 +33,6 @@ import { theme as t } from "../../design/theme";
 import { go, ui } from "../Shell";
 import { usePlayerSurface } from "./usePlayerSurface";
 import { Seek } from "../Seek";
-import { formatTime } from "../screens/common";
 
 function PlaybackRecovery() {
   const m = useMusic();
@@ -169,7 +168,7 @@ export function Player() {
                       size={size}
                       onSelect={(id, expected) => {
                         if (m.activeEntry?.id === expected)
-                          m.jumpQueue(id, status.playing);
+                          m.jumpQueue(id, status.playing, expected);
                       }}
                     />
                   </View>
@@ -214,15 +213,10 @@ export function Player() {
                     value={status.currentTime}
                     max={status.duration || track.durationMs / 1000}
                     onChange={m.seek}
+                    playing={
+                      status.playing && status.isLoaded && !status.isBuffering
+                    }
                   />
-                  <View style={ui.h}>
-                    <Label type="xs" color="text-muted">
-                      {formatTime(status.currentTime)}
-                    </Label>
-                    <Label type="xs" color="text-muted">
-                      {formatTime(status.duration || track.durationMs / 1000)}
-                    </Label>
-                  </View>
                 </View>
                 <View style={s.transport}>
                   <IconButton

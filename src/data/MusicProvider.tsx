@@ -779,12 +779,22 @@ function useMusicController() {
             (e) => e.origin !== "explicit" || e.id === q.currentId,
           ),
         })),
-      jumpQueue: (id: string, play = true) => {
-        const index = queue.entries.findIndex((e) => e.id === id);
+      jumpQueue: (id: string, play = true, expectedCurrentId?: string) => {
+        const committed = queueRef.current;
+        if (
+          expectedCurrentId &&
+          committed.entries[engine.currentIndex]?.id !== expectedCurrentId
+        )
+          return;
+        const index = committed.entries.findIndex((e) => e.id === id);
         if (index >= 0) {
-          engine.skipTo(index);
-          if (play) engine.play();
-          else engine.pause();
+          try {
+            engine.skipTo(index);
+            if (play) engine.play();
+            else engine.pause();
+          } catch {
+            setError("Playback could not start. Try another track.");
+          }
         }
       },
       repeat: () =>

@@ -67,7 +67,7 @@ function Cover({
     };
   });
   return (
-    <Animated.View style={[s.cover, style]}>
+    <Animated.View testID={`player-cover-${page}`} style={[s.cover, style]}>
       <Artwork
         uri={item.track.artworkUrl}
         palette={item.track.palette}

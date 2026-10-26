@@ -46,7 +46,11 @@ export const test = base.extend<{ listener: void }>({
           exact: true,
         }),
       ).toBeVisible();
-      await use();
+      try {
+        await use();
+      } finally {
+        await page.unrouteAll({ behavior: "wait" });
+      }
       expect(failures).toEqual([]);
     },
     { auto: true },

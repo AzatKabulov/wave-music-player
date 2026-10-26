@@ -8,5 +8,7 @@
 - Adds local bounded playback diagnostics for finding slow stages.
 - Expands the PC-hosted personal catalog from 30 to 58 songs, with 24 artists, matching covers and six playlists. Audio remains on the PC.
 - Preserves the library, playlists and queue identities during catalog updates.
+- Moves the full player as one interruptible surface, keeps browse geometry stable underneath and supports artwork swipes right-next / left-previous while retaining play/pause intent.
+- Previews seeking locally and commits once on release; interpolates native and mini-player progress between engine samples, with larger touch feedback and reduced-motion alternatives.
 
 This is a personal-test checkpoint. Physical iPhone/Android motion, sound continuity, accessibility, frame/memory targets and the remaining v2 features still need acceptance. APK availability and verification are recorded separately in the phone-testing handoff.

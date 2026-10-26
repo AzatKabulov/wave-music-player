@@ -7,7 +7,14 @@ import { Touch } from "../../design/Motion";
 import { IconButton, Label } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { router } from "expo-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { artworkSurface } from "../../data/artworkColor";
 
 export function MiniPlayer() {
@@ -23,8 +30,40 @@ export function MiniPlayer() {
       ),
     [m.track?.artworkColor],
   );
+  const duration = status.duration || (m.track?.durationMs || 0) / 1000;
+  const progress = useSharedValue(status.currentTime);
+  useEffect(() => {
+    if (!status.playing || status.isBuffering || !status.isLoaded) {
+      cancelAnimation(progress);
+      progress.set(status.currentTime);
+    } else {
+      if (Math.abs(progress.get() - status.currentTime) > 1.2)
+        progress.set(status.currentTime);
+      progress.set(
+        withTiming(Math.min(duration, status.currentTime + 0.5), {
+          duration: 500,
+          easing: Easing.linear,
+        }),
+      );
+    }
+  }, [
+    status.currentTime,
+    status.playing,
+    status.isBuffering,
+    status.isLoaded,
+    duration,
+    progress,
+  ]);
+  const progressStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        scaleX: duration
+          ? Math.max(0, Math.min(1, progress.get() / duration))
+          : 0,
+      },
+    ],
+  }));
   if (!m.track) return null;
-  const duration = status.duration || m.track.durationMs / 1000;
   return (
     <View style={[s.bar, { backgroundColor }]}>
       <View style={s.row}>
@@ -59,14 +98,7 @@ export function MiniPlayer() {
         <IconButton icon={SkipForward} label="Next track" onPress={m.next} />
       </View>
       <View style={s.rail}>
-        <View
-          style={[
-            s.progress,
-            {
-              width: `${duration ? Math.min(100, (status.currentTime / duration) * 100) : 0}%`,
-            },
-          ]}
-        />
+        <Animated.View style={[s.progress, progressStyle]} />
       </View>
     </View>
   );
@@ -94,5 +126,10 @@ const s = StyleSheet.create({
   copy: { flex: 1, minWidth: 0 },
   title: { fontSize: 14, fontWeight: "600", lineHeight: 20 },
   rail: { height: 2, marginHorizontal: 8, backgroundColor: t.color.border },
-  progress: { height: 2, backgroundColor: t.color.text },
+  progress: {
+    height: 2,
+    width: "100%",
+    transformOrigin: "left",
+    backgroundColor: t.color.text,
+  },
 });

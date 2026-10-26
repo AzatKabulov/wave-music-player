@@ -5,7 +5,7 @@
   "expoRuntime": "exposdk:58.0.0",
   "version": "0.2.1",
   "bundleStatus": 200,
-  "bundleBytes": 13966234,
+  "bundleBytes": 13999813,
   "expectedApiEmbedded": true,
   "nativeMetadataCacheIncluded": true,
   "localPlaybackDiagnosticsIncluded": true,

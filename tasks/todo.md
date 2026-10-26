@@ -655,6 +655,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V19 — Finish Now Playing layout and context
 
+**Execution:** V19.1: UI-thread native seek preview/clock feedback, one commit on release, cancellation/acknowledgement recovery and interpolated progress implemented. Pointer/keyboard regression passes; full source checkpoint has 66 browser and 43 client cases passing. Actual playback-source navigation, lower panels and native/short-screen acceptance remain open. See `player-motion-v2.md`.
+
 **Phase:** C. **Dependencies:** V10,V16,V18. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Add actual playback-source context, responsive controls, smooth seek/progress display and meaningful lower panels.
@@ -672,6 +674,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 - [ ] Any changed UI, performance or catalog data has the required evidence; no threshold, source status or pending native check was silently weakened.
 
 ### [ ] V20 — Coordinate mini-player and player motion
+
+**Execution:** V20.1: single interruptible player surface, stable underlying chrome, directional artwork swipes (owner: right-next / left-previous), paused-state/entry-identity guards, reduced-motion fades and continuous mini-player progress implemented. Browser cancel/complete dismissal, boundary/swipe and reduced-motion cases pass at both widths. Real-cover browser drag interference is fixed and has a red/green regression; the final affected pass is 12/12 cases. Rotation, native gestures/audio continuity and measured device performance remain open.
 
 **Phase:** C. **Dependencies:** V15,V19. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 

@@ -82,7 +82,7 @@ export function usePlayerSurface(height: number, color: string) {
     }, [close]),
   );
   const pan = usePanGesture({
-    activeOffsetY: 8,
+    activeOffsetY: [-8, 8],
     failOffsetX: [-18, 18],
     maxPointers: 1,
     onActivate: () => {
