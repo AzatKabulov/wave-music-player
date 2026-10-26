@@ -1,5 +1,6 @@
 import { useLocale } from "../../i18n/LocaleProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { artworkSurface } from "../../data/artworkColor";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   ChevronDown,
@@ -84,6 +85,15 @@ export function Player() {
   const status = usePlaybackStatus();
   const { width, height, fontScale } = useWindowDimensions();
   const { reduced } = useMotion();
+  const atmosphere = useMemo(
+    () =>
+      artworkSurface(
+        m.track?.artworkColor,
+        t.color["surface-raised"],
+        t.color["text-muted"],
+      ),
+    [m.track?.artworkColor],
+  );
   const y = useSharedValue(0);
   const pan = usePanGesture({
     activeOffsetY: 12,
@@ -117,9 +127,6 @@ export function Player() {
     width - 48,
     Math.max(200, (height * 0.42) / Math.max(1, fontScale * 0.8)),
   );
-  const atmosphere =
-    t.color[`art-${track?.palette || "night"}` as keyof typeof t.color] ||
-    t.color.surface;
   return (
     <LinearGradient
       colors={[atmosphere, t.color.bg]}

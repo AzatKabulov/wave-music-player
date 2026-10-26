@@ -7,15 +7,26 @@ import { Touch } from "../../design/Motion";
 import { IconButton, Label } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { router } from "expo-router";
+import { useMemo } from "react";
+import { artworkSurface } from "../../data/artworkColor";
 
 export function MiniPlayer() {
   const { tx } = useLocale();
   const m = useMusic();
   const status = usePlaybackStatus();
+  const backgroundColor = useMemo(
+    () =>
+      artworkSurface(
+        m.track?.artworkColor,
+        t.color["surface-raised"],
+        t.color["text-muted"],
+      ),
+    [m.track?.artworkColor],
+  );
   if (!m.track) return null;
   const duration = status.duration || m.track.durationMs / 1000;
   return (
-    <View style={s.bar}>
+    <View style={[s.bar, { backgroundColor }]}>
       <View style={s.row}>
         <Touch
           accessibilityRole="button"
