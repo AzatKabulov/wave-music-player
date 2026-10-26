@@ -1,5 +1,10 @@
 import { useLocale } from "../i18n/LocaleProvider";
-import { AudioLines, Heart, MoreHorizontal } from "lucide-react-native";
+import {
+  AudioLines,
+  CheckCircle2,
+  CirclePlus,
+  MoreHorizontal,
+} from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { useMusic } from "../data/MusicProvider";
 import type { Track } from "../data/types";
@@ -13,11 +18,13 @@ export function TrackRow({
   context,
   index = 0,
   subtitle = true,
+  numbered = false,
 }: {
   track: Track;
   context?: Track[];
   index?: number;
   subtitle?: boolean;
+  numbered?: boolean;
 }) {
   const { tx } = useLocale();
   const m = useMusic(),
@@ -28,6 +35,20 @@ export function TrackRow({
     saved = m.snapshot?.library.tracks.includes(track.id);
   return (
     <View style={[s.row, blocked && { opacity: t.opacity.disabled }]}>
+      {numbered ? (
+        <View
+          style={s.number}
+          aria-hidden
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          {active ? (
+            <AudioLines size={t.icon.sm} color={t.color.accent} />
+          ) : (
+            <Label color="text-muted">{track.trackNumber || index + 1}</Label>
+          )}
+        </View>
+      ) : null}
       <Touch
         accessibilityRole="button"
         accessibilityLabel={`${tx("Play")} ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? tx("Unavailable for playback") : track.artist) : ""}`}
@@ -36,11 +57,13 @@ export function TrackRow({
         onPress={() => void m.playTracks(context || [track], index)}
         style={[ui.row, ui.grow, s.play]}
       >
-        <Artwork
-          palette={track.palette}
-          uri={track.artworkUrl}
-          size={t.space[48]}
-        />
+        {!numbered ? (
+          <Artwork
+            palette={track.palette}
+            uri={track.artworkUrl}
+            size={t.space[48]}
+          />
+        ) : null}
         <View style={ui.grow}>
           <Label numberOfLines={1} color={active ? "accent" : "text"}>
             {track.title}
@@ -52,10 +75,12 @@ export function TrackRow({
             </Label>
           ) : null}
         </View>
-        {active ? <AudioLines size={t.icon.sm} color={t.color.accent} /> : null}
+        {active && !numbered ? (
+          <AudioLines size={t.icon.sm} color={t.color.accent} />
+        ) : null}
       </Touch>
       <IconButton
-        icon={Heart}
+        icon={saved ? CheckCircle2 : CirclePlus}
         label={tx(saved ? "Unsave {title}" : "Save {title}", {
           title: track.title,
         })}
@@ -71,6 +96,12 @@ export function TrackRow({
   );
 }
 const s = StyleSheet.create({
+  number: {
+    width: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
   row: {
     minHeight: t.layout.trackRow,
     flexDirection: "row",

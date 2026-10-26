@@ -1,6 +1,31 @@
 export const messages: Record<string, Record<string, string>> = {
   en: {},
   ru: {
+    "Discover playlists": "Откройте плейлисты",
+    "Open {artist}": "Открыть {artist}",
+    "Album options": "Действия с альбомом",
+    "Artist options": "Действия с исполнителем",
+    "Playlist options": "Действия с плейлистом",
+    "Save album": "Сохранить альбом",
+    "Remove album from library": "Удалить альбом из медиатеки",
+    "Follow artist": "Подписаться на исполнителя",
+    "Unfollow artist": "Отписаться от исполнителя",
+    "Save playlist": "Сохранить плейлист",
+    "Remove playlist from library": "Удалить плейлист из медиатеки",
+    "Add to queue": "Добавить в очередь",
+    "Visit {artist}": "Открыть {artist}",
+    "More from {artist}": "Ещё от {artist}",
+    "No playable tracks in this collection.":
+      "В этой коллекции нет доступных треков.",
+    "Try another collection from the catalog.":
+      "Выберите другую коллекцию в каталоге.",
+
+    "Disc {number}": "Диск {number}",
+    "{available} of {total} tracks available":
+      "Доступно {available} из {total} треков",
+    "Play album": "Слушать альбом",
+    Single: "Сингл",
+    Compilation: "Сборник",
     "Earlier in queue": "Ранее в очереди",
     "Audio is taking longer": "Аудио загружается дольше обычного",
     "Check the PC connection, then retry or choose another track.":
@@ -26,7 +51,6 @@ export const messages: Record<string, Record<string, string>> = {
     "Actions for {title}": "Действия: {title}",
     "Save {title}": "Сохранить {title}",
     "Unsave {title}": "Убрать {title}",
-    "Visit {artist}": "Открыть {artist}",
     "Repeat: {mode}": "Повтор: {mode}",
     none: "выключен",
     all: "всё",
@@ -70,7 +94,6 @@ export const messages: Record<string, Record<string, string>> = {
     "Create playlist": "Создать плейлист",
     "Create a playlist": "Создать плейлист",
     "Edit playlist": "Изменить плейлист",
-    "Save playlist": "Сохранить плейлист",
     "Delete playlist": "Удалить плейлист",
     "Delete this playlist": "Удалить этот плейлист",
     "Keep playlist": "Оставить плейлист",
@@ -240,6 +263,31 @@ export const messages: Record<string, Record<string, string>> = {
     "Use at least 10 characters.": "Используйте не менее 10 символов.",
   },
   tk: {
+    "Discover playlists": "Pleýlistleri aç",
+    "Open {artist}": "{artist} sahypasyny aç",
+    "Album options": "Albom amallary",
+    "Artist options": "Aýdymçy amallary",
+    "Playlist options": "Pleýlist amallary",
+    "Save album": "Albomy ýatda sakla",
+    "Remove album from library": "Albomy kitaphanadan aýyr",
+    "Follow artist": "Aýdymçyny yzarla",
+    "Unfollow artist": "Aýdymçyny yzarlamagy bes et",
+    "Save playlist": "Pleýlisti ýatda sakla",
+    "Remove playlist from library": "Pleýlisti kitaphanadan aýyr",
+    "Add to queue": "Nobata goş",
+    "Visit {artist}": "{artist} sahypasyny aç",
+    "More from {artist}": "{artist} aýdymçysyndan has köp",
+    "No playable tracks in this collection.":
+      "Bu ýygyndyda diňläp bolýan aýdym ýok.",
+    "Try another collection from the catalog.":
+      "Katalogdan başga ýygyndyny saýlaň.",
+
+    "Disc {number}": "Disk {number}",
+    "{available} of {total} tracks available":
+      "{total} aýdymdan {available} elýeterli",
+    "Play album": "Albomy diňle",
+    Single: "Singl",
+    Compilation: "Ýygyndy",
     "Earlier in queue": "Nobatyň öňki bölegi",
     "Audio is taking longer": "Ses haýal ýüklenýär",
     "Check the PC connection, then retry or choose another track.":
@@ -265,7 +313,6 @@ export const messages: Record<string, Record<string, string>> = {
     "Actions for {title}": "{title} üçin amallar",
     "Save {title}": "{title} ýatda sakla",
     "Unsave {title}": "{title} ýatdan aýyr",
-    "Visit {artist}": "{artist} aç",
     "Repeat: {mode}": "Gaýtalamak: {mode}",
     none: "ýok",
     all: "ählisi",
@@ -310,7 +357,6 @@ export const messages: Record<string, Record<string, string>> = {
     "Create playlist": "Pleýlist döret",
     "Create a playlist": "Pleýlist döret",
     "Edit playlist": "Pleýlisti üýtget",
-    "Save playlist": "Pleýlisti ýatda sakla",
     "Delete playlist": "Pleýlisti poz",
     "Delete this playlist": "Bu pleýlisti poz",
     "Keep playlist": "Pleýlisti sakla",

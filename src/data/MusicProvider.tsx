@@ -564,9 +564,36 @@ function useMusicController() {
           },
           randomUUID,
         );
+        if (!result.state.entries.length)
+          throw Error("No playable tracks in this collection.");
         canonical.current = result.canonical;
         return result.state;
       }, true),
+    [command, snapshot?.preferences.explicitAllowed],
+  );
+  const enqueueTracks = useCallback(
+    (tracks: Track[]) =>
+      command((current) => {
+        const eligible = tracks.filter(
+          (track) =>
+            track.available &&
+            (snapshot?.preferences.explicitAllowed || !track.explicit),
+        );
+        if (!eligible.length)
+          throw Error("No playable tracks in this collection.");
+        let entries = current.entries;
+        for (const track of eligible)
+          entries = insertExplicit(entries, current.currentId, {
+            id: randomUUID(),
+            trackId: track.id,
+            origin: "explicit",
+          });
+        return {
+          ...current,
+          entries,
+          currentId: current.currentId || entries[0]?.id || null,
+        };
+      }),
     [command, snapshot?.preferences.explicitAllowed],
   );
   const stop = useCallback(() => {
@@ -647,6 +674,7 @@ function useMusicController() {
         return command((q) => q, true);
       },
       playTracks,
+      enqueueTracks,
       toggle: () => {
         try {
           if (statusRef.current.playing) engine.pause();
@@ -659,19 +687,7 @@ function useMusicController() {
       previous: () =>
         statusRef.current.currentTime > 3 ? seek(0) : engine.previous(),
       seek,
-      enqueue: (track: Track) =>
-        command((q) => {
-          const entry = {
-            id: randomUUID(),
-            trackId: track.id,
-            origin: "explicit" as const,
-          };
-          return {
-            ...q,
-            entries: insertExplicit(q.entries, q.currentId, entry),
-            currentId: q.currentId || entry.id,
-          };
-        }),
+      enqueue: (track: Track) => enqueueTracks([track]),
       moveQueue: (id: string, delta: number) =>
         command((q) => ({ ...q, entries: moveEntry(q.entries, id, delta) })),
       moveQueueTo: (id: string, targetId: string) =>
@@ -784,6 +800,7 @@ function useMusicController() {
       refresh,
       save,
       playTracks,
+      enqueueTracks,
       seek,
       engine,
       command,

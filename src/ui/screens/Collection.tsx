@@ -15,6 +15,7 @@ import {
 import { Shell, go, ui } from "../Shell";
 import { MusicList } from "../MusicList";
 import { Cards, Section, formatTime } from "./common";
+import { AlbumHeader } from "./AlbumHeader";
 
 export function Collection({
   type,
@@ -26,6 +27,7 @@ export function Collection({
   const { tx } = useLocale();
   const [resource, setResource] = useState({ key: "", error: "" });
   const [retry, setRetry] = useState(0);
+  const [collapsed, setCollapsed] = useState(false);
   const m = useMusic(),
     sn = m.snapshot!,
     c = sn.catalog;
@@ -103,13 +105,25 @@ export function Collection({
   const kind =
     type === "album" ? "albums" : type === "artist" ? "artists" : "playlists";
   const saved = sn.library[kind].includes(id);
-  const header = (
+  const header = album ? (
+    <AlbumHeader
+      album={album}
+      artist={c.artists.find((person) => person.id === album.artistId)}
+      tracks={tracks}
+      saved={saved}
+      pending={m.pending}
+      onSave={() => void m.save("albums", id, !saved)}
+      onPlay={() => void m.playTracks(tracks)}
+      onShuffle={() => void m.playTracks(tracks, 0, true)}
+      onOptions={() => go(`/actions/${id}?collection=album`)}
+    />
+  ) : (
     <View style={s.header}>
       <View style={s.cover}>
         <Artwork
           kind={type}
           palette={entity.palette}
-          uri={album?.artworkUrl || playlist?.artworkUrl}
+          uri={artist?.artworkUrl || playlist?.artworkUrl}
           size={232}
           round={!!artist}
         />
@@ -120,9 +134,7 @@ export function Collection({
       <Label color="text-muted" numberOfLines={artist ? 4 : undefined}>
         {artist
           ? artist.bio
-          : album
-            ? `${album.artist} · ${album.year}`
-            : playlist?.description || tx("Your collection, your way.")}
+          : playlist?.description || tx("Your collection, your way.")}
       </Label>
       <Label type="sm" color="text-muted">
         {playlist?.owner ? `${tx("Your playlist")} · ` : ""}
@@ -160,11 +172,7 @@ export function Collection({
           <IconButton
             icon={MoreHorizontal}
             label="Collection options"
-            onPress={() => {
-              if (playlist?.owner) go(`/edit/${id}`);
-              else if (album?.artistId) go(`/artist/${album.artistId}`);
-              else m.setNotice(`${tracks.length} available tracks`);
-            }}
+            onPress={() => go(`/actions/${id}?collection=${type}`)}
           />
         </View>
         <View style={ui.row}>
@@ -204,21 +212,53 @@ export function Collection({
       />
     </Section>
   ) : album ? (
-    <Button
-      title={`Visit ${album.artist}`}
-      variant="quiet"
-      onPress={() => go(`/artist/${album.artistId}`)}
-    />
+    <View style={{ gap: 16 }}>
+      {album.releaseDate ? (
+        <Label type="sm" color="text-muted">
+          {album.releaseDate}
+        </Label>
+      ) : null}
+      <Button
+        title={tx("More from {artist}", { artist: album.artist })}
+        variant="quiet"
+        onPress={() => go(`/artist/${album.artistId}`)}
+      />
+    </View>
   ) : undefined;
   return (
     <Shell
       title={
-        type === "artist" ? "Artist" : type === "album" ? "Album" : "Playlist"
+        type === "artist"
+          ? "Artist"
+          : type === "album"
+            ? collapsed
+              ? title
+              : "Album"
+            : "Playlist"
       }
       back
       scroll={false}
+      trailing={
+        album && collapsed ? (
+          <IconButton
+            icon={Play}
+            label="Play album"
+            filled
+            disabled={!tracks.length || m.pending}
+            onPress={() => void m.playTracks(tracks)}
+          />
+        ) : undefined
+      }
     >
-      <MusicList tracks={tracks} header={header} footer={footer} />
+      <MusicList
+        tracks={tracks}
+        header={header}
+        footer={footer}
+        albumRows={!!album}
+        onScrollOffset={
+          album ? (offset) => setCollapsed(offset > 320) : undefined
+        }
+      />
     </Shell>
   );
 }

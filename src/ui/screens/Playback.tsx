@@ -40,6 +40,8 @@ import {
 import { theme as t } from "../../design/theme";
 import { Shell, back, go, ui } from "../Shell";
 import { Sheet } from "../sheets/Sheet";
+import { useLocalSearchParams } from "expo-router";
+import { CollectionActions } from "./CollectionActions";
 
 type QueueListItem = { entry: QueueEntry; index: number; heading?: string };
 
@@ -385,6 +387,14 @@ export function Actions({
 }) {
   const m = useMusic();
   const [query, setQuery] = useState("");
+  const { collection } = useLocalSearchParams<{ collection?: string }>();
+  if (
+    !picker &&
+    (collection === "album" ||
+      collection === "artist" ||
+      collection === "playlist")
+  )
+    return <CollectionActions id={id} kind={collection} />;
   const track = m.snapshot!.catalog.tracks.find((t) => t.id === id);
   if (!track)
     return (
