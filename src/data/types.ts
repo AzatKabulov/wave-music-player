@@ -97,6 +97,7 @@ export type SearchPage = {
   truncated: boolean;
 };
 export type Snapshot = {
+  hideFixtures?: boolean;
   profile: Profile | null;
   catalog: Catalog;
   library: Library;

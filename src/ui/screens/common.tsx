@@ -1,13 +1,14 @@
 import { ArrowRight } from "lucide-react-native";
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import type { Album, Playlist, Track } from "../../data/types";
+import { FlatList, StyleSheet, View } from "react-native";
+import type { Album, Artist, Playlist, Track } from "../../data/types";
 import { Touch } from "../../design/Motion";
 import { Artwork } from "../../design/Artwork";
 import { IconButton, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { go, ui } from "../Shell";
 import { TrackRow } from "../TrackRow";
+import { useLocale } from "../../i18n/LocaleProvider";
 
 export function Section({
   title,
@@ -47,12 +48,23 @@ export function Cards({
   type: "album" | "playlist";
 }) {
   return (
-    <ScrollView
+    <FlatList
+      data={items}
       horizontal
+      style={s.shelf}
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={s.cards}
-    >
-      {items.map((item) => (
+      initialNumToRender={4}
+      maxToRenderPerBatch={4}
+      windowSize={3}
+      keyExtractor={(item) => item.id}
+      ItemSeparatorComponent={ShelfGap}
+      getItemLayout={(_, index) => ({
+        length: 176,
+        offset: index * 176,
+        index,
+      })}
+      renderItem={({ item }) => (
         <Touch
           key={item.id}
           accessibilityRole="button"
@@ -67,8 +79,54 @@ export function Cards({
             {"artist" in item ? item.artist : item.description}
           </Label>
         </Touch>
-      ))}
-    </ScrollView>
+      )}
+    />
+  );
+}
+function ShelfGap() {
+  return <View style={{ width: 16 }} />;
+}
+export function ArtistShelf({ artists }: { artists: Artist[] }) {
+  const { tx } = useLocale();
+  return (
+    <FlatList
+      data={artists}
+      horizontal
+      style={s.shelf}
+      showsHorizontalScrollIndicator={false}
+      initialNumToRender={4}
+      maxToRenderPerBatch={4}
+      windowSize={3}
+      keyExtractor={(item) => item.id}
+      ItemSeparatorComponent={ShelfGap}
+      getItemLayout={(_, index) => ({
+        length: 152,
+        offset: index * 152,
+        index,
+      })}
+      renderItem={({ item }) => (
+        <Touch
+          accessibilityRole="button"
+          accessibilityLabel={tx("Open {artist}", { artist: item.name })}
+          onPress={() => go(`/artist/${item.id}`)}
+          style={s.artistShelfCard}
+        >
+          <Artwork
+            kind="artist"
+            uri={item.artworkUrl}
+            palette={item.palette}
+            size={136}
+            round
+          />
+          <Label numberOfLines={2} style={[s.semibold, s.center]}>
+            {item.name}
+          </Label>
+          <Label i18n type="sm" color="text-muted">
+            Artist
+          </Label>
+        </Touch>
+      )}
+    />
   );
 }
 export function Tracks({ tracks }: { tracks: Track[] }) {
@@ -96,7 +154,9 @@ export const formatTime = (seconds: number) =>
   `${Math.floor((Number.isFinite(seconds) ? seconds : 0) / 60)}:${String(Math.floor((Number.isFinite(seconds) ? seconds : 0) % 60)).padStart(2, "0")}`;
 export const s = StyleSheet.create({
   filters: { marginBottom: t.space[24] },
-  cards: { gap: t.space[16], paddingBottom: t.space[8] },
+  cards: { paddingBottom: t.space[8] },
+  shelf: { flexGrow: 0 },
+  artistShelfCard: { width: 136, alignItems: "center", gap: 8 },
   card: { width: t.space[160], gap: t.space[8] },
   semibold: { fontWeight: "600" },
   center: { textAlign: "center" },

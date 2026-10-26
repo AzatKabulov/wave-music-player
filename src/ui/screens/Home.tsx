@@ -7,20 +7,37 @@ import { Touch } from "../../design/Motion";
 import { Chip, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
-import { Cards, Section, Tracks } from "./common";
+import { ArtistShelf, Cards, Section, Tracks } from "./common";
 
 export function Home() {
   const m = useMusic();
   const c = m.snapshot!.catalog;
+  const discoveryTracks = m.snapshot!.hideFixtures
+    ? c.tracks.filter((track) => track.contentKind !== "fixture")
+    : c.tracks;
+  const recordingIds = new Set(discoveryTracks.map((track) => track.id));
+  const albumIds = new Set(discoveryTracks.map((track) => track.albumId));
+  const artistIds = new Set(discoveryTracks.map((track) => track.artistId));
+  const albums = m.snapshot!.hideFixtures
+    ? c.albums.filter((album) => albumIds.has(album.id))
+    : c.albums;
+  const artists = m.snapshot!.hideFixtures
+    ? c.artists.filter((artist) => artistIds.has(artist.id))
+    : c.artists;
+  const playlists = m.snapshot!.hideFixtures
+    ? c.playlists.filter((playlist) =>
+        playlist.items.some((item) => recordingIds.has(item.trackId)),
+      )
+    : c.playlists;
   const [filter, setFilter] = useState("All");
   const genres = [
-    ...new Set(c.tracks.map((track) => track.genre).filter(Boolean)),
+    ...new Set(discoveryTracks.map((track) => track.genre).filter(Boolean)),
   ].slice(0, 5);
   const recent = m
     .snapshot!.recents.map((id) => c.tracks.find((track) => track.id === id))
     .filter((track) => !!track)
     .slice(0, 6);
-  if (!c.tracks.length)
+  if (!discoveryTracks.length)
     return (
       <Shell title="Home">
         <StateView
@@ -49,7 +66,9 @@ export function Home() {
       </ScrollView>
       {filter !== "All" ? (
         <Section title={filter}>
-          <Tracks tracks={c.tracks.filter((track) => track.genre === filter)} />
+          <Tracks
+            tracks={discoveryTracks.filter((track) => track.genre === filter)}
+          />
         </Section>
       ) : (
         <>
@@ -68,7 +87,7 @@ export function Home() {
                 Liked Songs
               </Label>
             </Touch>
-            {[...m.snapshot!.playlists, ...c.playlists].slice(0, 5).map((p) => (
+            {[...m.snapshot!.playlists, ...playlists].slice(0, 5).map((p) => (
               <Touch
                 key={p.id}
                 accessibilityRole="button"
@@ -115,44 +134,19 @@ export function Home() {
               </View>
             </Section>
           ) : null}
-          <Section
-            title="Made for your next listen"
-            action={() => go("/search")}
-          >
-            <Cards items={c.playlists} type="playlist" />
+          <Section title="Discover playlists" action={() => go("/search")}>
+            <Cards items={playlists} type="playlist" />
           </Section>
           <Section title="Albums to explore" action={() => go("/search")}>
             <Cards
-              items={[...c.albums].sort(
+              items={[...albums].sort(
                 (a, b) => Number(!!b.artworkUrl) - Number(!!a.artworkUrl),
               )}
               type="album"
             />
           </Section>
           <Section title="Discover artists">
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={s.artists}
-            >
-              {c.artists.map((artist) => (
-                <Touch
-                  key={artist.id}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Open ${artist.name}`}
-                  onPress={() => go(`/artist/${artist.id}`)}
-                  style={s.artist}
-                >
-                  <Artwork palette={artist.palette} size={136} round />
-                  <Label numberOfLines={2} style={[s.bold, s.center]}>
-                    {artist.name}
-                  </Label>
-                  <Label i18n type="sm" color="text-muted">
-                    Artist
-                  </Label>
-                </Touch>
-              ))}
-            </ScrollView>
+            <ArtistShelf artists={artists} />
           </Section>
         </>
       )}
@@ -191,8 +185,5 @@ const s = StyleSheet.create({
     gap: 12,
     minHeight: 64,
   },
-  artists: { gap: 16 },
-  artist: { width: 144, alignItems: "center", gap: 8 },
   bold: { fontWeight: "600" },
-  center: { textAlign: "center" },
 });
