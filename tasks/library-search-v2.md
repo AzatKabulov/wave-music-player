@@ -1,0 +1,11 @@
+# V24.1 — find saved collections
+
+Library now has an accessible search control and an autofocus search field with visible focus feedback, clear/close actions and useful empty state. It searches titles and creators across the complete currently hydrated saved/owned collection set before list virtualization. It combines with the selected collection filter and current ordering; it does not only search rendered rows. Query state resets with the account-keyed Library scene. Liked tracks remains discoverable by its localized collection name, while individual liked-song title search remains in the music search flow.
+
+Matching normalizes compatibility characters, case and Latin combining accents; punctuation is literal. Deferred filtering keeps text entry separate from the list calculation. All new controls/messages and collection accessible labels support EN/RU/TK. Rows remain tappable with the keyboard present. No external search service or dependency is added.
+
+The regression first failed at the missing search control. It now proves a 150-collection fixture's initially unmounted first collection becomes the single result, and verifies missing, clear and close behavior. Both viewport cases pass with an axe scan. Ten affected Library/language cases passed before the final focus correction; the two final search/accessibility cases passed afterward. All 47 client/data/locale tests pass. The unchanged backend passed 40 API tests; the preceding complete Library checkpoint passed 74 browser cases. Final lint/typecheck/formatting and Android/iOS/web exports pass.
+
+Six real-artwork browser captures are in `evidence/v2/library-search/`; temporary accounts were deleted. The confirmation waits for the deferred result set and actual image load before capturing, preventing an earlier false blank-cover sample. Browser styling and layout evidence does not establish native frame or keyboard performance.
+
+This is the collection-search portion of V24. Persistent pins, a dedicated server-side Library search once V04/V11 introduce paging, and physical-device acceptance remain open. No full V24 completion is claimed. The 0.2.2/build-4 candidate includes this slice plus V13.1 and V23.1; keep the verified 0.2.1 installer served until a replacement passes its artifact checks.

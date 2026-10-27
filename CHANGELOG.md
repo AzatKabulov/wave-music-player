@@ -6,6 +6,7 @@
 - Sorts mixed Library collections by real saved/created dates and preserves those dates in the native metadata cache.
 - Restores Library grid mode for the correct account, uses natural title/creator sorting and recovers the previous choice after a failed sort write.
 - Uses indexed metadata lookups and available artist artwork in Library.
+- Adds Library collection search across saved titles/creators, including items outside the visible window, with EN/RU/TK controls and clear/close states.
 
 Physical device frame/audio acceptance remains open. The verified downloadable installer is recorded separately from the development candidate.
 

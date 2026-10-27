@@ -1,9 +1,26 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { savedIds, datedSave, orderedLibrary } from "./libraryState.ts";
+import {
+  savedIds,
+  datedSave,
+  orderedLibrary,
+  libraryMatches,
+} from "./libraryState.ts";
 test("saving is idempotent and keeps recent saves first", () => {
   assert.deepEqual(savedIds(["old"], "new", true), ["new", "old"]);
   assert.deepEqual(savedIds(["new", "old"], "new", true), ["new", "old"]);
+});
+
+test("library matching handles names, creators, accents and literal query punctuation", () => {
+  assert.equal(libraryMatches("Ýol", "Şöhrat", "yol", "tk"), true);
+  assert.equal(libraryMatches("Ýol", "Şöhrat", "SOHRAT", "tk"), true);
+  assert.equal(libraryMatches("Плейлист", "Исполнитель", "исполн", "ru"), true);
+  assert.equal(
+    libraryMatches("Collection 001", "Listener", "Ｃｏｌｌｅｃｔｉｏｎ 001"),
+    true,
+  );
+  assert.equal(libraryMatches("Collection", "Listener", ".*"), false);
+  assert.equal(libraryMatches("Collection", "Listener", "   "), true);
 });
 
 test("mixed library kinds use real dates and deterministic missing/tied fallbacks", () => {

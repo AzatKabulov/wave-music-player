@@ -5,12 +5,20 @@ import {
   LayoutGrid,
   List,
   Plus,
+  Search,
+  X,
 } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import { useDeferredValue, useEffect, useState } from "react";
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  View,
+  TextInput,
+} from "react-native";
 import { useMusic } from "../../data/MusicProvider";
 import { deviceStorage } from "../../data/storage";
-import { orderedLibrary } from "../../data/libraryState";
+import { orderedLibrary, libraryMatches } from "../../data/libraryState";
 import { Artwork } from "../../design/Artwork";
 import { Touch } from "../../design/Motion";
 import {
@@ -31,6 +39,10 @@ export function LibraryScreen() {
   const [sort, setSort] = useState(sn.preferences.librarySort);
   const [sorting, setSorting] = useState(false);
   const [grid, setGrid] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [query, setQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchTerm = useDeferredValue(query).trim();
   const layoutKey = `musify.library.grid.${sn.profile!.id}`;
   useEffect(() => {
     let active = true;
@@ -110,24 +122,69 @@ export function LibraryScreen() {
         creator: a.name,
       })),
   ]
-    .filter((item) => filter === "All" || item.kind === filter)
+    .filter(
+      (item) =>
+        (filter === "All" || item.kind === filter) &&
+        libraryMatches(item.title, item.creator, searchTerm, locale),
+    )
     .map((item) => ({
       ...item,
       addedAt: dates.get(`${item.kind.toLowerCase()}:${item.id}`),
     }));
   const ordered = orderedLibrary(entries, sort, locale);
+  const showLiked =
+    filter === "All" &&
+    (!searchTerm || libraryMatches(tx("Liked tracks"), "", searchTerm, locale));
   return (
     <Shell
       title="Your library"
       scroll={false}
       trailing={
-        <IconButton
-          icon={Plus}
-          label="Create playlist"
-          onPress={() => go("/create")}
-        />
+        <View style={ui.row}>
+          <IconButton
+            icon={searching ? X : Search}
+            label={searching ? "Close library search" : "Search library"}
+            onPress={() => {
+              setSearching(!searching);
+              setQuery("");
+            }}
+          />
+          <IconButton
+            icon={Plus}
+            label="Create playlist"
+            onPress={() => go("/create")}
+          />
+        </View>
       }
     >
+      {searching ? (
+        <View
+          style={[s.search, searchFocused && { borderColor: t.color.focus }]}
+        >
+          <Search size={20} color={t.color["text-muted"]} />
+          <TextInput
+            autoFocus
+            accessibilityLabel={tx("Search your library")}
+            placeholder={tx("Search your library")}
+            placeholderTextColor={t.color["text-muted"]}
+            value={query}
+            onChangeText={setQuery}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            autoCorrect={false}
+            autoCapitalize="none"
+            returnKeyType="search"
+            style={s.searchInput}
+          />
+          {query ? (
+            <IconButton
+              icon={X}
+              label="Clear search"
+              onPress={() => setQuery("")}
+            />
+          ) : null}
+        </View>
+      ) : null}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -209,7 +266,7 @@ export function LibraryScreen() {
         numColumns={grid ? 2 : 1}
         keyExtractor={(item) => `${item.kind}:${item.id}`}
         ListHeaderComponent={
-          filter === "All" ? (
+          showLiked ? (
             <Touch
               accessibilityRole="button"
               accessibilityLabel={`${tx("Liked tracks")} ${tx("Tracks: {count}", { count: sn.library.tracks.length })}`}
@@ -233,7 +290,10 @@ export function LibraryScreen() {
         renderItem={({ item }) => (
           <Touch
             accessibilityRole="button"
-            accessibilityLabel={`Open ${item.title} ${item.subtitle}`}
+            accessibilityLabel={tx("Open {title} {subtitle}", {
+              title: item.title,
+              subtitle: item.subtitle,
+            })}
             onPress={() => go(item.path)}
             style={grid ? s.gridItem : s.row}
           >
@@ -254,17 +314,26 @@ export function LibraryScreen() {
           </Touch>
         )}
         ListEmptyComponent={
-          <StateView
-            title={
-              filter === "All"
-                ? "Build your library"
-                : tx("No saved {kind}", { kind: tx(filter) })
-            }
-            message="Keep the music you love here, ready for your next listen."
-            action="Find music"
-            onAction={() => go("/search")}
-          />
+          searchTerm && showLiked ? undefined : (
+            <StateView
+              title={
+                searchTerm
+                  ? "No matching collections"
+                  : filter === "All"
+                    ? "Build your library"
+                    : tx("No saved {kind}", { kind: tx(filter) })
+              }
+              message={
+                searchTerm
+                  ? "Try another title or creator."
+                  : "Keep the music you love here, ready for your next listen."
+              }
+              action={searchTerm ? "Clear search" : "Find music"}
+              onAction={() => (searchTerm ? setQuery("") : go("/search"))}
+            />
+          )
         }
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 24 }}
         initialNumToRender={12}
@@ -274,6 +343,26 @@ export function LibraryScreen() {
   );
 }
 const s = StyleSheet.create({
+  search: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    minHeight: 52,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+    borderRadius: 8,
+    backgroundColor: t.color.surface,
+    borderWidth: 1,
+    borderColor: t.color.border,
+  },
+  searchInput: {
+    flex: 1,
+    minWidth: 0,
+    color: t.color.text,
+    fontSize: 16,
+    paddingVertical: 12,
+    outlineWidth: 0,
+  },
   filters: { flexGrow: 0, maxHeight: 56, marginBottom: 8 },
   sort: {
     padding: 8,

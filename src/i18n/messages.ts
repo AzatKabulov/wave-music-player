@@ -1,6 +1,13 @@
 export const messages: Record<string, Record<string, string>> = {
   en: {},
   ru: {
+    "Search library": "Поиск в медиатеке",
+    "Search your library": "Поиск в вашей медиатеке",
+    "Close library search": "Закрыть поиск в медиатеке",
+    "No matching collections": "Подходящие коллекции не найдены",
+    "Try another title or creator.":
+      "Попробуйте другое название или имя исполнителя.",
+    "Open {title} {subtitle}": "Открыть {title} {subtitle}",
     "Discover playlists": "Откройте плейлисты",
     "Open {artist}": "Открыть {artist}",
     "Album options": "Действия с альбомом",
@@ -263,6 +270,13 @@ export const messages: Record<string, Record<string, string>> = {
     "Use at least 10 characters.": "Используйте не менее 10 символов.",
   },
   tk: {
+    "Search library": "Mediatekada gözle",
+    "Search your library": "Mediatekaňyzda gözläň",
+    "Close library search": "Mediateka gözlegini ýap",
+    "No matching collections": "Gabat gelýän ýygyndy ýok",
+    "Try another title or creator.":
+      "Başga at ýa-da ýerine ýetiriji bilen gözläň.",
+    "Open {title} {subtitle}": "{title} {subtitle} aç",
     "Discover playlists": "Pleýlistleri aç",
     "Open {artist}": "{artist} sahypasyny aç",
     "Album options": "Albom amallary",

@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-27",
+  "scope": "Browser list/grid layout, not native performance acceptance",
+  "temporaryAccountsDeleted": 2,
+  "captures": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "list",
+      "path": "tasks/evidence/v2/library-search/phone-web-list.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "grid",
+      "path": "tasks/evidence/v2/library-search/phone-web-grid.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "search",
+      "path": "tasks/evidence/v2/library-search/phone-web-search.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mode": "list",
+      "path": "tasks/evidence/v2/library-search/wide-web-list.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mode": "grid",
+      "path": "tasks/evidence/v2/library-search/wide-web-grid.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mode": "search",
+      "path": "tasks/evidence/v2/library-search/wide-web-search.png"
+    }
+  ]
+}

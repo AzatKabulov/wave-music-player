@@ -27,6 +27,20 @@ type CollectionRow = {
   creator: string;
   addedAt?: string;
 };
+export function libraryMatches(
+  title: string,
+  creator: string,
+  query: string,
+  locale = "en",
+) {
+  const normalized = (text: string) =>
+    text
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase(locale)
+      .trim();
+  return normalized(`${title} ${creator}`).includes(normalized(query));
+}
 export function orderedLibrary<T extends CollectionRow>(
   entries: T[],
   sort: "recent" | "title" | "creator",
