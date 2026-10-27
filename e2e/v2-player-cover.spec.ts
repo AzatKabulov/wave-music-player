@@ -60,7 +60,7 @@ test("V20 real cover images leave horizontal and vertical drags to the player", 
     y = artworkBox.y + artworkBox.height / 2;
   await page.mouse.move(x, y);
   await page.mouse.down();
-  await page.mouse.move(x + 130, y, { steps: 14 });
+  await page.mouse.move(x - 130, y, { steps: 14 });
   await page.mouse.up();
   await expect(surface.getByText("Open Road", { exact: true })).toBeVisible();
   await page.mouse.move(x, y);

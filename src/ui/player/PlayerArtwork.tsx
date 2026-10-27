@@ -69,7 +69,7 @@ function Cover({
 }) {
   const travel = size + 24;
   const style = useAnimatedStyle(() => {
-    const x = (position.get() - coordinate) * travel;
+    const x = (coordinate - position.get()) * travel;
     return {
       opacity: reduced ? (page === 0 ? fade.get() : 0) : fade.get(),
       transform: [{ translateX: reduced ? page * travel : x }],
@@ -253,7 +253,7 @@ export function PlayerArtwork(props: Props) {
     },
     onUpdate: (event) => {
       "worklet";
-      const movement = event.translationX / (size + 24);
+      const movement = -event.translationX / (size + 24);
       const resisted =
         (movement > 0 && !hasNext) || (movement < 0 && !hasPrevious);
       position.set(
@@ -287,7 +287,7 @@ export function PlayerArtwork(props: Props) {
             ? coordinate
             : withSpring(coordinate, {
                 ...settle,
-                velocity: event.velocityX / (size + 24),
+                velocity: -event.velocityX / (size + 24),
               }),
         );
     },
@@ -328,7 +328,7 @@ export function PlayerArtwork(props: Props) {
           <Cover
             key={`${cover.item.id}:${cover.coordinate}`}
             item={cover.item}
-            page={coordinate - cover.coordinate}
+            page={cover.coordinate - coordinate}
             coordinate={cover.coordinate}
             position={position}
             size={size}

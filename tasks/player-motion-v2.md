@@ -1,5 +1,7 @@
 # Player motion repair — owner request, 2026-10-27
 
+**Later clarification supersedes the horizontal mapping below:** left swipe selects next, right selects previous. Next enters from right and exits current to left; previous is mirrored. See `player-direction-v4.md`.
+
 The owner reports stiff mini-player expansion, drag-down dismissal and seeking, and requests artwork swipes **right → next, left → previous**. This is an addition to V19/V20, not a new visual identity.
 
 Motion thesis: the full player is one continuous surface rising from the bottom, following the finger directly and settling without bounce. Its background moves with its content. One animation owns entry/exit; remove the current content-exit followed by a second native navigation exit. Keep the browse surface and footer geometry stable underneath. Use a ~260 ms arrival, a shorter velocity-aware dismissal, and an interruptible bounded return spring. Reduce Motion uses a short fade.

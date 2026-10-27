@@ -1,5 +1,7 @@
 # Player motion and inset repair — 2026-10-27
 
+**Direction superseded by later owner clarification:** use left swipe = next, right swipe = previous; next enters from right, previous from left. See `player-direction-v4.md`. The earlier direction below describes that checkpoint's history, not the active specification.
+
 Owner reports fast, unsmooth transitions and incorrect transport/swiping on both iPhone and Android; the header is also obscured by the Dynamic Island on iPhone 15 Pro. This repair takes priority over further v2 features. Personal catalog stays at 58 recordings.
 
 | Before | After | Why |

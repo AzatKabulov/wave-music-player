@@ -2,11 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { artworkSwipe, dismissPlayer, seekPosition } from "./playerGesture.ts";
 
-test("artwork follows the owner's right-next / left-previous direction and ignores tentative gestures", () => {
-  assert.equal(artworkSwipe(120, 0, 340), 1);
-  assert.equal(artworkSwipe(-120, 0, 340), -1);
-  assert.equal(artworkSwipe(45, 900, 340), 1);
-  assert.equal(artworkSwipe(-45, -900, 340), -1);
+test("artwork follows left-next / right-previous and ignores tentative gestures", () => {
+  assert.equal(artworkSwipe(120, 0, 340), -1);
+  assert.equal(artworkSwipe(-120, 0, 340), 1);
+  assert.equal(artworkSwipe(45, 900, 340), -1);
+  assert.equal(artworkSwipe(-45, -900, 340), 1);
   assert.equal(artworkSwipe(18, 1200, 340), 0);
   assert.equal(artworkSwipe(-18, -1200, 340), 0);
   assert.equal(artworkSwipe(8, 900, 340), 0);

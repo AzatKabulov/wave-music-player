@@ -47,7 +47,7 @@ test("V20 player dismissal moves one surface and restores the unchanged browse l
   ).toBeVisible();
 });
 
-test("V20 artwork swipes right-next and left-previous without restarting the current song", async ({
+test("V20 artwork swipes left-next and right-previous without restarting the current song", async ({
   page,
 }) => {
   await playHome(page);
@@ -76,7 +76,7 @@ test("V20 artwork swipes right-next and left-previous without restarting the cur
     await page.mouse.move(start + direction * distance, y, { steps: 14 });
     await page.mouse.up();
   };
-  await swipe(1, 22);
+  await swipe(-1, 22);
   await expect
     .poll(async () => {
       const art = (await page.getByTestId("player-artwork").boundingBox())!;
@@ -85,16 +85,16 @@ test("V20 artwork swipes right-next and left-previous without restarting the cur
     })
     .toBeLessThan(2);
   await expect(surface.getByText("First Light", { exact: true })).toBeVisible();
-  await swipe(1);
+  await swipe(-1);
   await expect(surface.getByText("Open Road", { exact: true })).toBeVisible();
   await surface.getByRole("button", { name: "Pause", exact: true }).click();
   await seekTo(page, 10);
-  await swipe(-1);
+  await swipe(1);
   await expect(surface.getByText("First Light", { exact: true })).toBeVisible();
   await expect(
     surface.getByRole("button", { name: "Play", exact: true }),
   ).toBeVisible();
-  await swipe(-1);
+  await swipe(1);
   await expect(surface.getByText("First Light", { exact: true })).toBeVisible();
 });
 

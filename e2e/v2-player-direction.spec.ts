@@ -35,10 +35,24 @@ test("V20 transport buttons select the distinct previous/next entry even after s
   expect((await previous.boundingBox())!.x).toBeLessThan(
     (await next.boundingBox())!.x,
   );
+  const nextCover = page.getByTestId("player-cover-1");
+  expect((await nextCover.boundingBox())!.x).toBeGreaterThan(
+    (await page.getByTestId("player-artwork").boundingBox())!.x,
+  );
+  await nextCover.evaluate((element) =>
+    Reflect.set(globalThis, "__nextCover", element),
+  );
   await next.click();
   await expect(
     surface.getByText("Blue Current", { exact: true }),
   ).toBeVisible();
+  expect(
+    await page
+      .getByTestId("player-cover-0")
+      .evaluate(
+        (element) => element === Reflect.get(globalThis, "__nextCover"),
+      ),
+  ).toBe(true);
   await previous.click();
   await expect(surface.getByText("Open Road", { exact: true })).toBeVisible();
   await seekTo(page, 10);
@@ -49,7 +63,61 @@ test("V20 transport buttons select the distinct previous/next entry even after s
   ).toBeVisible();
 });
 
-test("V20 two-entry repeat previous animates left and keeps the incoming cover mounted", async ({
+test("V20 artwork gestures follow the playlist order left-next and right-previous", async ({
+  page,
+  context,
+}) => {
+  const p = await playlist(
+    context.request,
+    [300, 301, 302].map((n) => `10000000-0000-4000-8000-000000000${n}`),
+  );
+  await page.goto(`/playlist/${p.id}`);
+  await page
+    .getByRole("button", {
+      name: "Play First Light Meridian Ensemble",
+      exact: true,
+    })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Open player for First Light Meridian Ensemble",
+      exact: true,
+    })
+    .click();
+  const surface = page.getByTestId("player-surface");
+  await expect
+    .poll(async () => (await surface.boundingBox())?.y)
+    .toBeLessThan(2);
+  await surface.getByRole("button", { name: "Pause", exact: true }).click();
+  for (const [direction, title] of [
+    [-1, "Open Road"],
+    [-1, "Blue Current"],
+    [1, "Open Road"],
+    [1, "First Light"],
+    [1, "First Light"],
+  ] as const) {
+    const box = (await page.getByTestId("player-artwork").boundingBox())!;
+    const x = box.x + box.width / 2,
+      y = box.y + box.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + direction * 130, y, { steps: 14 });
+    await page.mouse.up();
+    await expect(surface.getByText(title, { exact: true })).toBeVisible();
+    await expect
+      .poll(async () =>
+        Math.abs(
+          (await page.getByTestId("player-cover-0").boundingBox())!.x - box.x,
+        ),
+      )
+      .toBeLessThan(1);
+  }
+  await expect(
+    surface.getByRole("button", { name: "Play", exact: true }),
+  ).toBeVisible();
+});
+
+test("V20 two-entry repeat previous enters from the left and keeps the incoming cover mounted", async ({
   page,
   context,
 }) => {
@@ -82,10 +150,10 @@ test("V20 two-entry repeat previous animates left and keeps the incoming cover m
     surface.getByRole("button", { name: "Repeat: all", exact: true }),
   ).toBeVisible();
   const art = (await page.getByTestId("player-artwork").boundingBox())!;
-  await page.getByTestId("player-cover-1").evaluate((element) => {
+  await page.getByTestId("player-cover--1").evaluate((element) => {
     Reflect.set(globalThis, "__incomingCover", element);
   });
-  // Sample the newly active cover every frame: previous must enter from the right.
+  // Previous enters from the left; next enters from the right.
   await page.evaluate(() => {
     const samples: { time: number; x: number }[] = [];
     Reflect.set(globalThis, "__coverSamples", samples);
@@ -127,9 +195,9 @@ test("V20 two-entry repeat previous animates left and keeps the incoming cover m
         x: number;
       }[],
   );
-  expect(samples.filter((sample) => sample.x > 10).length).toBeGreaterThan(2);
-  expect(samples.every((sample) => sample.x >= -2)).toBe(true);
-  const moving = samples.filter((sample) => sample.x > 10);
+  expect(samples.filter((sample) => sample.x < -10).length).toBeGreaterThan(2);
+  expect(samples.every((sample) => sample.x <= 2)).toBe(true);
+  const moving = samples.filter((sample) => sample.x < -10);
   expect(moving.at(-1)!.time - moving[0].time).toBeGreaterThan(180);
 });
 

@@ -50,7 +50,10 @@ playwright-artifacts/
 /.git
 /.claude/
 /apps/api/
+/public/audio/
 /e2e/
+**/*.test.ts
+**/*.test.tsx
 /replica/
 /tasks/
 /.impeccable/

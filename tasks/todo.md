@@ -681,9 +681,11 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V20 — Coordinate mini-player and player motion
 
+**Latest accepted direction (V20.3):** left swipe/next button moves current cover left and brings next from right; right swipe/previous button mirrors this. The earlier right-next instruction is superseded by the owner's clarification. Queue order remains semantic next/previous. See `player-direction-v4.md`.
+
 **Owner follow-up V20.2:** Both-phone feedback prompted a slower 440 ms arrival/240–360 ms dismissal and one continuous 420 ms artwork settle. Explicit transport direction fixes two-entry repeat ambiguity; previous always chooses the earlier entry when available. Stable-key outgoing-cover retention fixes repeated-skip gaps; short accidental flicks resist. Explicit provider insets protect the Dynamic Island/header. Full 90 browser cases, 51 client cases and all platform exports pass. See `player-motion-repair-v3.md`. Physical cadence/frame acceptance remains open.
 
-**Execution:** V20.1: single interruptible player surface, stable underlying chrome, directional artwork swipes (owner: right-next / left-previous), paused-state/entry-identity guards, reduced-motion fades and continuous mini-player progress implemented. Browser cancel/complete dismissal, boundary/swipe and reduced-motion cases pass at both widths. Real-cover browser drag interference is fixed and has a red/green regression; the final affected pass is 12/12 cases. Rotation, native gestures/audio continuity and measured device performance remain open.
+**Execution:** V20.1: single interruptible player surface, stable underlying chrome, directional artwork swipes, paused-state/entry-identity guards, reduced-motion fades and continuous mini-player progress implemented. Browser cancel/complete dismissal, boundary/swipe and reduced-motion cases pass at both widths. Real-cover browser drag interference is fixed and has a red/green regression. The direction above supersedes that checkpoint's original mapping. Native gestures/audio continuity and measured device performance remain open.
 
 **Phase:** C. **Dependencies:** V15,V19. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 

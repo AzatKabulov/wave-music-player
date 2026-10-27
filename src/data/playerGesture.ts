@@ -5,13 +5,14 @@ export function artworkSwipe(
 ) {
   "worklet";
   const threshold = Math.max(56, Math.min(96, width * 0.23));
-  if (Math.abs(distance) >= threshold) return distance > 0 ? 1 : -1;
+  // Return a queue step: left advances, right goes to the previous entry.
+  if (Math.abs(distance) >= threshold) return distance < 0 ? 1 : -1;
   if (
     Math.abs(distance) >= 36 &&
     Math.abs(velocity) >= 800 &&
     distance * velocity > 0
   )
-    return distance > 0 ? 1 : -1;
+    return distance < 0 ? 1 : -1;
   return 0;
 }
 export function dismissPlayer(
