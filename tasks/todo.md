@@ -729,7 +729,7 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V23 — Correct Library ordering and persistence
 
-**Execution:** V23.1 adds account-isolated server saved/created dates, true mixed recently-added ordering, optimistic date rollback, cache preservation, natural title/creator sorting and per-account grid restoration. API 40/40, client/cache 46/46, full browser 74/74 and final exports pass. Last-played ordering, filter persistence and physical acceptance remain open. See `library-order-v2.md`.
+**Execution:** V23.1 adds account-isolated saved/created dates, mixed recently-added ordering, optimistic rollback, cache preservation and natural title/creator sorting. V23.2 persists filter and grid per account, protects newer intent from delayed reads and serializes pending writes across remounts. Its checkpoint passes 92 browser and 55 client cases plus all platform exports; API remains unchanged at 41 passing cases. Last-played order and physical acceptance remain open. See `library-order-v2.md` and `library-view-v2.md`.
 
 **Phase:** C. **Dependencies:** V11,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 

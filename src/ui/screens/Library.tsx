@@ -8,7 +8,7 @@ import {
   Search,
   X,
 } from "lucide-react-native";
-import { useDeferredValue, useEffect, useState } from "react";
+import { useDeferredValue, useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -17,7 +17,7 @@ import {
   TextInput,
 } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
-import { deviceStorage } from "../../data/storage";
+import { libraryFilters, useLibraryView } from "../useLibraryView";
 import { orderedLibrary, libraryMatches } from "../../data/libraryState";
 import { Artwork } from "../../design/Artwork";
 import { Touch } from "../../design/Motion";
@@ -35,27 +35,13 @@ export function LibraryScreen() {
   const { tx, locale } = useLocale();
   const m = useMusic(),
     sn = m.snapshot!;
-  const [filter, setFilter] = useState("All");
+  const { filter, setFilter, grid, setGrid } = useLibraryView(sn.profile!.id);
   const [sort, setSort] = useState(sn.preferences.librarySort);
   const [sorting, setSorting] = useState(false);
-  const [grid, setGrid] = useState(false);
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const searchTerm = useDeferredValue(query).trim();
-  const layoutKey = `musify.library.grid.${sn.profile!.id}`;
-  useEffect(() => {
-    let active = true;
-    void deviceStorage
-      .getItem(layoutKey)
-      .then((value) => {
-        if (active) setGrid(value === "1");
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, [layoutKey]);
   const albumsById = new Map(sn.catalog.albums.map((item) => [item.id, item]));
   const artistsById = new Map(
     sn.catalog.artists.map((item) => [item.id, item]),
@@ -191,7 +177,7 @@ export function LibraryScreen() {
         style={s.filters}
         contentContainerStyle={{ gap: 8 }}
       >
-        {["All", "Playlists", "Albums", "Artists"].map((value) => (
+        {libraryFilters.map((value) => (
           <Chip
             key={value}
             title={value}
@@ -220,9 +206,6 @@ export function LibraryScreen() {
           label={grid ? "Show list" : "Show grid"}
           onPress={() => {
             setGrid(!grid);
-            void deviceStorage
-              .setItem(layoutKey, grid ? "0" : "1")
-              .catch(() => {});
           }}
         />
       </View>
