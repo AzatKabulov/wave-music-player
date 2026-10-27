@@ -47,7 +47,7 @@ playwright-artifacts/
 /android
 
 # The mobile build needs client source/config/assets only.
-/.git/
+/.git
 /.claude/
 /apps/api/
 /e2e/
