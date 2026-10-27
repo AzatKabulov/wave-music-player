@@ -759,6 +759,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V25 — Finish mixed search presentation
 
+**Execution:** V25.1 adds a ranked Top result to *All* results with de-duplicated sections and a latent artist-row accessibility fix; 114 browser cases pass. Aliases/typos (V12), bounded sections with See all and recent selected entities remain open. See `search-top-result-v2.md`.
+
 **Phase:** C. **Dependencies:** V12,V15. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Add a useful top result, bounded sections and dedicated type results; refine focus, clear, recent history and keyboard behavior.

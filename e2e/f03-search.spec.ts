@@ -30,7 +30,7 @@ test("F03-H1/E1 search, no result and Unicode input", async ({ page }) => {
     .fill("Meridian");
   await page.getByRole("button", { name: "Artists", exact: true }).click();
   await page
-    .getByRole("button", { name: "Meridian Ensemble", exact: true })
+    .getByRole("button", { name: "Meridian Ensemble Artist", exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "Meridian Ensemble", exact: true }),

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
 import { useCatalogSearch } from "../../data/useCatalogSearch";
-import type { SearchKind } from "../../data/types";
+import type { Artist, SearchKind } from "../../data/types";
 import { deviceStorage } from "../../data/storage";
 import { Artwork } from "../../design/Artwork";
 import { Touch } from "../../design/Motion";
@@ -123,6 +123,48 @@ export function SearchScreen() {
     (kind === "All" || kind === "Albums" ? albums.length : 0) +
     (kind === "All" || kind === "Artists" ? artists.length : 0) +
     (kind === "All" || kind === "Playlists" ? playlists.length : 0);
+  // The first server-ranked hit leads "All" results, so an exact artist or album is
+  // not buried under every song that merely mentions it. It is omitted from its own
+  // section below, and a track keeps the whole ranked list as its playback context.
+  const top = q && kind === "All" ? remote.page?.data[0] : undefined;
+  const topKey = top ? `${top.kind}:${top.item.id}` : "";
+  const searchSource = parsePlaybackSource({
+    kind: "search",
+    query: deferred.trim(),
+  });
+  const trackIndex = new Map(
+    shownTracks.map((track, index) => [track.id, index]),
+  );
+  const listTracks = shownTracks.filter(
+    (track) => `track:${track.id}` !== topKey,
+  );
+  const listAlbums = albums.filter((album) => `album:${album.id}` !== topKey);
+  const listArtists = artists.filter(
+    (artist) => `artist:${artist.id}` !== topKey,
+  );
+  const listPlaylists = playlists.filter(
+    (playlist) => `playlist:${playlist.id}` !== topKey,
+  );
+  const artistRow = (artist: Artist, size = 48) => (
+    <Touch
+      key={artist.id}
+      accessibilityRole="button"
+      accessibilityLabel={`${artist.name} ${tx("Artist")}`}
+      onPress={() => {
+        remember();
+        go(`/artist/${artist.id}`);
+      }}
+      style={s.recent}
+    >
+      <Artwork palette={artist.palette} size={size} round />
+      <View>
+        <Label>{artist.name} </Label>
+        <Label i18n type="sm" color="text-muted">
+          Artist
+        </Label>
+      </View>
+    </Touch>
+  );
   const genres = [
     ...new Set(c.tracks.map((track) => track.genre).filter(Boolean)),
   ];
@@ -188,24 +230,41 @@ export function SearchScreen() {
             )}
           </ScrollView>
           <FlatList
-            data={shownTracks}
+            data={listTracks}
             keyExtractor={(track) => track.id}
             renderItem={({ item, index }) => (
               <TrackRow
                 track={item}
                 context={shownTracks}
-                index={index}
-                source={parsePlaybackSource({
-                  kind: "search",
-                  query: deferred.trim(),
-                })}
+                index={trackIndex.get(item.id) ?? index}
+                source={searchSource}
               />
             )}
             ListHeaderComponent={
-              shownTracks.length ? (
-                <Label i18n type="lg" style={s.resultTitle}>
-                  {category || "Tracks"}
-                </Label>
+              top || listTracks.length ? (
+                <View>
+                  {top ? (
+                    <Section title="Top result">
+                      {top.kind === "track" ? (
+                        <TrackRow
+                          track={top.item}
+                          context={shownTracks}
+                          index={trackIndex.get(top.item.id) ?? 0}
+                          source={searchSource}
+                        />
+                      ) : top.kind === "artist" ? (
+                        artistRow(top.item, 64)
+                      ) : (
+                        <Cards items={[top.item]} type={top.kind} />
+                      )}
+                    </Section>
+                  ) : null}
+                  {listTracks.length ? (
+                    <Label i18n type="lg" style={s.resultTitle}>
+                      {category || "Tracks"}
+                    </Label>
+                  ) : null}
+                </View>
               ) : undefined
             }
             ListEmptyComponent={
@@ -227,39 +286,21 @@ export function SearchScreen() {
             }
             ListFooterComponent={
               <View style={s.other}>
-                {(kind === "All" || kind === "Albums") && albums.length ? (
+                {(kind === "All" || kind === "Albums") && listAlbums.length ? (
                   <Section title="Albums">
-                    <Cards items={albums} type="album" />
+                    <Cards items={listAlbums} type="album" />
                   </Section>
                 ) : null}
-                {(kind === "All" || kind === "Artists") && artists.length ? (
+                {(kind === "All" || kind === "Artists") &&
+                listArtists.length ? (
                   <Section title="Artists">
-                    {artists.map((artist) => (
-                      <Touch
-                        key={artist.id}
-                        accessibilityRole="button"
-                        accessibilityLabel={artist.name}
-                        onPress={() => {
-                          remember();
-                          go(`/artist/${artist.id}`);
-                        }}
-                        style={s.recent}
-                      >
-                        <Artwork palette={artist.palette} size={48} round />
-                        <View>
-                          <Label>{artist.name}</Label>
-                          <Label i18n type="sm" color="text-muted">
-                            Artist
-                          </Label>
-                        </View>
-                      </Touch>
-                    ))}
+                    {listArtists.map((artist) => artistRow(artist))}
                   </Section>
                 ) : null}
                 {(kind === "All" || kind === "Playlists") &&
-                playlists.length ? (
+                listPlaylists.length ? (
                   <Section title="Playlists">
-                    <Cards items={playlists} type="playlist" />
+                    <Cards items={listPlaylists} type="playlist" />
                   </Section>
                 ) : null}
                 {remote.error && q ? (

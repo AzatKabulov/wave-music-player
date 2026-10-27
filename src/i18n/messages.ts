@@ -5,6 +5,7 @@ export const messages: Record<string, Record<string, string>> = {
     "Pin to top of library": "Закрепить в начале медиатеки",
     "Unpin from top of library": "Открепить от начала медиатеки",
     Pinned: "Закреплено",
+    "Top result": "Лучшее совпадение",
     Options: "Действия",
     "You can pin up to 8 Library items.":
       "В медиатеке можно закрепить не более 8 элементов.",
@@ -281,6 +282,7 @@ export const messages: Record<string, Record<string, string>> = {
     "Pin to top of library": "Kitaphananyň başyna berkit",
     "Unpin from top of library": "Kitaphananyň başyndaky berkitmäni aýyr",
     Pinned: "Berkidilen",
+    "Top result": "Iň laýyk netije",
     Options: "Amallar",
     "You can pin up to 8 Library items.":
       "Kitaphanada iň köp 8 elementi berkidip bolýar.",
