@@ -216,3 +216,9 @@ Pinned albums, artists and playlists lead Your Library under every sort and filt
 ## V25.1 search Top result — source checkpoint (2026-10-28)
 
 *All* search results now lead with a **Top result** (the first server-ranked hit: song row, artist row, or album/playlist card), removed from its own section so nothing repeats; a song keeps the full ranked list as playback context. Found and fixed a latent WCAG 2.5.3 defect in the artist row's accessible name (one existing selector updated to the full name). **114/114 browser cases** (six new), 61/61 client, lint/typecheck/format pass. See `search-top-result-v2.md`. Not done: aliases/typos/indexed ranking (V12), bounded per-type sections and "See all". Next: V33 sleep timer.
+
+## V33 sleep timer — source checkpoint (2026-10-28)
+
+Sleep timer (5–60 min or end of track) in the player's bottom row, driven by an absolute deadline and a pure, unit-tested state machine; expiry is spent before it pauses once and never resumes audio. **120/120 browser cases** (six new, fake-clock deadline tests plus a real end-of-track run), 67/67 client, lint/typecheck/format pass. See `sleep-timer-v2.md`. Background/lock-screen behavior on devices is unverified.
+
+**Phone test build (0.2.5 source) launched 2026-10-28:** migration 005 was rehearsed on a backup copy and then applied to the personal database with every user table unchanged (see `library-pins-v2.md`), then the personal API (`http://192.168.0.4:4103`) and Expo Go server (`exp://192.168.0.4:8082`) were started. The iPhone gets a development bundle (14,050,088 bytes) with source return, pins, top result and sleep timer; the installed/served Android APK is still the verified 0.2.4 and has none of these. Next: owner feedback from the phone, then V19.3 lower player panels or V04.

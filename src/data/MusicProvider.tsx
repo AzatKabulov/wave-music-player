@@ -29,6 +29,14 @@ import { deviceStorage } from "./storage";
 import { sourceUpdate } from "./sourceUpdate";
 import { sourcePatch } from "./sourcePatch";
 import { savedIds, datedSave, withPin } from "./libraryState";
+import {
+  sleepOff,
+  startSleepAtTrackEnd,
+  startSleepMinutes,
+  stepSleep,
+  type SleepObservation,
+  type SleepTimer,
+} from "./sleepTimer";
 import { mergeCatalog, refreshCatalog } from "./catalogCache";
 import { createLatestWriter } from "./latestWriter";
 import { playbackTiming } from "./playbackTiming";
@@ -195,6 +203,9 @@ function useMusicController() {
       }
     >(),
   );
+  const [sleep, setSleep] = useState<SleepTimer>(sleepOff);
+  const sleepRef = useRef<SleepTimer>(sleepOff);
+  const sleepSeen = useRef<SleepObservation | null>(null);
   // In-flight pin writes, merged into refreshed snapshots like pending saves.
   const pins = useRef(
     new Map<
@@ -219,9 +230,53 @@ function useMusicController() {
     }),
     status = useAudioPlaylistStatus(engine);
   const statusRef = useRef(status);
+  // Looks at the sleep timer against the live player. It runs on status ticks, once a
+  // second while armed, and on return to the foreground, and spends the timer before
+  // pausing so expiry can only ever pause once and never resumes audio.
+  const observeSleep = useCallback(() => {
+    if (sleepRef.current.kind === "off") {
+      sleepSeen.current = null;
+      return;
+    }
+    const live = statusRef.current;
+    const observation: SleepObservation = {
+      now: Date.now(),
+      entryId: queueRef.current.entries[live.currentIndex]?.id ?? null,
+      positionSec: live.currentTime,
+      durationSec: live.duration,
+    };
+    const step = stepSleep(sleepRef.current, sleepSeen.current, observation);
+    sleepSeen.current = step.fire ? null : observation;
+    if (step.timer !== sleepRef.current) {
+      sleepRef.current = step.timer;
+      setSleep(step.timer);
+    }
+    if (step.fire) {
+      try {
+        engine.pause();
+      } catch {}
+      setNotice("Sleep timer ended. Playback paused.");
+    }
+  }, [engine]);
+  const startSleep = useCallback((option: number | "track") => {
+    const entry = queueRef.current.entries[statusRef.current.currentIndex];
+    const next =
+      option === "track"
+        ? startSleepAtTrackEnd(entry?.id)
+        : startSleepMinutes(option, Date.now());
+    sleepRef.current = next;
+    sleepSeen.current = null;
+    setSleep(next);
+  }, []);
+  const cancelSleep = useCallback(() => {
+    sleepRef.current = sleepOff;
+    sleepSeen.current = null;
+    setSleep(sleepOff);
+  }, []);
   const activeTiming = useRef<number | null>(null);
   useEffect(() => {
     statusRef.current = status;
+    observeSleep();
     const entry = queueRef.current.entries[status.currentIndex];
     if (entry)
       playbackTiming.observe(
@@ -230,7 +285,7 @@ function useMusicController() {
         status.playing && status.isLoaded && !status.isBuffering,
         status.currentTime,
       );
-  }, [status]);
+  }, [status, observeSleep]);
   const activeEntry = queue.entries[status.currentIndex],
     track = snapshot?.catalog.tracks.find((t) => t.id === activeEntry?.trackId);
   const refresh = useCallback(async () => {
@@ -730,6 +785,17 @@ function useMusicController() {
     });
     return () => listener.remove();
   }, [refresh, command]);
+  useEffect(() => {
+    if (sleep.kind === "off") return;
+    const timer = setInterval(observeSleep, 1000);
+    return () => clearInterval(timer);
+  }, [sleep.kind, observeSleep]);
+  useEffect(() => {
+    const listener = AppState.addEventListener("change", (state) => {
+      if (state === "active") observeSleep();
+    });
+    return () => listener.remove();
+  }, [observeSleep]);
   const playTracks = useCallback(
     (
       tracks: Track[],
@@ -790,13 +856,14 @@ function useMusicController() {
     positions.current?.clear();
     engine.pause();
     engine.clear();
+    cancelSleep();
     lease.current = "";
     loadedLease.current = "";
     activeTiming.current = null;
     playbackTiming.clear();
     queueRef.current = emptyQueue();
     setQueue(emptyQueue());
-  }, [cancelSeek, engine, positions]);
+  }, [cancelSeek, cancelSleep, engine, positions]);
   const seek = useCallback(
     (seconds: number) => {
       const version = ++seekVersion.current;
@@ -860,6 +927,9 @@ function useMusicController() {
       refresh,
       save,
       pin,
+      sleep,
+      startSleep,
+      cancelSleep,
       retryPlayback: () => {
         lease.current = "";
         return command((q) => q, true);
@@ -1006,6 +1076,9 @@ function useMusicController() {
       refresh,
       save,
       pin,
+      sleep,
+      startSleep,
+      cancelSleep,
       playTracks,
       enqueueTracks,
       seek,

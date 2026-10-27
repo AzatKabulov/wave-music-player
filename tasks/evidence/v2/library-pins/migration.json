@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-28",
+  "backup": "C:\\Users\\user\\Documents\\Codex\\2026-10-24\\https-github-com-jakeschincariol-replica-skill\\work\\personal-before-pins-v025\\",
+  "trialPassed": true,
+  "liveUserStatePreserved": true,
+  "migrationsBefore": [
+    "001_music.sql",
+    "002_catalog_metadata.sql",
+    "003_artwork_metadata_access.sql",
+    "004_playback_source.sql"
+  ],
+  "migrationsAfter": [
+    "001_music.sql",
+    "002_catalog_metadata.sql",
+    "003_artwork_metadata_access.sql",
+    "004_playback_source.sql",
+    "005_library_pins.sql"
+  ],
+  "tables": {
+    "profiles": {
+      "count": 16,
+      "hash": "b0559af659085a42e5d848cfc36334cd"
+    },
+    "user_preferences": {
+      "count": 15,
+      "hash": "7e7293690d5999776fd3cafc97d123e6"
+    },
+    "saved_tracks": {
+      "count": 8,
+      "hash": "a3e0748f04ca404d1ec5530c2ed9599b"
+    },
+    "saved_albums": {
+      "count": 0,
+      "hash": "d751713988987e9331980363e24189ce"
+    },
+    "saved_artists": {
+      "count": 0,
+      "hash": "d751713988987e9331980363e24189ce"
+    },
+    "saved_playlists": {
+      "count": 0,
+      "hash": "d751713988987e9331980363e24189ce"
+    },
+    "playlists": {
+      "count": 9,
+      "hash": "7ace547258812754db79c9fa87745424"
+    },
+    "playlist_items": {
+      "count": 136,
+      "hash": "640ed04d953205ffc908c1bd0738ed20"
+    },
+    "playback_sessions": {
+      "count": 9,
+      "hash": "ba76f3fca78940b5a66e06718264bab3"
+    },
+    "queue_entries": {
+      "count": 16,
+      "hash": "e510cce59bb00519c4a598382dd385d1"
+    },
+    "listening_events": {
+      "count": 148,
+      "hash": "1cf6e3965ce929946ac1189b75c26d2c"
+    },
+    "tracks": {
+      "count": 70,
+      "hash": "770084a3ab1bcb6c754421ae60c0b235"
+    },
+    "albums": {
+      "count": 57,
+      "hash": "106731405931452375d71afbac49c001"
+    },
+    "artists": {
+      "count": 30,
+      "hash": "87aa7914db20bb54dd474271abe45316"
+    }
+  }
+}

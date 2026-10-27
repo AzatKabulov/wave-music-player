@@ -925,6 +925,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V33 — Add a reliable sleep timer
 
+**Execution:** V33.1 adds the duration and end-of-track timer with an absolute deadline, a unit-tested state machine and a player dialog; 120 browser and 67 client cases pass. Device background/lock-screen behavior is unverified. See `sleep-timer-v2.md`.
+
 **Phase:** D. **Dependencies:** V10,V19. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Implement selected duration and end-of-track timer using a persistent deadline and supported native background behavior.

@@ -34,6 +34,7 @@ import { theme as t } from "../../design/theme";
 import { go, ui } from "../Shell";
 import { usePlayerSurface } from "./usePlayerSurface";
 import { Seek } from "../Seek";
+import { SleepTimerButton } from "./SleepTimer";
 
 function PlaybackRecovery() {
   const m = useMusic();
@@ -324,18 +325,21 @@ export function Player() {
                         ? "Playing"
                         : "Paused"}
                   </Label>
-                  <Touch
-                    labelIsUI
-                    accessibilityRole="button"
-                    accessibilityLabel="Queue"
-                    onPress={() => go("/queue")}
-                    style={s.queue}
-                  >
-                    <ListMusic color={t.color.text} size={22} />
-                    <Label i18n type="sm">
-                      Queue
-                    </Label>
-                  </Touch>
+                  <View style={s.tools}>
+                    <SleepTimerButton />
+                    <Touch
+                      labelIsUI
+                      accessibilityRole="button"
+                      accessibilityLabel="Queue"
+                      onPress={() => go("/queue")}
+                      style={s.queue}
+                    >
+                      <ListMusic color={t.color.text} size={22} />
+                      <Label i18n type="sm">
+                        Queue
+                      </Label>
+                    </Touch>
+                  </View>
                 </View>
                 {m.error ? (
                   <View accessibilityRole="alert" style={s.error}>
@@ -414,6 +418,7 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  tools: { flexDirection: "row", alignItems: "center", gap: 8 },
   queue: {
     flexDirection: "row",
     alignItems: "center",

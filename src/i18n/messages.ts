@@ -6,6 +6,12 @@ export const messages: Record<string, Record<string, string>> = {
     "Unpin from top of library": "Открепить от начала медиатеки",
     Pinned: "Закреплено",
     "Top result": "Лучшее совпадение",
+    "Sleep timer": "Таймер сна",
+    "{minutes} minutes": "{minutes} мин",
+    "End of track": "В конце трека",
+    "Turn off timer": "Выключить таймер",
+    "Sleep timer ended. Playback paused.":
+      "Таймер сна сработал. Воспроизведение приостановлено.",
     Options: "Действия",
     "You can pin up to 8 Library items.":
       "В медиатеке можно закрепить не более 8 элементов.",
@@ -283,6 +289,12 @@ export const messages: Record<string, Record<string, string>> = {
     "Unpin from top of library": "Kitaphananyň başyndaky berkitmäni aýyr",
     Pinned: "Berkidilen",
     "Top result": "Iň laýyk netije",
+    "Sleep timer": "Uky taýmeri",
+    "{minutes} minutes": "{minutes} minut",
+    "End of track": "Aýdymyň ahyrynda",
+    "Turn off timer": "Taýmeri öçür",
+    "Sleep timer ended. Playback paused.":
+      "Uky taýmeri tamamlandy. Çalyş duruzyldy.",
     Options: "Amallar",
     "You can pin up to 8 Library items.":
       "Kitaphanada iň köp 8 elementi berkidip bolýar.",

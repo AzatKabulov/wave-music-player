@@ -14,9 +14,9 @@ Pinned albums, artists and playlists stay at the top of Your Library regardless 
 
 Three new API cases (`library-pins.test.mjs`): library-only and idempotent pinning with unpinned entries untouched, tracks/malformed identities/anonymous rejected; unsave and playlist deletion clearing pins (including the owned-playlist exception and an out-of-band removal being ignored); the cap under a burst of 12 concurrent requests, re-pinning at the cap, slot reuse after unpin and cross-account isolation. The migration-history test now expects `005`. Full API suite **49/49**; lint, typecheck and formatting pass.
 
-## Personal database gate — do before the personal API restarts
+## Personal database — migration 005 applied (2026-10-28)
 
-The personal API applies pending migrations when it starts, so `005` will run against the owner's database on the next launch. It is additive (one new table, no change to existing rows), but follow the same discipline used for `004`: stop the specific controller, take a consistent backup of `apps/api/data/personal-postgres`, apply `005` to a copy and compare per-table counts/hashes (see `evidence/v2/playback-source/migration.json` for the format), and only then launch one instance. Never open the live PGlite directory from a second process. Not yet done; no personal data has been touched.
+Done with the 004 discipline before the personal API was restarted: nothing owned `apps/api/data/personal-postgres`; a pristine copy and a trial copy were taken (`work/personal-before-pins-v025/`, pristine is the rollback); 005 was applied to the trial and every user table compared by row count and content hash (profiles, preferences, saved tracks/albums/artists/playlists, playlists and items, playback sessions, queue entries, listening events, tracks, albums, artists: 14 tables, 16 accounts, 70 tracks) with no change; only then was 005 applied to the live files, with the same comparison and a second apply that did nothing. `library_pins` starts empty. Record: `evidence/v2/library-pins/migration.json`; script: `work/migrate-library-pins-personal.mjs`.
 
 ## V24.2b — client data (done)
 
