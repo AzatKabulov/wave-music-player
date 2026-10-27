@@ -539,6 +539,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V13 — Reduce measured render and list work
 
+**Execution:** V13.1 isolates connected song-row state from presentation after a real-cover 58-track browser sample. Save-period press-control visits fall 232→40, labels 156→28 and artwork 70→6; connected checks remain. Playback progress already had zero row visits. Fourteen affected browser cases and lint/typecheck pass, including latest paginated context/save state. See `render-isolation-v2.md`. Native traces and the complete V13 acceptance remain open.
+
 **Phase:** B. **Dependencies:** V02,V06,V11. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Profile providers and active screens; normalize hot lookups and isolate subscriptions or list windows where the trace justifies it.

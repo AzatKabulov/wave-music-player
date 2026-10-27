@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
+import { memo, useCallback, useLayoutEffect, useRef } from "react";
 import { useMusic } from "../data/MusicProvider";
 import type { Track } from "../data/types";
 import { Touch } from "../design/Motion";
@@ -26,13 +27,62 @@ export function TrackRow({
   subtitle?: boolean;
   numbered?: boolean;
 }) {
+  const m = useMusic();
+  const { playTracks, save } = m;
+  const saved = !!m.snapshot?.library.tracks.includes(track.id);
+  // Context can grow after detail/search hydration. Keep event handlers current
+  // without passing the whole mutable collection through the visual row.
+  const selection = useRef({ track, context, index, playTracks });
+  useLayoutEffect(() => {
+    selection.current = { track, context, index, playTracks };
+  }, [track, context, index, playTracks]);
+  const onPlay = useCallback(() => {
+    const current = selection.current;
+    void current.playTracks(current.context || [current.track], current.index);
+  }, []);
+  const onSave = useCallback(
+    () => void save("tracks", track.id, !saved),
+    [save, track.id, saved],
+  );
+  return (
+    <TrackRowView
+      track={track}
+      index={index}
+      subtitle={subtitle}
+      numbered={numbered}
+      active={m.track?.id === track.id}
+      blocked={
+        !track.available ||
+        (!m.snapshot?.preferences.explicitAllowed && track.explicit)
+      }
+      saved={saved}
+      onPlay={onPlay}
+      onSave={onSave}
+    />
+  );
+}
+const TrackRowView = memo(function TrackRowView({
+  track,
+  index,
+  subtitle,
+  numbered,
+  active,
+  blocked,
+  saved,
+  onPlay,
+  onSave,
+}: {
+  track: Track;
+  index: number;
+  subtitle: boolean;
+  numbered: boolean;
+  active: boolean;
+  blocked: boolean;
+  saved: boolean;
+  onPlay: () => void;
+  onSave: () => void;
+}) {
   const { tx } = useLocale();
-  const m = useMusic(),
-    active = m.track?.id === track.id,
-    blocked =
-      !track.available ||
-      (!m.snapshot?.preferences.explicitAllowed && track.explicit),
-    saved = m.snapshot?.library.tracks.includes(track.id);
   return (
     <View style={[s.row, blocked && { opacity: t.opacity.disabled }]}>
       {numbered ? (
@@ -54,7 +104,7 @@ export function TrackRow({
         accessibilityLabel={`${tx("Play")} ${track.title}${track.explicit ? " · E" : ""} ${subtitle ? (blocked ? tx("Unavailable for playback") : track.artist) : ""}`}
         accessibilityState={{ disabled: blocked }}
         disabled={blocked}
-        onPress={() => void m.playTracks(context || [track], index)}
+        onPress={onPlay}
         style={[ui.row, ui.grow, s.play]}
       >
         {!numbered ? (
@@ -85,7 +135,7 @@ export function TrackRow({
           title: track.title,
         })}
         selected={saved}
-        onPress={() => void m.save("tracks", track.id, !saved)}
+        onPress={onSave}
       />
       <IconButton
         icon={MoreHorizontal}
@@ -94,7 +144,7 @@ export function TrackRow({
       />
     </View>
   );
-}
+});
 const s = StyleSheet.create({
   number: {
     width: 28,
