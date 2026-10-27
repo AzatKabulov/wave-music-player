@@ -197,3 +197,8 @@ Committed direction repair as **`35c9846`**. Approved Expo workflow submitted **
 **Physical iPhone direction accepted:** after Reload in Expo Go 0.2.4, the owner answered “Да, теперь правильно” to next entering from right / previous from left. Do not retune the accepted axis. Android installation/direction, physical smoothness, frame/memory budgets and long playback remain open. Only an Android test emulator (`sdk_gphone64_x86_64`) is connected via ADB; no physical Android phone is available to this agent. No emulator window was opened or test account changed during that read-only check.
 
 The owner then requested one self-contained transfer file immediately and will continue later. Entry point: **`ROOT/MUSIFY-HANDOFF.md`** (workspace root, outside this nested app Git repo). It records the accepted axis, complete state, tooling, preservation rules and exact continuation procedure for the already-running 0.2.4 build. No new feature work started after that handoff request. Build was last observed IN_PROGRESS; do not create a duplicate.
+
+
+## Android 0.2.4 delivery completed
+
+Build `41c00e4e-1918-435e-b12b-fb904d868080` FINISHED. Package/version/code 6, source `35c9846`, ZIP, full signature against the previous certificate, API/player/Library markers and full private HTTP download hash pass. 115684088 bytes; SHA-256 `f2f219fe91c55cab8ec99591211b641386ef14aa720a364136817fd5722dd169`. Versioned APK and both aliases now serve 0.2.4; previous archives remain. Evidence: `evidence/v2/player-motion-v4/android-apk-verification.json`. Physical Android acceptance remains open. Resumed authorized improvement work; next slice is playback-source context/header/navigation.

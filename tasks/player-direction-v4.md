@@ -18,3 +18,8 @@ Final source checks pass: **94/94 full browser cases**, **55/55 client cases**, 
 The owner subsequently reloaded Musify 0.2.4 in Expo Go on iPhone and explicitly confirmed: **“Да, теперь правильно”** to next entering from the right / previous from the left. This is qualitative physical-device direction acceptance, not frame-time, long-playback or Android acceptance.
 
 Signed replacement build **`41c00e4e-1918-435e-b12b-fb904d868080`**, source **`35c9846bf1b2f51a4c087a9178ed0e9f3a567026`**, version 0.2.4/code 6, is submitted. Check its existing ID; do not submit a duplicate. Keep 0.2.3 aliases until the 0.2.4 artifact passes its prepared verifier and full HTTP hash check.
+
+
+## Android 0.2.4 delivery completed
+
+Build `41c00e4e-1918-435e-b12b-fb904d868080` FINISHED. Package/version/code 6, source `35c9846`, ZIP, full signature against the previous certificate, API/player/Library markers and full private HTTP download hash pass. 115684088 bytes; SHA-256 `f2f219fe91c55cab8ec99591211b641386ef14aa720a364136817fd5722dd169`. Versioned APK and both aliases now serve 0.2.4; previous archives remain. Evidence: `evidence/v2/player-motion-v4/android-apk-verification.json`. Physical Android acceptance remains open. Resumed authorized improvement work; next slice is playback-source context/header/navigation.
