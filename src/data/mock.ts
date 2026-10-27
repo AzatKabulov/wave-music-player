@@ -118,6 +118,13 @@ export const mock: MusicData = {
     );
     return p;
   },
+  async appendPlaylistItem(id, revision, item) {
+    const playlist = snapshot.playlists.find((value) => value.id === id);
+    if (!playlist || playlist.revision !== revision)
+      throw Error("Playlist changed. Reload and try again.");
+    playlist.items.push(item);
+    playlist.revision = String(Number(revision) + 1);
+  },
   async editPlaylist(id, revision, title, description, items) {
     const p = snapshot.playlists.find((p) => p.id === id);
     if (!p) throw Error("Playlist not found");

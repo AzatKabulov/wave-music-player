@@ -7,7 +7,7 @@ test("C02 Home excludes protected fixtures while Liked tracks retains them", asy
   let fixtureTitle = "",
     fixtureArtist = "",
     fixtureAlbum = "";
-  await page.route("http://localhost:4100/v1/snapshot", async (route) => {
+  await page.route("http://localhost:4100/v1/snapshot*", async (route) => {
     const response = await route.fetch({
       url: route.request().url().replace("http://localhost:4100", api),
     });
@@ -47,7 +47,7 @@ test("C02 Home excludes protected fixtures while Liked tracks retains them", asy
 test("V17 Home keeps large album and artist shelves virtualized", async ({
   page,
 }) => {
-  await page.route("http://localhost:4100/v1/snapshot", async (route) => {
+  await page.route("http://localhost:4100/v1/snapshot*", async (route) => {
     const response = await route.fetch({
       url: route.request().url().replace("http://localhost:4100", api),
     });

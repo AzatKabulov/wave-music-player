@@ -74,7 +74,7 @@ export function LibraryScreen() {
     ...sn.playlists.map((p) => ({
       id: p.id,
       title: p.title,
-      subtitle: `${tx("Playlist")} · ${tx("Tracks: {count}", { count: p.items.length })}`,
+      subtitle: `${tx("Playlist")} · ${tx("Tracks: {count}", { count: p.trackCount ?? p.items.length })}`,
       palette: p.palette,
       artworkUrl: p.artworkUrl,
       kind: "Playlists",

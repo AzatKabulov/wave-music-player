@@ -405,6 +405,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 **Execution:** Baseline measured in a disposable database: 150 playlists, 500 saves and five 1k-item collections produce 676,369 bytes and 14 user queries, exceeding the proposed 250KiB budget. See `bootstrap-baseline-v2.md` for evidence and the required summary/detail/edit safety boundary. No truncation or fake completion applied.
 
+**Execution V04.1:** Opt-in summary projection and safe detail/edit/append integration now pass 82 browser, 49 client/cache and 41 API cases plus platform exports. Matched response bytes fall 681,808→210,261 (69.2%) with identities/counts retained. See `bootstrap-summary-v2.md`. Full saved/queue metadata paging and the bound independent of library size remain open.
+
 **Phase:** B. **Dependencies:** V01,C02. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Introduce versioned summary/page contracts so initial Home does not embed every saved playlist's track graph.

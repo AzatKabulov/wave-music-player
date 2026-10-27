@@ -91,6 +91,25 @@ export function Collection({
   const artist = type === "artist" ? (entity as Artist) : null;
   const album = type === "album" ? (entity as Album) : null;
   const playlist = type === "playlist" ? (entity as Playlist) : null;
+  if (playlist?.itemsComplete === false)
+    return (
+      <Shell title="Playlist" back>
+        <Label type="xl">{playlist.title}</Label>
+        <Label type="sm" color="text-muted">
+          {tx("Tracks: {count}", { count: playlist.trackCount || 0 })}
+        </Label>
+        {error ? (
+          <StateView
+            title="This collection could not load"
+            message={error}
+            action="Try again"
+            onAction={() => setRetry((value) => value + 1)}
+          />
+        ) : (
+          <Skeleton height={232} />
+        )}
+      </Shell>
+    );
   const byId = new Map(c.tracks.map((track) => [track.id, track]));
   const ids = album
     ? album.trackIds

@@ -1,7 +1,7 @@
 import { randomUUID } from "../../data/uuid";
 import { usePreventRemove } from "expo-router";
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
 import { moveEntry } from "../../data/queue";
@@ -12,6 +12,7 @@ import {
   Input,
   Label,
   StateView,
+  Skeleton,
 } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
@@ -24,8 +25,58 @@ export function PlaylistForm({
   id?: string;
   trackId?: string;
 }) {
+  const m = useMusic();
+  const existing = m.snapshot!.playlists.find((item) => item.id === id);
+  const [ready, setReady] = useState(
+    !id || (!!existing && existing.itemsComplete !== false),
+  );
+  const [failure, setFailure] = useState("");
+  const [attempt, setAttempt] = useState(0);
+  const resolve = m.resolve;
+  useEffect(() => {
+    if (ready || !id) return;
+    let active = true;
+    void resolve("playlist", id)
+      .then(() => {
+        if (active) setReady(true);
+      })
+      .catch((error) => {
+        if (active)
+          setFailure(
+            error instanceof Error
+              ? error.message
+              : "This collection could not load.",
+          );
+      });
+    return () => {
+      active = false;
+    };
+  }, [ready, id, resolve, attempt]);
+  if (!ready)
+    return (
+      <Shell title="Edit playlist" back>
+        {failure ? (
+          <StateView
+            title="This collection could not load"
+            message={failure}
+            action="Try again"
+            onAction={() => {
+              setFailure("");
+              setAttempt((value) => value + 1);
+            }}
+          />
+        ) : (
+          <Skeleton height={232} />
+        )}
+      </Shell>
+    );
+  return <PlaylistEditor id={id} trackId={trackId} />;
+}
+
+function PlaylistEditor({ id, trackId }: { id?: string; trackId?: string }) {
   const m = useMusic(),
     p = m.snapshot!.playlists.find((p) => p.id === id),
+    [base] = useState(p),
     [title, setTitle] = useState(p?.title || ""),
     [description, setDescription] = useState(p?.description || ""),
     [items, setItems] = useState(p?.items || []),
@@ -35,9 +86,9 @@ export function PlaylistForm({
   const [leaving, setLeaving] = useState(false);
   const [repeatRemoval, setRepeatRemoval] = useState<(() => void) | null>(null);
   const dirty =
-    title !== (p?.title || "") ||
-    description !== (p?.description || "") ||
-    JSON.stringify(items) !== JSON.stringify(p?.items || []);
+    title !== (base?.title || "") ||
+    description !== (base?.description || "") ||
+    JSON.stringify(items) !== JSON.stringify(base?.items || []);
   usePreventRemove(dirty && !leaving, ({ repeat }) =>
     setRepeatRemoval(() => repeat),
   );
@@ -50,7 +101,7 @@ export function PlaylistForm({
       if (p)
         return m.data.editPlaylist(
           p.id,
-          p.revision,
+          base!.revision,
           title.trim(),
           description,
           items,
@@ -181,7 +232,7 @@ export function PlaylistForm({
                   onPress={() =>
                     void m
                       .run(async () => {
-                        await m.data.deletePlaylist(p.id, p.revision);
+                        await m.data.deletePlaylist(p.id, base!.revision);
                         return true;
                       })
                       .then((ok) => {

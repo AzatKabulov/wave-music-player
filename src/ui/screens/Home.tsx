@@ -25,8 +25,10 @@ export function Home() {
     ? c.artists.filter((artist) => artistIds.has(artist.id))
     : c.artists;
   const playlists = m.snapshot!.hideFixtures
-    ? c.playlists.filter((playlist) =>
-        playlist.items.some((item) => recordingIds.has(item.trackId)),
+    ? c.playlists.filter(
+        (playlist) =>
+          playlist.hasRecordings ??
+          playlist.items.some((item) => recordingIds.has(item.trackId)),
       )
     : c.playlists;
   const [filter, setFilter] = useState("All");

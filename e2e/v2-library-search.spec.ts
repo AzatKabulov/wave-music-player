@@ -4,7 +4,7 @@ import { test, expect, api, a11y } from "./fixtures";
 test("V24 Library search finds a collection outside the visible window and clears cleanly", async ({
   page,
 }) => {
-  await page.route("http://localhost:4100/v1/snapshot", async (route) => {
+  await page.route("http://localhost:4100/v1/snapshot*", async (route) => {
     const response = await route.fetch({
       url: route.request().url().replace("http://localhost:4100", api),
     });

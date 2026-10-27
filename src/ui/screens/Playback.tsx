@@ -403,17 +403,13 @@ export function Actions({
       </Sheet>
     );
   const add = async (playlist: Playlist) => {
-    const saved = await m.run(
-      () =>
-        m.data.editPlaylist(
-          playlist.id,
-          playlist.revision,
-          playlist.title,
-          playlist.description,
-          [...playlist.items, { id: randomUUID(), trackId: id }],
-        ),
-      `Added to ${playlist.title}`,
-    );
+    const saved = await m.run(async () => {
+      await m.data.appendPlaylistItem(playlist.id, playlist.revision, {
+        id: randomUUID(),
+        trackId: id,
+      });
+      return true;
+    }, `Added to ${playlist.title}`);
     if (saved) go(`/playlist/${playlist.id}`);
   };
   return (

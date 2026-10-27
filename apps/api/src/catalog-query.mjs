@@ -94,7 +94,8 @@ export async function catalogGraph(
   }));
   const playlists = (
     await client.query(
-      `select p.id,p.title,p.description,p.user_id,p.revision,coalesce(p.cover_asset_id,
+      `select p.id,p.title,p.description,p.user_id,p.revision,
+    (select count(*) from music.playlist_items member where member.playlist_id=p.id) track_count,coalesce(p.cover_asset_id,
     (select al.cover_asset_id from music.playlist_items pi join music.album_tracks at on at.track_id=pi.track_id
      join music.albums al on al.id=at.album_id where pi.playlist_id=p.id order by pi.position limit 1)) cover_asset_id
     from music.playlists p where p.id=any($1::uuid[])`,
@@ -109,6 +110,8 @@ export async function catalogGraph(
     palette: palette(row.id),
     artworkUrl: artwork(row.cover_asset_id),
     items: [],
+    itemsComplete: expand,
+    trackCount: Number(row.track_count),
   }));
   if (expand && playlists.length) {
     const items = (

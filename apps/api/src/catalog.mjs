@@ -12,7 +12,7 @@ export async function catalog(
   userId,
   baseUrl = "",
   references = {},
-  { hideFixtures = false } = {},
+  { hideFixtures = false, playlistSummaries = false } = {},
 ) {
   const recordingFilter = hideFixtures ? " and content_kind='recording'" : "";
   const artistFilter = hideFixtures
@@ -24,6 +24,10 @@ export async function catalog(
   const playlistFilter = hideFixtures
     ? "p.kind='personal' or exists(select 1 from music.playlist_items member join music.tracks recording on recording.id=member.track_id where member.playlist_id=p.id and recording.status='published' and recording.content_kind='recording')"
     : "true";
+  const collectionTracks = playlistSummaries
+    ? ""
+    : `or exists(select 1 from music.playlist_items pi join music.playlists p on p.id=pi.playlist_id
+      where pi.track_id=t.id and (p.user_id=$1 or exists(select 1 from music.saved_playlists sp where sp.playlist_id=p.id and sp.user_id=$1)))`;
   const rows = (
     await client.query(
       `with initial as (
@@ -34,8 +38,7 @@ export async function catalog(
   where t.status='published' and (
     t.id in (select id from initial) or t.id=any($2::uuid[])
     or exists(select 1 from music.queue_entries qe where qe.track_id=t.id and qe.user_id=$1)
-    or exists(select 1 from music.playlist_items pi join music.playlists p on p.id=pi.playlist_id
-      where pi.track_id=t.id and (p.user_id=$1 or exists(select 1 from music.saved_playlists sp where sp.playlist_id=p.id and sp.user_id=$1)))
+    ${collectionTracks}
   ) order by t.id,al.release_date desc nulls last`,
       [userId, references.tracks || []],
     )
@@ -112,16 +115,25 @@ export async function catalog(
         : undefined,
     };
   });
+  const summaryFields = playlistSummaries
+    ? `,
+    (select count(*) from music.playlist_items member where member.playlist_id=p.id) track_count,
+    exists(select 1 from music.playlist_items member join music.tracks recording on recording.id=member.track_id
+      where member.playlist_id=p.id and recording.status='published' and recording.content_kind='recording') has_recordings,
+    coalesce(p.cover_asset_id,(select album.cover_asset_id from music.playlist_items member
+      join music.album_tracks entry on entry.track_id=member.track_id join music.albums album on album.id=entry.album_id
+      where member.playlist_id=p.id and album.status='published' order by member.position,album.release_date desc nulls last limit 1)) cover_asset_id`
+    : "";
   const lists = (
     await client.query(
-      `select id,title,description,user_id,revision from music.playlists where
-        id in (select p.id from music.playlists p where ${playlistFilter} order by p.updated_at desc,p.id limit 100)
-        or user_id=$1 or id=any($2::uuid[]) order by updated_at desc,id`,
+      `select p.id,p.title,p.description,p.user_id,p.revision ${summaryFields} from music.playlists p where
+        p.id in (select p.id from music.playlists p where ${playlistFilter} order by p.updated_at desc,p.id limit 100)
+        or p.user_id=$1 or p.id=any($2::uuid[]) order by p.updated_at desc,p.id`,
       [userId, references.playlists || []],
     )
   ).rows;
   const groupedItems = new Map(lists.map((list) => [list.id, []]));
-  if (lists.length) {
+  if (lists.length && !playlistSummaries) {
     // Preserve the per-playlist bound and row-level access rules, while making
     // one database round trip for all visible playlist items.
     const { rows: items } = await client.query(
@@ -147,7 +159,14 @@ export async function catalog(
         tracks.find((t) => t.id === items[0]?.trackId)?.palette ||
         palette(p.id),
       items,
-      artworkUrl: tracks.find((t) => t.id === items[0]?.trackId)?.artworkUrl,
+      itemsComplete: !playlistSummaries,
+      trackCount: playlistSummaries ? Number(p.track_count) : items.length,
+      ...(playlistSummaries ? { hasRecordings: p.has_recordings } : {}),
+      artworkUrl: playlistSummaries
+        ? p.cover_asset_id
+          ? `${baseUrl}/v1/artwork/${p.cover_asset_id}`
+          : undefined
+        : tracks.find((t) => t.id === items[0]?.trackId)?.artworkUrl,
     };
   });
   return withArtworkMetadata(client, { artists, albums, tracks, playlists });

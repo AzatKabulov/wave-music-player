@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-27",
+  "sourceCommit": "working tree after 6dca72f",
+  "database": "PGlite memory, synthetic metadata only",
+  "scenario": {
+    "ownedPlaylists": 150,
+    "savedArtists": 500,
+    "largeCollections": 5,
+    "itemsPerLargeCollection": 1000
+  },
+  "responseBytes": 210261,
+  "legacyResponseBytes": 681808,
+  "reductionPercent": 69.2,
+  "proposalBytes": 256000,
+  "overProposedBudget": false,
+  "userQueries": 13,
+  "singleRequestMs": 134.7,
+  "returned": {
+    "tracks": 12,
+    "artists": 506,
+    "ownedPlaylists": 150,
+    "playlistItems": 0,
+    "summarizedPlaylistItems": 5000,
+    "libraryEntries": 650
+  },
+  "scope": "Single local API-injection baseline, not a latency percentile or native measurement. Personal database and music files were never opened."
+}

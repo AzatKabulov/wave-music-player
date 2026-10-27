@@ -1,4 +1,12 @@
-import type { Catalog, Snapshot } from "./types";
+import type { Catalog, Snapshot, Playlist } from "./types";
+
+function playlistValue(previous: Playlist, incoming: Playlist): Playlist {
+  return incoming.itemsComplete === false &&
+    previous.itemsComplete !== false &&
+    previous.revision === incoming.revision
+    ? { ...incoming, items: previous.items, itemsComplete: true }
+    : incoming;
+}
 
 export function refreshCatalog(
   previous: Snapshot | null,
@@ -8,16 +16,26 @@ export function refreshCatalog(
   if (!previous?.profile || previous.profile.id !== fresh.profile?.id)
     return fresh;
   const merged = mergeCatalog(
-    { ...fresh, catalog: previous.catalog },
-    fresh.catalog,
+    { ...fresh, catalog: previous.catalog, playlists: previous.playlists },
+    {
+      ...fresh.catalog,
+      playlists: [...fresh.catalog.playlists, ...fresh.playlists],
+    },
     true,
     queueIds,
   );
   // The server owns membership/deletion of personal playlists and editorial feeds.
+  const owned = new Set(fresh.playlists.map((item) => item.id));
+  const publicLists = new Set(fresh.catalog.playlists.map((item) => item.id));
   return {
     ...merged,
-    playlists: fresh.playlists,
-    catalog: { ...merged.catalog, playlists: fresh.catalog.playlists },
+    playlists: merged.playlists.filter((item) => owned.has(item.id)),
+    catalog: {
+      ...merged.catalog,
+      playlists: merged.catalog.playlists.filter((item) =>
+        publicLists.has(item.id),
+      ),
+    },
   };
 }
 
@@ -33,10 +51,17 @@ export function mergeCatalog(
     previous: T[],
     next: T[],
     protectedIds: string[] = [],
+    reconcile?: (previous: T, incoming: T) => T,
   ) {
     const map = new Map(previous.map((item) => [item.id, item]));
     for (const item of next)
-      if (detail || !map.has(item.id)) map.set(item.id, item);
+      if (detail || !map.has(item.id)) {
+        const previous = map.get(item.id);
+        map.set(
+          item.id,
+          previous && reconcile ? reconcile(previous, item) : item,
+        );
+      }
     const protectedSet = new Set(protectedIds);
     const values = [...map.values()];
     return [
@@ -65,12 +90,14 @@ export function mergeCatalog(
         snapshot.catalog.playlists,
         incoming.playlists.filter((item) => !item.owner),
         snapshot.library.playlists,
+        playlistValue,
       ),
     },
     playlists: merge(
       snapshot.playlists,
       incoming.playlists.filter((item) => item.owner),
       snapshot.playlists.map((item) => item.id),
+      playlistValue,
     ),
   };
 }

@@ -225,14 +225,26 @@ export async function createApp({
     "GET",
     "/v1/snapshot",
     null,
-    async (req) => ({
-      ...(await snapshot(db, req.identity, baseUrl, {
+    async (req) => {
+      if (
+        req.query.playlistShape !== undefined &&
+        req.query.playlistShape !== "summary"
+      )
+        fail(
+          400,
+          "validation_error",
+          "This playlist projection is unavailable.",
+        );
+      return {
+        ...(await snapshot(db, req.identity, baseUrl, {
+          hideFixtures: personalTest,
+          playlistSummaries: req.query.playlistShape === "summary",
+        })),
         hideFixtures: personalTest,
-      })),
-      hideFixtures: personalTest,
-      demoEnabled: mode === "local",
-      accountProvider: mode === "local" ? "local" : "supabase",
-    }),
+        demoEnabled: mode === "local",
+        accountProvider: mode === "local" ? "local" : "supabase",
+      };
+    },
     { public: true },
   );
   route(

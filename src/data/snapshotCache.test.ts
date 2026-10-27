@@ -55,6 +55,33 @@ test("cache preserves validated library dates and excludes extra entry propertie
   );
 });
 
+test("cache retains playlist summary completeness and requires an honest item count", async () => {
+  const store = storage(),
+    cache = createSnapshotCache(store);
+  const value: Snapshot = {
+    ...snapshot(),
+    playlists: [
+      {
+        id: owner,
+        title: "Large mix",
+        description: "",
+        owner: true,
+        palette: "sea",
+        revision: "3",
+        items: [],
+        itemsComplete: false,
+        trackCount: 1000,
+      },
+    ],
+  };
+  assert.equal(await cache.write(a, value), true);
+  const restored = await cache.read(a);
+  assert.equal(restored?.playlists[0].itemsComplete, false);
+  assert.equal(restored?.playlists[0].trackCount, 1000);
+  delete value.playlists[0].trackCount;
+  assert.equal(await cache.write(a, value), false);
+});
+
 test("the metadata cache binds to one session scope and excludes account secrets", async () => {
   const store = storage(),
     cache = createSnapshotCache(store);

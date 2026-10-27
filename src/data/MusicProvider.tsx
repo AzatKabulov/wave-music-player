@@ -10,6 +10,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -105,7 +106,7 @@ function useMusicController() {
       positions.current = null;
     };
   }, [writePosition, positionError]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     snapshotRef.current = snapshot;
   }, [snapshot]);
   const resolved = useRef(
@@ -123,7 +124,7 @@ function useMusicController() {
           ? [
               ...(state?.playlists || []),
               ...(state?.catalog.playlists || []),
-            ].some((item) => item.id === id)
+            ].some((item) => item.id === id && item.itemsComplete !== false)
           : state?.catalog[kind === "album" ? "albums" : "artists"].some(
               (item) => item.id === id,
             );

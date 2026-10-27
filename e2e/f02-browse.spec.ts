@@ -16,7 +16,7 @@ test("F02-H1 home collection, album and artist", async ({ page }) => {
   await a11y(page);
 });
 test("F02-E1 an empty catalog offers refresh", async ({ page }) => {
-  await page.route("http://localhost:4100/v1/snapshot", async (route) => {
+  await page.route("http://localhost:4100/v1/snapshot*", async (route) => {
     const response = await route.fetch({
       url: route.request().url().replace("http://localhost:4100", api),
     });

@@ -51,6 +51,32 @@ test("bounded metadata retains queue and saved tracks", () => {
   assert.ok(merged.catalog.tracks.some((t) => t.id === "playing"));
   assert.ok(merged.catalog.tracks.some((t) => t.id === "saved"));
 });
+
+test("summary refresh preserves same-revision detail and invalidates a changed revision", () => {
+  const old = snapshot();
+  old.playlists = [
+    { ...playlist("owned"), revision: "3", itemsComplete: true },
+  ];
+  const fresh = snapshot();
+  fresh.playlists = [
+    {
+      ...playlist("owned"),
+      revision: "3",
+      items: [],
+      itemsComplete: false,
+      trackCount: 1,
+    },
+  ];
+  let next = refreshCatalog(old, fresh);
+  assert.equal(next.playlists[0].items.length, 1);
+  assert.equal(next.playlists[0].itemsComplete, true);
+  fresh.playlists[0].revision = "4";
+  next = refreshCatalog(old, fresh);
+  assert.equal(next.playlists[0].items.length, 0);
+  assert.equal(next.playlists[0].itemsComplete, false);
+  fresh.playlists = [];
+  assert.deepEqual(refreshCatalog(old, fresh).playlists, []);
+});
 test("refresh retains same-listener remote metadata without resurrecting deleted owned playlists", () => {
   const old = snapshot();
   old.catalog.tracks = [track("playing")];

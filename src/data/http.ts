@@ -145,7 +145,8 @@ const fromWire = (s: any): QueueState => ({
 });
 async function fetchSnapshot() {
   const generation = authGeneration;
-  const value: Snapshot = await request("/v1/snapshot");
+  const path = "/v1/snapshot?playlistShape=summary";
+  const value: Snapshot = await request(path);
   if (!value.profile && value.accountProvider === "supabase") {
     try {
       const auth = await authPromise;
@@ -154,9 +155,9 @@ async function fetchSnapshot() {
         "POST",
         auth?.refreshToken ? { refreshToken: auth.refreshToken } : {},
       );
-      if (generation !== authGeneration) return request("/v1/snapshot");
+      if (generation !== authGeneration) return request(path);
       await saveAuth(renewed, true);
-      return request("/v1/snapshot");
+      return request(path);
     } catch (error) {
       if (
         error instanceof RequestError &&
@@ -228,6 +229,12 @@ export const http: MusicData = {
   },
   async createPlaylist(title, description, key) {
     return request("/v1/playlists", "POST", { title, description }, key);
+  },
+  async appendPlaylistItem(id, revision, item) {
+    await request(`/v1/playlists/${id}/items`, "POST", {
+      expectedRevision: revision,
+      ...item,
+    });
   },
   async editPlaylist(id, revision, title, description, items) {
     await request(

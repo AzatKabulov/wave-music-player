@@ -54,6 +54,9 @@ export type Playlist = {
   owner: boolean;
   revision: string;
   items: PlaylistItem[];
+  itemsComplete?: boolean;
+  trackCount?: number;
+  hasRecordings?: boolean;
   artworkUrl?: string;
   artworkColor?: string;
 };
@@ -143,6 +146,11 @@ export interface MusicData {
     description: string,
     items: PlaylistItem[],
   ): Promise<Playlist>;
+  appendPlaylistItem(
+    id: string,
+    revision: string,
+    item: PlaylistItem,
+  ): Promise<void>;
   deletePlaylist(id: string, revision: string): Promise<void>;
   preferences(value: Preferences): Promise<void>;
   queue(

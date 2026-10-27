@@ -44,7 +44,18 @@ const playlist = (value: unknown) =>
   typeof value.owner === "boolean" &&
   text(value.revision) &&
   /^(0|[1-9][0-9]{0,18})$/.test(value.revision) &&
-  rows(value.items, (item) => record(item) && id(item.id) && id(item.trackId));
+  rows(
+    value.items,
+    (item) => record(item) && id(item.id) && id(item.trackId),
+  ) &&
+  (value.itemsComplete === undefined ||
+    typeof value.itemsComplete === "boolean") &&
+  (value.hasRecordings === undefined ||
+    typeof value.hasRecordings === "boolean") &&
+  (value.trackCount === undefined ||
+    (Number.isSafeInteger(value.trackCount) &&
+      Number(value.trackCount) >= (value.items as unknown[]).length)) &&
+  (value.itemsComplete !== false || value.trackCount !== undefined);
 function validSnapshot(value: unknown): value is Snapshot {
   if (
     !record(value) ||

@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-27",
+  "sourceVersion": "0.2.3",
+  "sourceBuild": 5,
+  "browser": { "passed": 82, "failed": 0, "retries": 0 },
+  "clientDataLocaleCache": { "passed": 49, "failed": 0 },
+  "api": { "passed": 41, "failed": 0 },
+  "lint": "pass",
+  "typecheck": "pass",
+  "formatting": "pass",
+  "exports": ["android", "ios", "web"],
+  "summaryScenarioBytes": 210261,
+  "matchedLegacyBytes": 681808,
+  "responseByteReductionPercent": 69.2,
+  "userQueries": 13,
+  "review": {
+    "correctness": "Explicit completeness gates; cold edit and append retain duplicate entry identity; drafts keep original revision across refresh",
+    "readability": "Summary metadata and detail ownership remain explicit; no test assertions suppressed",
+    "architecture": "Opt-in projection retains legacy clients; existing authorized append route handles membership changes",
+    "security": "RLS remains on summary counts/metadata; another account has no owned collections or saved identities",
+    "performance": "Playlist graphs omitted at startup, one fewer user query; no per-playlist HTTP reads"
+  },
+  "personalCatalogTracks": 58,
+  "personalPlaylists": 6,
+  "liveContractAndPlayPassed": true,
+  "physicalNativePerformanceMeasured": false,
+  "boundIndependentOfSavedCountComplete": false,
+  "androidDownloadVersion": "0.2.2",
+  "source023PackagedAsApk": false
+}

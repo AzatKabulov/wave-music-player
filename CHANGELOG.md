@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.3 development candidate — 2026-10-27
+
+- Requests playlist summaries at startup, preserving real counts/artwork and loading full entries when needed. Installed clients retain their legacy response.
+- Prevents editing an unhydrated summary as an empty playlist and keeps the original draft revision across remote refreshes.
+- Appends playlist tracks through the revision-guarded endpoint, retaining previous entry identities.
+- Fixes cold-route detail hydration ordering and preserves same-revision loaded detail across refresh.
+
+This source is available in Expo Go. Android 0.2.2 remains the verified downloadable installer; native acceptance and the remaining bootstrap paging work are open.
+
 ## 0.2.2 personal test candidate — 2026-10-27
 
 - Reduces song-row child work during saves while retaining the latest paginated playback context.
