@@ -4,6 +4,7 @@ import {
   Heart,
   LayoutGrid,
   List,
+  Pin,
   Plus,
   Search,
   X,
@@ -50,11 +51,8 @@ export function LibraryScreen() {
     sn.catalog.playlists.map((item) => [item.id, item]),
   );
   const ownedIds = new Set(sn.playlists.map((item) => item.id));
-  const dates = new Map(
-    (sn.libraryEntries || []).map((item) => [
-      `${item.kind}:${item.id}`,
-      item.addedAt,
-    ]),
+  const libraryEntries = new Map(
+    (sn.libraryEntries || []).map((item) => [`${item.kind}:${item.id}`, item]),
   );
   const entries = [
     ...sn.playlists.map((p) => ({
@@ -113,10 +111,10 @@ export function LibraryScreen() {
         (filter === "All" || item.kind === filter) &&
         libraryMatches(item.title, item.creator, searchTerm, locale),
     )
-    .map((item) => ({
-      ...item,
-      addedAt: dates.get(`${item.kind.toLowerCase()}:${item.id}`),
-    }));
+    .map((item) => {
+      const entry = libraryEntries.get(`${item.kind.toLowerCase()}:${item.id}`);
+      return { ...item, addedAt: entry?.addedAt, pinnedAt: entry?.pinnedAt };
+    });
   const ordered = orderedLibrary(entries, sort, locale);
   const showLiked =
     filter === "All" &&
@@ -270,32 +268,65 @@ export function LibraryScreen() {
             </Touch>
           ) : undefined
         }
-        renderItem={({ item }) => (
-          <Touch
-            accessibilityRole="button"
-            accessibilityLabel={tx("Open {title} {subtitle}", {
-              title: item.title,
-              subtitle: item.subtitle,
-            })}
-            onPress={() => go(item.path)}
-            style={grid ? s.gridItem : s.row}
-          >
-            <Artwork
-              palette={item.palette}
-              uri={item.artworkUrl}
-              size={grid ? 136 : 56}
-              round={item.kind === "Artists"}
-            />
-            <View style={grid ? undefined : ui.grow}>
-              <Label numberOfLines={2} style={s.title}>
-                {item.title}{" "}
-              </Label>
-              <Label type="sm" color="text-muted" numberOfLines={2}>
-                {item.subtitle}
-              </Label>
-            </View>
-          </Touch>
-        )}
+        renderItem={({ item }) => {
+          const options = () =>
+            go(
+              `/actions/${item.id}?collection=${
+                item.kind === "Albums"
+                  ? "album"
+                  : item.kind === "Artists"
+                    ? "artist"
+                    : "playlist"
+              }`,
+            );
+          return (
+            <Touch
+              accessibilityRole="button"
+              accessibilityLabel={`${tx("Open {title} {subtitle}", {
+                title: item.title,
+                subtitle: item.subtitle,
+              })}${item.pinnedAt ? `, ${tx("Pinned")}` : ""}`}
+              accessibilityActions={[
+                { name: "longpress", label: tx("Options") },
+              ]}
+              onAccessibilityAction={(event) => {
+                if (event.nativeEvent.actionName === "longpress") options();
+              }}
+              onPress={() => go(item.path)}
+              onLongPress={options}
+              style={grid ? s.gridItem : s.row}
+            >
+              <Artwork
+                palette={item.palette}
+                uri={item.artworkUrl}
+                size={grid ? 136 : 56}
+                round={item.kind === "Artists"}
+              />
+              <View style={grid ? undefined : ui.grow}>
+                <Label numberOfLines={2} style={s.title}>
+                  {item.title}{" "}
+                </Label>
+                <View style={s.meta}>
+                  {item.pinnedAt ? (
+                    <Pin
+                      size={14}
+                      color={t.color.accent}
+                      fill={t.color.accent}
+                    />
+                  ) : null}
+                  <Label
+                    type="sm"
+                    color="text-muted"
+                    numberOfLines={2}
+                    style={s.metaText}
+                  >
+                    {item.subtitle}
+                  </Label>
+                </View>
+              </View>
+            </Touch>
+          );
+        }}
         ListEmptyComponent={
           searchTerm && showLiked ? undefined : (
             <StateView
@@ -370,4 +401,6 @@ const s = StyleSheet.create({
   },
   gridItem: { flex: 1, padding: 8, gap: 8 },
   title: { fontWeight: "600" },
+  meta: { flexDirection: "row", alignItems: "center", gap: 6 },
+  metaText: { flexShrink: 1 },
 });

@@ -5,11 +5,14 @@ import {
   CirclePlus,
   ListMusic,
   Pencil,
+  Pin,
+  PinOff,
   Play,
   Shuffle,
   UserRound,
 } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
+import { maxLibraryPins, pinCount } from "../../data/libraryState";
 import { useMusic } from "../../data/MusicProvider";
 import type { Track } from "../../data/types";
 import { Artwork } from "../../design/Artwork";
@@ -28,6 +31,7 @@ export function CollectionActions({
   const m = useMusic();
   const { tx } = useLocale();
   const [failure, setFailure] = useState("");
+  const [pinLimit, setPinLimit] = useState(false);
   const resolve = m.resolve;
   useEffect(() => {
     let active = true;
@@ -103,6 +107,17 @@ export function CollectionActions({
       : saved
         ? "Remove playlist from library"
         : "Save playlist";
+  const pinnedAt = state.libraryEntries?.find(
+    (entry) => entry.kind === libraryKind && entry.id === id,
+  )?.pinnedAt;
+  const togglePin = () => {
+    if (!pinnedAt && pinCount(state.libraryEntries) >= maxLibraryPins) {
+      setPinLimit(true);
+      return;
+    }
+    void m.pin(libraryKind, id, !pinnedAt);
+    back();
+  };
   const act = (work: Promise<boolean>) => {
     void work.then((ok) => {
       if (ok) back();
@@ -164,6 +179,18 @@ export function CollectionActions({
           }}
         />
       ) : null}
+      {saved || playlist?.owner ? (
+        <Button
+          i18n
+          title={
+            pinnedAt ? "Unpin from top of library" : "Pin to top of library"
+          }
+          icon={pinnedAt ? PinOff : Pin}
+          variant="quiet"
+          style={s.action}
+          onPress={togglePin}
+        />
+      ) : null}
       <Button
         i18n
         title="Add to queue"
@@ -198,6 +225,11 @@ export function CollectionActions({
           style={s.action}
           onPress={() => router.replace(`/edit/${id}` as never)}
         />
+      ) : null}
+      {pinLimit ? (
+        <Label color="danger" accessibilityRole="alert">
+          {tx("You can pin up to 8 Library items.")}
+        </Label>
       ) : null}
       {m.error || failure ? (
         <Label color="danger" accessibilityRole="alert">

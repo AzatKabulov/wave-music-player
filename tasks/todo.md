@@ -745,7 +745,7 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V24 — Add Library search and pins
 
-**Execution:** V24.1 searches all currently hydrated saved/owned collections, with title/creator/Unicode matching, clear/close and translated accessible controls. The 150-collection regression finds an unmounted collection; both sizes and axe pass. Ten affected Library/language cases and 47 client tests pass; final platform exports pass. Persistent pins and server search for the future paginated Library remain open. See `library-search-v2.md`.
+**Execution:** V24.1 searches all currently hydrated saved/owned collections, with title/creator/Unicode matching, clear/close and translated accessible controls. The 150-collection regression finds an unmounted collection; both sizes and axe pass. Ten affected Library/language cases and 47 client tests pass; final platform exports pass. **V24.2** adds persistent, account-scoped pins (cap 8) end to end: migration 005, API, client state and a long-press/options-sheet UI; 108 browser, 61 client and 49 API cases pass. Server search for the future paginated Library remains open. See `library-search-v2.md` and `library-pins-v2.md`.
 
 **Phase:** C. **Dependencies:** V23. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 

@@ -2,6 +2,12 @@ export const messages: Record<string, Record<string, string>> = {
   en: {},
   ru: {
     "Return to {source}": "Вернуться к {source}",
+    "Pin to top of library": "Закрепить в начале медиатеки",
+    "Unpin from top of library": "Открепить от начала медиатеки",
+    Pinned: "Закреплено",
+    Options: "Действия",
+    "You can pin up to 8 Library items.":
+      "В медиатеке можно закрепить не более 8 элементов.",
     "Search library": "Поиск в медиатеке",
     "Search your library": "Поиск в вашей медиатеке",
     "Close library search": "Закрыть поиск в медиатеке",
@@ -272,6 +278,12 @@ export const messages: Record<string, Record<string, string>> = {
   },
   tk: {
     "Return to {source}": "{source} dolan",
+    "Pin to top of library": "Kitaphananyň başyna berkit",
+    "Unpin from top of library": "Kitaphananyň başyndaky berkitmäni aýyr",
+    Pinned: "Berkidilen",
+    Options: "Amallar",
+    "You can pin up to 8 Library items.":
+      "Kitaphanada iň köp 8 elementi berkidip bolýar.",
     "Search library": "Mediatekada gözle",
     "Search your library": "Mediatekaňyzda gözläň",
     "Close library search": "Mediateka gözlegini ýap",
