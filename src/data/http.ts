@@ -5,6 +5,7 @@ import { fetchJson } from "./fetchJson";
 import { digestStringAsync, CryptoDigestAlgorithm } from "expo-crypto";
 import { deviceStorage } from "./storage";
 import { createSnapshotCache } from "./snapshotCache";
+import { parsePlaybackSource } from "./playbackSource";
 import type { MusicData, QueueState, Snapshot } from "./types";
 export const apiUrl = (
   process.env.EXPO_PUBLIC_API_URL || "http://localhost:4100"
@@ -142,6 +143,7 @@ const fromWire = (s: any): QueueState => ({
   positionMs: s.positionMs,
   repeat: s.repeatMode,
   shuffle: s.shuffle,
+  source: parsePlaybackSource(s.source),
 });
 async function fetchSnapshot() {
   const generation = authGeneration;
@@ -303,6 +305,7 @@ export const http: MusicData = {
       positionMs: state.positionMs,
       repeatMode: state.repeat,
       shuffle: state.shuffle,
+      source: state.source ?? null,
       ...(options.includeGrant ? { includeGrant: true } : {}),
       ...(membershipChanged ? { entries: state.entries } : {}),
     };

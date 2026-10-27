@@ -1,6 +1,6 @@
 import React from "react";
 import { FlatList, View } from "react-native";
-import type { Track } from "../data/types";
+import type { Track, PlaybackSource } from "../data/types";
 import { Label, StateView } from "../design/Primitives";
 import { useLocale } from "../i18n/LocaleProvider";
 import { go } from "./Shell";
@@ -8,6 +8,7 @@ import { TrackRow } from "./TrackRow";
 
 export function MusicList({
   tracks,
+  source,
   header,
   footer,
   albumRows = false,
@@ -16,6 +17,7 @@ export function MusicList({
   emptyMessage = "Find a track you like, then bring it here.",
 }: {
   tracks: Track[];
+  source?: PlaybackSource;
   header?: React.ReactElement;
   footer?: React.ReactElement;
   albumRows?: boolean;
@@ -45,6 +47,7 @@ export function MusicList({
           <TrackRow
             track={item}
             context={tracks}
+            source={source}
             index={index}
             numbered={albumRows}
           />

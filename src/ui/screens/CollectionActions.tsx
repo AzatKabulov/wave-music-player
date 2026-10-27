@@ -140,7 +140,7 @@ export function CollectionActions({
         disabled={!tracks.length || m.pending}
         variant="quiet"
         style={s.action}
-        onPress={() => act(m.playTracks(tracks))}
+        onPress={() => act(m.playTracks(tracks, 0, false, { kind, id }))}
       />
       <Button
         i18n
@@ -149,7 +149,7 @@ export function CollectionActions({
         disabled={!tracks.length || m.pending}
         variant="quiet"
         style={s.action}
-        onPress={() => act(m.playTracks(tracks, 0, true))}
+        onPress={() => act(m.playTracks(tracks, 0, true, { kind, id }))}
       />
       {!playlist?.owner ? (
         <Button

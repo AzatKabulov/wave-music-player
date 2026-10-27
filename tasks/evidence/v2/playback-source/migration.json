@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-27",
+  "backup": "C:\\Users\\user\\Documents\\Codex\\2026-10-24\\https-github-com-jakeschincariol-replica-skill\\work\\personal-before-source-v025\\",
+  "trialPassed": true,
+  "liveUserStatePreserved": true,
+  "tables": {
+    "profiles": {
+      "count": 16,
+      "hash": "b0559af659085a42e5d848cfc36334cd"
+    },
+    "user_preferences": {
+      "count": 15,
+      "hash": "7e7293690d5999776fd3cafc97d123e6"
+    },
+    "saved_tracks": {
+      "count": 8,
+      "hash": "a3e0748f04ca404d1ec5530c2ed9599b"
+    },
+    "saved_albums": {
+      "count": 0,
+      "hash": "d751713988987e9331980363e24189ce"
+    },
+    "saved_artists": {
+      "count": 0,
+      "hash": "d751713988987e9331980363e24189ce"
+    },
+    "saved_playlists": {
+      "count": 0,
+      "hash": "d751713988987e9331980363e24189ce"
+    },
+    "playlists": {
+      "count": 9,
+      "hash": "7ace547258812754db79c9fa87745424"
+    },
+    "playlist_items": {
+      "count": 136,
+      "hash": "640ed04d953205ffc908c1bd0738ed20"
+    },
+    "playback_sessions": {
+      "count": 9,
+      "hash": "843eca0c7ac67b1f19e5a87d2104dad2"
+    },
+    "queue_entries": {
+      "count": 14,
+      "hash": "076488e157517c9f4745ecfbdadae114"
+    },
+    "listening_events": {
+      "count": 139,
+      "hash": "26304c8a87ed461c79e385183779d818"
+    },
+    "tracks": {
+      "count": 70,
+      "hash": "770084a3ab1bcb6c754421ae60c0b235"
+    },
+    "albums": {
+      "count": 57,
+      "hash": "106731405931452375d71afbac49c001"
+    },
+    "artists": {
+      "count": 30,
+      "hash": "87aa7914db20bb54dd474271abe45316"
+    }
+  }
+}

@@ -65,6 +65,7 @@ function Screens({ screen }: { screen?: string } = {}) {
     return (
       <Shell title="Liked tracks" back scroll={false}>
         <MusicList
+          source={{ kind: "liked" }}
           tracks={m.snapshot.library.tracks
             .map((id) => m.snapshot!.catalog.tracks.find((t) => t.id === id))
             .filter((x): x is Track => !!x)}

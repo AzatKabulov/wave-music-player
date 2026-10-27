@@ -1,6 +1,7 @@
 export const messages: Record<string, Record<string, string>> = {
   en: {},
   ru: {
+    "Return to {source}": "Вернуться к {source}",
     "Search library": "Поиск в медиатеке",
     "Search your library": "Поиск в вашей медиатеке",
     "Close library search": "Закрыть поиск в медиатеке",
@@ -270,6 +271,7 @@ export const messages: Record<string, Record<string, string>> = {
     "Use at least 10 characters.": "Используйте не менее 10 символов.",
   },
   tk: {
+    "Return to {source}": "{source} dolan",
     "Search library": "Mediatekada gözle",
     "Search your library": "Mediatekaňyzda gözläň",
     "Close library search": "Mediateka gözlegini ýap",

@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-27",
+  "version": "0.2.5",
+  "sdk": "58.0.0",
+  "bytes": 14030338,
+  "sha256": "59de1b3ab5e9e41bdf2d72ff2d478f12e297b3c6366b11c1e2ac6dacb7edf516",
+  "markers": {
+    "playbackSourceLink": true,
+    "Return to {source}": true,
+    "fromPlayer": true,
+    "dismissTo": true,
+    "http://192.168.0.4:4103": true
+  },
+  "scope": "Verified local iOS Expo Go manifest and actual served JavaScript. Physical device smoothness/playback acceptance remains open."
+}

@@ -1,6 +1,7 @@
 import { useLocale } from "../../i18n/LocaleProvider";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { artworkSurface } from "../../data/artworkColor";
+import { playbackSourceLink } from "../../data/playbackSource";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   ChevronDown,
@@ -91,6 +92,14 @@ export function Player() {
   );
   const surface = usePlayerSurface(height, atmosphere);
   const track = m.track;
+  const source = m.snapshot
+    ? playbackSourceLink(m.queue.source, m.snapshot)
+    : null;
+  const sourceTitle = source
+    ? source.translate
+      ? tx(source.title)
+      : source.title
+    : tx("Your music");
   const currentIndex = m.queue.entries.findIndex(
     (entry) => entry.id === m.activeEntry?.id,
   );
@@ -160,9 +169,32 @@ export function Player() {
                     >
                       Now playing
                     </Label>
-                    <Label type="xs" color="text-muted" numberOfLines={1}>
-                      {track?.album || tx("Your music")}
-                    </Label>
+                    {source ? (
+                      <Touch
+                        style={s.contextLink}
+                        hitSlop={8}
+                        accessibilityRole="button"
+                        accessibilityLabel={tx("Return to {source}", {
+                          source: sourceTitle,
+                        })}
+                        onPress={() =>
+                          surface.returnTo(
+                            source.path +
+                              (m.queue.source?.kind === "search"
+                                ? `&fromPlayer=${Date.now()}`
+                                : ""),
+                          )
+                        }
+                      >
+                        <Label type="xs" color="text-muted" numberOfLines={1}>
+                          {sourceTitle}
+                        </Label>
+                      </Touch>
+                    ) : (
+                      <Label type="xs" color="text-muted" numberOfLines={1}>
+                        {sourceTitle}
+                      </Label>
+                    )}
                   </View>
                   <IconButton
                     icon={MoreHorizontal}
@@ -349,6 +381,13 @@ const s = StyleSheet.create({
     minHeight: 64,
   },
   context: { flex: 1, minWidth: 0, alignItems: "center", gap: 2 },
+  contextLink: {
+    maxWidth: "100%",
+    minHeight: 28,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    justifyContent: "center",
+  },
   contextTitle: { fontWeight: "600" },
   art: { alignItems: "center", paddingHorizontal: 24, paddingVertical: 20 },
   controls: {

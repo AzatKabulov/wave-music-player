@@ -40,6 +40,7 @@ import type {
   QueueState,
   Snapshot,
   Track,
+  PlaybackSource,
 } from "./types";
 
 const emptyQueue = (): QueueState => ({
@@ -625,7 +626,12 @@ function useMusicController() {
     return () => listener.remove();
   }, [refresh, command]);
   const playTracks = useCallback(
-    (tracks: Track[], start = 0, shuffle = false) =>
+    (
+      tracks: Track[],
+      start = 0,
+      shuffle = false,
+      source?: PlaybackSource | null,
+    ) =>
       command(
         (current) => {
           const result = contextQueue(
@@ -641,7 +647,7 @@ function useMusicController() {
           if (!result.state.entries.length)
             throw Error("No playable tracks in this collection.");
           canonical.current = result.canonical;
-          return result.state;
+          return { ...result.state, source: source ?? null };
         },
         true,
         "playSelection",

@@ -1,4 +1,6 @@
 import { useLocale } from "../../i18n/LocaleProvider";
+import { useLocalSearchParams } from "expo-router";
+import { parsePlaybackSource } from "../../data/playbackSource";
 import { Clock3, Music2, Search, X } from "lucide-react-native";
 import { useDeferredValue, useEffect, useState } from "react";
 import {
@@ -31,9 +33,22 @@ export function SearchScreen() {
   const { tx } = useLocale();
   const m = useMusic(),
     c = m.snapshot!.catalog;
-  const [query, setQuery] = useState("");
+  const params = useLocalSearchParams<{ q?: string; fromPlayer?: string }>();
+  const incoming = typeof params.q === "string" ? params.q.slice(0, 160) : null;
+  const incomingKey =
+    incoming === null ? null : `${incoming}:${params.fromPlayer || ""}`;
+  const [query, setQuery] = useState(incoming || "");
   const [kind, setKind] = useState("All");
   const [category, setCategory] = useState("");
+  const [accepted, setAccepted] = useState(incomingKey);
+  if (incomingKey !== accepted) {
+    setAccepted(incomingKey);
+    if (incoming !== null) {
+      setQuery(incoming);
+      setKind("All");
+      setCategory("");
+    }
+  }
   const [recent, setRecent] = useState<string[]>([]);
   const deferred = useDeferredValue(query);
   const q = deferred.trim().normalize("NFKC").toLocaleLowerCase();
@@ -176,7 +191,15 @@ export function SearchScreen() {
             data={shownTracks}
             keyExtractor={(track) => track.id}
             renderItem={({ item, index }) => (
-              <TrackRow track={item} context={shownTracks} index={index} />
+              <TrackRow
+                track={item}
+                context={shownTracks}
+                index={index}
+                source={parsePlaybackSource({
+                  kind: "search",
+                  query: deferred.trim(),
+                })}
+              />
             )}
             ListHeaderComponent={
               shownTracks.length ? (

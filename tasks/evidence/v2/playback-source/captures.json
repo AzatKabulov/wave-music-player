@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-27",
+  "version": "0.2.5",
+  "scope": "Real-cover browser screenshots, source return and accessibility; phone viewport uses emulated 59/34 safe-area insets. No physical-device smoothness claim.",
+  "temporaryAccountsDeleted": 2,
+  "captures": [
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "stage": "source-header",
+      "header": {
+        "x": 0,
+        "y": 67,
+        "width": 393,
+        "height": 64
+      },
+      "path": "tasks/evidence/v2/playback-source/phone-web-source-header.png"
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "stage": "returned-playlist",
+      "header": {
+        "x": 0,
+        "y": 67,
+        "width": 393,
+        "height": 64
+      },
+      "path": "tasks/evidence/v2/playback-source/phone-web-returned-playlist.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "stage": "source-header",
+      "header": {
+        "x": 480,
+        "y": 8,
+        "width": 480,
+        "height": 64
+      },
+      "path": "tasks/evidence/v2/playback-source/desktop-web-source-header.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "stage": "returned-playlist",
+      "header": {
+        "x": 480,
+        "y": 8,
+        "width": 480,
+        "height": 64
+      },
+      "path": "tasks/evidence/v2/playback-source/desktop-web-returned-playlist.png"
+    }
+  ]
+}

@@ -67,6 +67,7 @@ export function Artwork({
           style={{ width: "100%", height: "100%" }}
           onError={() => setFailedUri(uri)}
           accessible={false}
+          accessibilityLabel=""
           draggable={false}
         />
       ) : (

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { BackHandler, Platform } from "react-native";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { usePanGesture } from "react-native-gesture-handler";
 import { scheduleOnRN } from "react-native-worklets";
 import {
@@ -14,6 +14,9 @@ import {
 import { dismissPlayer } from "../../data/playerGesture";
 import { useMotion } from "../../design/Motion";
 import { back } from "../Shell";
+
+const leavePlayer = (destination?: string) =>
+  destination ? router.dismissTo(destination as never) : back();
 
 export function usePlayerSurface(height: number, color: string) {
   const { reduced } = useMotion();
@@ -41,13 +44,13 @@ export function usePlayerSurface(height: number, color: string) {
     }
   }, [height, reduced, y, opacity]);
   const dismiss = useCallback(
-    (velocity = 0) => {
+    (velocity = 0, destination?: string) => {
       "worklet";
       if (closing.get()) return;
       closing.set(true);
       const done = (finished?: boolean) => {
         "worklet";
-        if (finished) scheduleOnRN(back);
+        if (finished) scheduleOnRN(leavePlayer, destination);
       };
       if (reduced) opacity.set(withTiming(0, { duration: 100 }, done));
       else
@@ -126,5 +129,5 @@ export function usePlayerSurface(height: number, color: string) {
       : 1,
     transform: [{ translateY: reduced ? 0 : y.get() }],
   }));
-  return { pan, style, close };
+  return { pan, style, close, returnTo: (path: string) => dismiss(0, path) };
 }

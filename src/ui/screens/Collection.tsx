@@ -124,6 +124,7 @@ export function Collection({
   const kind =
     type === "album" ? "albums" : type === "artist" ? "artists" : "playlists";
   const saved = sn.library[kind].includes(id);
+  const source = { kind: type, id };
   const header = album ? (
     <AlbumHeader
       album={album}
@@ -132,8 +133,8 @@ export function Collection({
       saved={saved}
       pending={m.pending}
       onSave={() => void m.save("albums", id, !saved)}
-      onPlay={() => void m.playTracks(tracks)}
-      onShuffle={() => void m.playTracks(tracks, 0, true)}
+      onPlay={() => void m.playTracks(tracks, 0, false, source)}
+      onShuffle={() => void m.playTracks(tracks, 0, true, source)}
       onOptions={() => go(`/actions/${id}?collection=album`)}
     />
   ) : (
@@ -199,14 +200,14 @@ export function Collection({
             icon={Shuffle}
             label="Shuffle collection"
             disabled={!tracks.length || m.pending}
-            onPress={() => void m.playTracks(tracks, 0, true)}
+            onPress={() => void m.playTracks(tracks, 0, true, source)}
           />
           <Button
             i18n
             title="Play"
             icon={Play}
             disabled={!tracks.length || m.pending}
-            onPress={() => void m.playTracks(tracks)}
+            onPress={() => void m.playTracks(tracks, 0, false, source)}
           />
         </View>
       </View>
@@ -264,13 +265,14 @@ export function Collection({
             label="Play album"
             filled
             disabled={!tracks.length || m.pending}
-            onPress={() => void m.playTracks(tracks)}
+            onPress={() => void m.playTracks(tracks, 0, false, source)}
           />
         ) : undefined
       }
     >
       <MusicList
         tracks={tracks}
+        source={source}
         header={header}
         footer={footer}
         albumRows={!!album}

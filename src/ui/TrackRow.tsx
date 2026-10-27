@@ -8,7 +8,7 @@ import {
 import { StyleSheet, View } from "react-native";
 import { memo, useCallback, useLayoutEffect, useRef } from "react";
 import { useMusic } from "../data/MusicProvider";
-import type { Track } from "../data/types";
+import type { Track, PlaybackSource } from "../data/types";
 import { Touch } from "../design/Motion";
 import { Artwork } from "../design/Artwork";
 import { IconButton, Label } from "../design/Primitives";
@@ -17,12 +17,14 @@ import { go, ui } from "./Shell";
 export function TrackRow({
   track,
   context,
+  source,
   index = 0,
   subtitle = true,
   numbered = false,
 }: {
   track: Track;
   context?: Track[];
+  source?: PlaybackSource | null;
   index?: number;
   subtitle?: boolean;
   numbered?: boolean;
@@ -32,13 +34,18 @@ export function TrackRow({
   const saved = !!m.snapshot?.library.tracks.includes(track.id);
   // Context can grow after detail/search hydration. Keep event handlers current
   // without passing the whole mutable collection through the visual row.
-  const selection = useRef({ track, context, index, playTracks });
+  const selection = useRef({ track, context, source, index, playTracks });
   useLayoutEffect(() => {
-    selection.current = { track, context, index, playTracks };
-  }, [track, context, index, playTracks]);
+    selection.current = { track, context, source, index, playTracks };
+  }, [track, context, source, index, playTracks]);
   const onPlay = useCallback(() => {
     const current = selection.current;
-    void current.playTracks(current.context || [current.track], current.index);
+    void current.playTracks(
+      current.context || [current.track],
+      current.index,
+      false,
+      current.source,
+    );
   }, []);
   const onSave = useCallback(
     () => void save("tracks", track.id, !saved),

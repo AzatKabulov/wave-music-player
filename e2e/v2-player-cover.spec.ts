@@ -1,4 +1,4 @@
-import { test, expect, api, playHome } from "./fixtures";
+import { test, expect, api, playHome, a11y } from "./fixtures";
 
 test("V20 real cover images leave horizontal and vertical drags to the player", async ({
   page,
@@ -55,6 +55,7 @@ test("V20 real cover images leave horizontal and vertical drags to the player", 
         ),
     )
     .toBe(true);
+  await a11y(page);
   const artworkBox = (await page.getByTestId("player-artwork").boundingBox())!;
   const x = artworkBox.x + artworkBox.width / 2,
     y = artworkBox.y + artworkBox.height / 2;

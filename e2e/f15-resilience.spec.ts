@@ -49,6 +49,9 @@ test("F15 removing a queued occurrence can be undone without replacing its ident
   await page.getByRole("button", { name: /Open player for Open Road/ }).click();
   await page.getByRole("button", { name: "Queue", exact: true }).click();
   const remove = page.getByRole("button", { name: /Remove queue entry/ });
+  await expect(
+    page.getByRole("button", { name: "Remove queue entry 1", exact: true }),
+  ).toBeVisible();
   const count = await remove.count();
   await page
     .getByRole("button", { name: "Remove queue entry 1", exact: true })

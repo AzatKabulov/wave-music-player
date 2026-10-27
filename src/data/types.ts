@@ -72,6 +72,10 @@ export type LibraryEntry = {
   addedAt: string;
 };
 export type QueueEntry = PlaylistItem & { origin: "context" | "explicit" };
+export type PlaybackSource =
+  | { kind: "album" | "artist" | "playlist"; id: string }
+  | { kind: "search"; query: string }
+  | { kind: "liked" };
 export type QueueState = {
   revision: string;
   entries: QueueEntry[];
@@ -79,6 +83,7 @@ export type QueueState = {
   positionMs: number;
   repeat: "none" | "all" | "single";
   shuffle: boolean;
+  source?: PlaybackSource | null;
 };
 export type Profile = { id: string; displayName: string; email?: string };
 export type Preferences = {
