@@ -34,7 +34,7 @@ The owner confirmed Supabase organization **kabulov** (`sgsgxcjvhejgdykjsptb`) a
 
 ## Next steps
 
-1. Owner is connecting GitHub. Latest answer: **“Help me connect GitHub.”** Instructions given: open Plugins, search GitHub, install/connect and sign in. Verify the connection before using it. Render separately needs access to the private repository. No source has been uploaded anywhere new.
+1. GitHub directory now reports **installed**, but no GitHub repository tools are available in this chat yet; authentication/access is not verified. Latest owner answer: **“Help me connect GitHub.”** Instructions given: open Plugins, search GitHub, install/connect and sign in. Verify usable repository access before using it. Render separately needs access to the private repository. No source has been uploaded anywhere new.
 2. Create a private source repository from the reviewed committed baseline. Exclude `.env*`, databases, personal audio/artwork, APKs, account exports, keys and Git history. The existing mobile `.easignore` excludes the backend; it is not the backend repository's deployment ignore list.
 3. Supabase connector does not expose the server key or the pooler connection URI. A blank private input template was created outside Git at workspace `work/musify-online-setup.env`. The owner must supply the project's secret key and migration connection URI there, using the dashboard. Never print its values or copy them into chat/source.
 4. Provision separate restricted database login roles per `replica/backend.md`; create private storage buckets through the official Storage API; disable provider-level public sign-ups. Never use the migration/postgres login as the runtime identity.
@@ -42,6 +42,12 @@ The owner confirmed Supabase organization **kabulov** (`sgsgxcjvhejgdykjsptb`) a
 6. Create Render's free service with the private source and reviewed server-only environment values. Run readiness, anonymous/admitted/other-user access checks, private bucket checks, snapshot/search, artwork, audio HEAD/Range, seek and lease revocation checks against HTTPS.
 7. Configure and publish the Expo Go-compatible preview with the real HTTPS API; inspect the served update manifest. Build an Android online APK with the same test package and signing certificate. Do not overwrite the verified LAN APK aliases until the new APK is checked.
 8. Test on cellular with the PC and local services off. Only this confirms the requested independence. Ask the owner to verify iPhone and Android playback/motion; do not claim device evidence from exports or browser checks.
+
+## Subsequent connection check
+
+Both values in the private `work/musify-online-setup.env` template are still blank. No secrets were printed. A backend-only archive was prepared from committed source `4b73385` at `work/online-release/4b73385-api.tar`: 33 entries, SHA256 `ef3be2e5b417a3f786529f0a4100e480e6ec4356bcc177565e6e64a2ea8dd2ef`. Its membership was checked to exclude audio, APKs, databases, personal media, credentials, node_modules and Git history. It includes API source, migrations, manifests, the empty environment example and render.yaml.
+
+Render CLI is absent. Public-schema validation was attempted, but the app's existing Ajv validator supports an older JSON Schema draft than Render's current 2020-12 schema. This is a tooling limitation; the Blueprint has **not** passed schema/platform validation. Use a draft-2020-12-capable validator or Render CLI >=2.7 before deployment. Do not suppress schema features to obtain a pass. No application dependencies were changed for this check.
 
 ## Free-plan behavior and rollback
 
