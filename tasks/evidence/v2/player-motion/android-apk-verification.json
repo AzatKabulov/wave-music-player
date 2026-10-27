@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-27",
+  "buildId": "c9619f20-161b-42de-af66-2f4238341a5d",
+  "version": "0.2.1",
+  "versionCode": 3,
+  "sourceCommit": "849b399",
+  "package": "com.local.musifytest",
+  "artifactUrl": "https://expo.dev/artifacts/eas/4yBO69VNpCXNJKLS9U_96cveJB0RCtBQ93vUhAh3hVM.apk",
+  "bytes": 115664692,
+  "sha256": "ba9f7f455d10490ed83d9965d59083954cb638a67089867758a97d50e15a9b60",
+  "certificateSha256": "75e19913b15a5bff72f5cdc58f41b1fafd2e5e6f243f0a576c265e3fc3e362c4",
+  "fullApkSignatureVerified": true,
+  "sameSigningCertificateAsPreviousBuild": true,
+  "zipCrcPassed": true,
+  "architectures": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+  ],
+  "embeddedApiVerified": true,
+  "newPlayerBundleMarkersVerified": true,
+  "personalMusicEmbedded": false,
+  "microphonePermission": false,
+  "downloadAliasVerified": true,
+  "scope": "Signed artifact integrity and configuration; physical installation, smoothness and audio acceptance remain open",
+  "downloadStatus": 200,
+  "privateDownloadUrl": "http://192.168.0.4:4103/test/android.apk"
+}
