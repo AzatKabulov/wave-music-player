@@ -104,6 +104,7 @@ test("catalog upgrades preserve identities, distinguish fixtures, and run once",
         "002_catalog_metadata.sql",
         "003_artwork_metadata_access.sql",
         "004_playback_source.sql",
+        "005_library_pins.sql",
       ],
     );
     await assert.rejects(

@@ -208,9 +208,16 @@ export async function snapshot(db, identity, baseUrl = "", options = {}) {
       ["artists", "artist_id"],
       ["playlists", "playlist_id"],
     ]) {
+      // Pins join the Library rows already being read, so a pin is only ever reported
+      // while its collection remains in the Library and costs no extra query.
+      const pinned = kind !== "tracks";
       const saved = (
         await c.query(
-          `select ${column} as id,created_at from music.saved_${kind} where user_id=$1 order by created_at desc,${column}`,
+          pinned
+            ? `select s.${column} as id,s.created_at,pin.created_at as pinned_at from music.saved_${kind} s
+               left join music.library_pins pin on pin.user_id=s.user_id and pin.kind='${kind}' and pin.entity_id=s.${column}
+               where s.user_id=$1 order by s.created_at desc,s.${column}`
+            : `select ${column} as id,created_at from music.saved_${kind} where user_id=$1 order by created_at desc,${column}`,
           [identity.id],
         )
       ).rows;
@@ -220,12 +227,17 @@ export async function snapshot(db, identity, baseUrl = "", options = {}) {
           kind,
           id: x.id,
           addedAt: new Date(x.created_at).toISOString(),
+          ...(x.pinned_at
+            ? { pinnedAt: new Date(x.pinned_at).toISOString() }
+            : {}),
         })),
       );
     }
     const owned = (
       await c.query(
-        `select p.id,p.created_at from music.playlists p where p.user_id=$1
+        `select p.id,p.created_at,pin.created_at as pinned_at from music.playlists p
+       left join music.library_pins pin on pin.user_id=p.user_id and pin.kind='playlists' and pin.entity_id=p.id
+       where p.user_id=$1
        and not exists(select 1 from music.saved_playlists saved where saved.user_id=$1 and saved.playlist_id=p.id)
        order by p.created_at desc,p.id`,
         [identity.id],
@@ -236,6 +248,9 @@ export async function snapshot(db, identity, baseUrl = "", options = {}) {
         kind: "playlists",
         id: x.id,
         addedAt: new Date(x.created_at).toISOString(),
+        ...(x.pinned_at
+          ? { pinnedAt: new Date(x.pinned_at).toISOString() }
+          : {}),
       })),
     );
     const recents = (

@@ -16,8 +16,10 @@ import {
   hash,
   item,
   items,
+  maxLibraryPins,
   one,
   parseRange,
+  pinnableKinds,
   playbackInput,
   playbackSource,
   playlistInput,
@@ -513,14 +515,88 @@ export async function createApp({
               `insert into music.saved_${kind}(user_id,${column}) values($1,$2) on conflict(user_id,${column}) do nothing`,
               [req.identity.id, req.params.id],
             );
-          } else
+          } else {
             await c.query(
               `delete from music.saved_${kind} where user_id=$1 and ${column}=$2`,
               [req.identity.id, req.params.id],
             );
+            // Leaving the Library clears the pin, so saving again never resurrects it.
+            // An owned playlist stays in the Library even when its saved copy is removed.
+            if (pinnableKinds.includes(kind))
+              await c.query(
+                `delete from music.library_pins where user_id=$1 and kind=$2 and entity_id=$3
+                 and ($2<>'playlists' or not exists(select 1 from music.playlists where id=$3 and user_id=$1))`,
+                [req.identity.id, kind, req.params.id],
+              );
+          }
           return { saved: method === "PUT" };
         }),
       );
+  const pinColumn = {
+    albums: "album_id",
+    artists: "artist_id",
+    playlists: "playlist_id",
+  };
+  for (const method of ["PUT", "DELETE"])
+    route(method, "/v1/library/pins/:kind/:id", z.strictObject({}), (req) =>
+      user(req, async (c) => {
+        const { kind, id } = req.params;
+        if (!pinnableKinds.includes(kind))
+          fail(404, "not_found", "This item is unavailable.");
+        if (method === "DELETE") {
+          await c.query(
+            "delete from music.library_pins where user_id=$1 and kind=$2 and entity_id=$3",
+            [req.identity.id, kind, id],
+          );
+          return { pinned: false };
+        }
+        // Serialize pin writes per account so the cap holds under concurrent requests.
+        await c.query("select pg_advisory_xact_lock(hashtextextended($1,0))", [
+          `library_pins:${req.identity.id}`,
+        ]);
+        const inLibrary = (
+          await c.query(
+            `select (exists(select 1 from music.saved_${kind} where user_id=$1 and ${pinColumn[kind]}=$2)
+              or ($3='playlists' and exists(select 1 from music.playlists where id=$2 and user_id=$1))) as present`,
+            [req.identity.id, id, kind],
+          )
+        ).rows[0].present;
+        if (!inLibrary) fail(404, "not_found", "This item is unavailable.");
+        const existing = (
+          await c.query(
+            "select created_at from music.library_pins where user_id=$1 and kind=$2 and entity_id=$3",
+            [req.identity.id, kind, id],
+          )
+        ).rows[0];
+        if (existing)
+          return {
+            pinned: true,
+            pinnedAt: new Date(existing.created_at).toISOString(),
+          };
+        const count = (
+          await c.query(
+            "select count(*)::int as n from music.library_pins where user_id=$1",
+            [req.identity.id],
+          )
+        ).rows[0].n;
+        if (count >= maxLibraryPins)
+          fail(
+            409,
+            "pin_limit",
+            `You can pin up to ${maxLibraryPins} Library items.`,
+          );
+        const created = (
+          await c.query(
+            "insert into music.library_pins(user_id,kind,entity_id) values($1,$2,$3) returning created_at",
+            [req.identity.id, kind, id],
+          )
+        ).rows[0];
+        return {
+          pinned: true,
+          pinnedAt: new Date(created.created_at).toISOString(),
+        };
+      }),
+    );
   route("POST", "/v1/playlists", playlistInput, async (req, reply) => {
     const value = await user(req, (c) =>
       receipt(
@@ -602,6 +678,10 @@ export async function createApp({
             "revision_conflict",
             "This playlist changed. Reload before deleting.",
           );
+        await c.query(
+          "delete from music.library_pins where user_id=$1 and kind='playlists' and entity_id=$2",
+          [req.identity.id, req.params.id],
+        );
         return { ok: true };
       }),
   );

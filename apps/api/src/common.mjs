@@ -5,6 +5,9 @@ export const uuid = z.uuid(),
     .string()
     .regex(/^(0|[1-9][0-9]{0,18})$/)
     .refine((x) => BigInt(x) <= 9223372036854775807n);
+// Library pins are an ordering aid, not a second library; keep them few and bounded.
+export const maxLibraryPins = 8;
+export const pinnableKinds = ["albums", "artists", "playlists"];
 export const item = z.strictObject({ id: uuid, trackId: uuid });
 export const entry = item.extend({ origin: z.enum(["context", "explicit"]) });
 export const items = z
