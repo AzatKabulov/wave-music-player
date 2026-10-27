@@ -30,6 +30,16 @@ export const preferenceInput = z.strictObject({
   locale: z.string().min(2).max(35).optional(),
   librarySort: z.enum(["recent", "title", "creator"]).optional(),
 });
+export const playbackSource = z.discriminatedUnion("kind", [
+  ...["album", "artist", "playlist"].map((kind) =>
+    z.strictObject({ kind: z.literal(kind), id: uuid }),
+  ),
+  z.strictObject({
+    kind: z.literal("search"),
+    query: z.string().trim().min(1).max(160),
+  }),
+  z.strictObject({ kind: z.literal("liked") }),
+]);
 export const playbackInput = z
   .strictObject({
     expectedRevision: revision.nullable(),
@@ -39,6 +49,7 @@ export const playbackInput = z
     repeatMode: z.enum(["none", "all", "single"]),
     shuffle: z.boolean(),
     includeGrant: z.boolean().optional(),
+    source: playbackSource.nullable().optional(),
   })
   .refine(
     (s) =>

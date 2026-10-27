@@ -10,6 +10,15 @@
       }
     },
     "development": { "developmentClient": true, "distribution": "internal" },
+    "online-test": {
+      "distribution": "internal",
+      "environment": "preview",
+      "android": { "buildType": "apk" },
+      "env": {
+        "EXPO_PUBLIC_PERSONAL_TEST": "0",
+        "EXPO_PUBLIC_ONLINE_TEST": "1"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "android": { "buildType": "apk" }

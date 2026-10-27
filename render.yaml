@@ -1,0 +1,42 @@
+# Private personal test. No disk: Postgres and private objects live in Supabase.
+# Deploy only after migrations, account transfer and object verification pass.
+services:
+  - type: web
+    name: musify-personal-api
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: apps/api
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health/ready
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_VERSION
+        value: 24.13.1
+      - key: APP_MODE
+        value: supabase
+      - key: HOST
+        value: 0.0.0.0
+      - key: MUSIFY_ONLINE_TEST
+        value: "1"
+      - key: PRIVATE_TEST_USER_IDS
+        sync: false
+      - key: API_PUBLIC_URL
+        sync: false
+      - key: APP_ORIGIN
+        sync: false
+      - key: DATABASE_USER_URL
+        sync: false
+      - key: DATABASE_ADMIN_URL
+        sync: false
+      - key: DATABASE_SSL_CA
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: AUDIO_BUCKET
+        value: musify-private-audio
+      - key: ARTWORK_BUCKET
+        value: musify-private-artwork

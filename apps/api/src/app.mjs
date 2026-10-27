@@ -19,6 +19,7 @@ import {
   one,
   parseRange,
   playbackInput,
+  playbackSource,
   playlistInput,
   preferenceInput,
   receipt,
@@ -30,6 +31,7 @@ import { registerOperators } from "./operators.mjs";
 import { audioRoot } from "./seed.mjs";
 import { registerPersonalDownload } from "./personal-download.mjs";
 import { artworkVariant } from "./artwork-variants.mjs";
+import { loadCloudArtwork } from "./cloud-artwork.mjs";
 
 export async function createApp({
   db,
@@ -40,6 +42,20 @@ export async function createApp({
   personalTest = false,
   personalMediaRoot = new URL("../data/personal-media/", import.meta.url),
 } = {}) {
+  const onlineTest = env.MUSIFY_ONLINE_TEST === "1";
+  const privateUserIds = new Set(
+    (env.PRIVATE_TEST_USER_IDS || "")
+      .split(",")
+      .map((id) => id.trim())
+      .filter(Boolean),
+  );
+  if (
+    onlineTest &&
+    (!privateUserIds.size ||
+      [...privateUserIds].some((id) => !uuid.safeParse(id).success))
+  )
+    throw Error("Online testing requires valid PRIVATE_TEST_USER_IDS.");
+  const hideFixtures = personalTest || onlineTest;
   const app = Fastify({
     logger: false,
     bodyLimit: 32768,
@@ -131,6 +147,8 @@ export async function createApp({
       url,
       bodyLimit: options.large ? 1048576 : 32768,
       preHandler: async (req, reply) => {
+        if (onlineTest && ["/auth/demo", "/auth/register"].includes(url))
+          fail(404, "not_found", "This endpoint is unavailable.");
         // Browser cookie mutations require the configured Origin; native bearer requests remain independent.
         const bearer = req.headers.authorization?.startsWith("Bearer ")
           ? req.headers.authorization.slice(7)
@@ -171,6 +189,12 @@ export async function createApp({
         }
         req.accessToken = bearer || req.cookies.saz_access;
         req.identity = await auth?.identify(req.accessToken);
+        if (onlineTest && req.identity && !privateUserIds.has(req.identity.id))
+          fail(
+            403,
+            "private_test",
+            "This account is not included in the personal test.",
+          );
         if (!options.public && !req.identity)
           fail(401, "unauthorized", "Sign in to continue.");
         for (const [name, value] of Object.entries(req.params || {}))
@@ -186,7 +210,7 @@ export async function createApp({
       catalog(c, req.identity.id, baseUrl, {}, { hideFixtures }),
     );
   const searchCatalog = createCatalogSearch(db, baseUrl, {
-    hideFixtures: personalTest,
+    hideFixtures,
   });
   const getPlaylist = (req, id) =>
     user(req, async (c) => {
@@ -237,11 +261,11 @@ export async function createApp({
         );
       return {
         ...(await snapshot(db, req.identity, baseUrl, {
-          hideFixtures: personalTest,
+          hideFixtures,
           playlistSummaries: req.query.playlistShape === "summary",
         })),
-        hideFixtures: personalTest,
-        demoEnabled: mode === "local",
+        hideFixtures,
+        demoEnabled: mode === "local" && !onlineTest,
         accountProvider: mode === "local" ? "local" : "supabase",
       };
     },
@@ -252,13 +276,13 @@ export async function createApp({
     "/v1/artwork/:assetId",
     null,
     async (req, reply) => {
-      if (!personalTest || mode !== "local")
+      if (mode === "local" && !personalTest)
         fail(404, "not_found", "This artwork is unavailable.");
       const asset = await db.admin(
         async (c) =>
           (
             await c.query(
-              `select storage_key,mime_type,byte_size,sha256 from music.media_assets a
+              `select id,storage_key,mime_type,byte_size,sha256 from music.media_assets a
        where a.id=$1 and a.kind='image' and a.status='ready' and (
          exists(select 1 from music.albums al where al.cover_asset_id=a.id and al.status='published') or
          exists(select 1 from music.artists ar where ar.image_asset_id=a.id and ar.status='published'))`,
@@ -286,6 +310,18 @@ export async function createApp({
       if (artworkQuery.v && artworkQuery.v !== asset.sha256)
         fail(404, "not_found", "This artwork version is unavailable.");
       const width = artworkQuery.w;
+      if (mode === "supabase") {
+        const image = await loadCloudArtwork(
+          auth.provider.storage,
+          env.ARTWORK_BUCKET || env.AUDIO_BUCKET,
+          asset,
+          width,
+        );
+        return reply
+          .type(image.mimeType)
+          .header("Cache-Control", "private, max-age=86400")
+          .send(image.buffer);
+      }
       if (width) {
         const buffer = await artworkVariant(
           fileURLToPath(new URL(asset.storage_key.slice(9), personalMediaRoot)),
@@ -339,7 +375,7 @@ export async function createApp({
         ),
     );
   route("GET", "/v1/home", null, async (req) => {
-    const c = await getCatalog(req, personalTest);
+    const c = await getCatalog(req, hideFixtures);
     const real = new Set(
       c.tracks
         .filter((track) => track.contentKind !== "fixture")
@@ -356,7 +392,7 @@ export async function createApp({
           id: "releases",
           title: "Fresh perspectives",
           items: c.albums
-            .filter((item) => !personalTest || releaseIds.has(item.id))
+            .filter((item) => !hideFixtures || releaseIds.has(item.id))
             .map((item) => ({ kind: "album", item })),
         },
         {
@@ -366,7 +402,7 @@ export async function createApp({
             .filter(
               (p) =>
                 !p.owner &&
-                (!personalTest ||
+                (!hideFixtures ||
                   p.items.some((item) => real.has(item.trackId))),
             )
             .map((item) => ({ kind: "playlist", item })),
@@ -652,15 +688,27 @@ export async function createApp({
   const readSession = (req, c) =>
     one(
       c,
-      "select id,revision,current_queue_entry_id,position_ms,repeat_mode,shuffle from music.playback_sessions where installation_id=$1 and user_id=$2",
+      "select id,revision,current_queue_entry_id,position_ms,repeat_mode,shuffle,source from music.playback_sessions where installation_id=$1 and user_id=$2",
       [req.params.installationId, req.identity.id],
     );
+  const visibleSource = async (c, source) => {
+    if (!source) return null;
+    const table = { album: "albums", artist: "artists", playlist: "playlists" }[
+      source.kind
+    ];
+    if (!table) return source;
+    const found = await c.query(`select id from music.${table} where id=$1`, [
+      source.id,
+    ]);
+    return found.rows.length ? source : null;
+  };
   const sessionDto = async (c, s) => ({
     revision: String(s.revision),
     currentEntryId: s.current_queue_entry_id,
     positionMs: s.position_ms,
     repeatMode: s.repeat_mode,
     shuffle: s.shuffle,
+    source: await visibleSource(c, s.source),
     entries: (
       await c.query(
         'select id,track_id as "trackId",origin from music.queue_entries where session_id=$1 order by position',
@@ -672,7 +720,7 @@ export async function createApp({
     user(req, async (c) => {
       const s = (
         await c.query(
-          "select id,revision,current_queue_entry_id,position_ms,repeat_mode,shuffle from music.playback_sessions where installation_id=$1 and user_id=$2",
+          "select id,revision,current_queue_entry_id,position_ms,repeat_mode,shuffle,source from music.playback_sessions where installation_id=$1 and user_id=$2",
           [req.params.installationId, req.identity.id],
         )
       ).rows[0];
@@ -742,6 +790,18 @@ export async function createApp({
         )
       ).rows;
       const oldTracks = new Map(old.map((entry) => [entry.id, entry.track_id]));
+      let source = !b.entries.length
+        ? null
+        : b.source === undefined
+          ? b.entries.some((entry) => oldTracks.has(entry.id.toLowerCase()))
+            ? s.source
+            : null
+          : b.source;
+      if (source && !(await visibleSource(c, source))) {
+        if (source.kind === s.source?.kind && source.id === s.source?.id)
+          source = null;
+        else fail(404, "not_found", "This playback source is unavailable.");
+      }
       if (
         b.entries.some((entry) => {
           const track = oldTracks.get(entry.id.toLowerCase());
@@ -777,8 +837,15 @@ export async function createApp({
       );
       const next = await one(
         c,
-        "update music.playback_sessions set current_queue_entry_id=$1,position_ms=$2,repeat_mode=$3,shuffle=$4,revision=revision+1 where id=$5 returning *",
-        [b.currentEntryId, b.positionMs, b.repeatMode, b.shuffle, s.id],
+        "update music.playback_sessions set current_queue_entry_id=$1,position_ms=$2,repeat_mode=$3,shuffle=$4,source=$5::jsonb,revision=revision+1 where id=$6 returning *",
+        [
+          b.currentEntryId,
+          b.positionMs,
+          b.repeatMode,
+          b.shuffle,
+          source ? JSON.stringify(source) : null,
+          s.id,
+        ],
       );
       return sessionDto(c, next);
     }).then((state) => withRequestedGrant(req, state));
@@ -827,13 +894,20 @@ export async function createApp({
       repeatMode: z.enum(["none", "all", "single"]).optional(),
       shuffle: z.boolean().optional(),
       includeGrant: z.boolean().optional(),
+      source: playbackSource.nullable().optional(),
     }),
     (req) =>
       user(req, async (c) => {
         const s = await readSession(req, c);
         const b = req.body;
+        let source = b.source === undefined ? s.source : b.source;
+        if (source && !(await visibleSource(c, source))) {
+          if (source.kind === s.source?.kind && source.id === s.source?.id)
+            source = null;
+          else fail(404, "not_found", "This playback source is unavailable.");
+        }
         const next = await c.query(
-          "update music.playback_sessions set current_queue_entry_id=$1,position_ms=$2,repeat_mode=$3,shuffle=$4,revision=revision+1 where id=$5 and revision=$6 returning *",
+          "update music.playback_sessions set current_queue_entry_id=$1,position_ms=$2,repeat_mode=$3,shuffle=$4,revision=revision+1,source=$7::jsonb where id=$5 and revision=$6 returning *",
           [
             b.currentEntryId === undefined
               ? s.current_queue_entry_id
@@ -843,6 +917,7 @@ export async function createApp({
             b.shuffle ?? s.shuffle,
             s.id,
             b.expectedRevision,
+            source ? JSON.stringify(source) : null,
           ],
         );
         if (!next.rows.length)
