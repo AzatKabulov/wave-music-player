@@ -59,7 +59,8 @@ function Screens({ screen }: { screen?: string } = {}) {
   const [screenName, id] = screen ? [screen, params.id || ""] : parts;
   if (screenName === "home") return <Home />;
   if (screenName === "search") return <SearchScreen />;
-  if (screenName === "library") return <LibraryScreen />;
+  if (screenName === "library")
+    return <LibraryScreen key={m.snapshot.profile.id} />;
   if (screenName === "liked")
     return (
       <Shell title="Liked tracks" back scroll={false}>

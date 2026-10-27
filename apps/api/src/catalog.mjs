@@ -158,6 +158,7 @@ export async function snapshot(db, identity, baseUrl = "", options = {}) {
       profile: null,
       catalog: { tracks: [], artists: [], albums: [], playlists: [] },
       library: { tracks: [], albums: [], artists: [], playlists: [] },
+      libraryEntries: [],
       preferences: {
         explicitAllowed: true,
         locale: "en",
@@ -181,18 +182,43 @@ export async function snapshot(db, identity, baseUrl = "", options = {}) {
       )
     ).rows[0];
     const library = {};
+    const libraryEntries = [];
     for (const [kind, column] of [
       ["tracks", "track_id"],
       ["albums", "album_id"],
       ["artists", "artist_id"],
       ["playlists", "playlist_id"],
-    ])
-      library[kind] = (
+    ]) {
+      const saved = (
         await c.query(
-          `select ${column} as id from music.saved_${kind} where user_id=$1 order by created_at desc`,
+          `select ${column} as id,created_at from music.saved_${kind} where user_id=$1 order by created_at desc,${column}`,
           [identity.id],
         )
-      ).rows.map((x) => x.id);
+      ).rows;
+      library[kind] = saved.map((x) => x.id);
+      libraryEntries.push(
+        ...saved.map((x) => ({
+          kind,
+          id: x.id,
+          addedAt: new Date(x.created_at).toISOString(),
+        })),
+      );
+    }
+    const owned = (
+      await c.query(
+        `select p.id,p.created_at from music.playlists p where p.user_id=$1
+       and not exists(select 1 from music.saved_playlists saved where saved.user_id=$1 and saved.playlist_id=p.id)
+       order by p.created_at desc,p.id`,
+        [identity.id],
+      )
+    ).rows;
+    libraryEntries.push(
+      ...owned.map((x) => ({
+        kind: "playlists",
+        id: x.id,
+        addedAt: new Date(x.created_at).toISOString(),
+      })),
+    );
     const recents = (
       await c.query(
         "select track_id as id,max(occurred_at) as last from music.listening_events where user_id=$1 group by track_id order by last desc limit 100",
@@ -218,6 +244,7 @@ export async function snapshot(db, identity, baseUrl = "", options = {}) {
       catalog: { ...cat, playlists: cat.playlists.filter((p) => !p.owner) },
       playlists: cat.playlists.filter((p) => p.owner),
       library,
+      libraryEntries,
       preferences: prefs || {
         explicitAllowed: true,
         locale: "en",

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.2 personal test candidate — 2026-10-27
+
+- Reduces song-row child work during saves while retaining the latest paginated playback context.
+- Sorts mixed Library collections by real saved/created dates and preserves those dates in the native metadata cache.
+- Restores Library grid mode for the correct account, uses natural title/creator sorting and recovers the previous choice after a failed sort write.
+- Uses indexed metadata lookups and available artist artwork in Library.
+
+Physical device frame/audio acceptance remains open. The verified downloadable installer is recorded separately from the development candidate.
+
 ## 0.2.1 personal test candidate — 2026-10-27
 
 - Restores cached account metadata before live refresh and keeps queue restoration from blocking Home.

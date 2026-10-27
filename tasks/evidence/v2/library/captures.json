@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-27",
+  "scope": "Browser list/grid layout, not native performance acceptance",
+  "temporaryAccountsDeleted": 2,
+  "captures": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "list",
+      "path": "tasks/evidence/v2/library/phone-web-list.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "grid",
+      "path": "tasks/evidence/v2/library/phone-web-grid.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mode": "list",
+      "path": "tasks/evidence/v2/library/wide-web-list.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mode": "grid",
+      "path": "tasks/evidence/v2/library/wide-web-grid.png"
+    }
+  ]
+}

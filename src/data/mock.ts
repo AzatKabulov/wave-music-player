@@ -1,5 +1,6 @@
 import { randomUUID } from "./uuid";
 import catalog from "./catalog.json";
+import { datedSave } from "./libraryState";
 import type {
   MusicData,
   Playlist,
@@ -11,6 +12,7 @@ let snapshot: Snapshot = {
   profile: { id: "mock", displayName: "Listener" },
   catalog,
   library: { tracks: [], albums: [], playlists: [], artists: [] },
+  libraryEntries: [],
   preferences: { explicitAllowed: true, locale: "en", librarySort: "recent" },
   recents: [],
   playlists: [],
@@ -81,6 +83,17 @@ export const mock: MusicData = {
     snapshot.profile = null;
   },
   async save(kind, id, saved) {
+    const addedAt =
+      snapshot.libraryEntries?.find(
+        (entry) => entry.kind === kind && entry.id === id,
+      )?.addedAt || new Date().toISOString();
+    snapshot.libraryEntries = datedSave(
+      snapshot.libraryEntries,
+      kind,
+      id,
+      saved,
+      addedAt,
+    );
     snapshot.library[kind] = saved
       ? [...new Set([...snapshot.library[kind], id])]
       : snapshot.library[kind].filter((x) => x !== id);
@@ -96,6 +109,13 @@ export const mock: MusicData = {
       items: [],
     };
     snapshot.playlists.push(p);
+    snapshot.libraryEntries = datedSave(
+      snapshot.libraryEntries,
+      "playlists",
+      p.id,
+      true,
+      new Date().toISOString(),
+    );
     return p;
   },
   async editPlaylist(id, revision, title, description, items) {

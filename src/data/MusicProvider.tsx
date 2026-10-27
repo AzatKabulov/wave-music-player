@@ -27,7 +27,7 @@ import {
 import { deviceStorage } from "./storage";
 import { sourceUpdate } from "./sourceUpdate";
 import { sourcePatch } from "./sourcePatch";
-import { savedIds } from "./libraryState";
+import { savedIds, datedSave } from "./libraryState";
 import { mergeCatalog, refreshCatalog } from "./catalogCache";
 import { createLatestWriter } from "./latestWriter";
 import { playbackTiming } from "./playbackTiming";
@@ -185,6 +185,8 @@ function useMusicController() {
         id: string;
         intent: boolean;
         confirmed: boolean;
+        confirmedAt?: string;
+        intentAt?: string;
         version: number;
         tail: Promise<void>;
       }
@@ -226,6 +228,13 @@ function useMusicController() {
               entry.intent,
             ),
           },
+          libraryEntries: datedSave(
+            value.libraryEntries,
+            entry.kind,
+            entry.id,
+            entry.intent,
+            entry.intentAt,
+          ),
         };
     }
     if (mounted.current && n === generation.current)
@@ -243,6 +252,9 @@ function useMusicController() {
       const current = snapshotRef.current;
       if (!current?.profile) return;
       const owner = current.profile.id;
+      const priorAt = current.libraryEntries?.find(
+        (entry) => entry.kind === kind && entry.id === id,
+      )?.addedAt;
       const key = `${owner}:${kind}:${id}`;
       const entry = saves.current.get(key) || {
         owner,
@@ -250,10 +262,16 @@ function useMusicController() {
         id,
         intent: desired,
         confirmed: current.library[kind].includes(id),
+        confirmedAt: priorAt,
+        intentAt: priorAt,
         version: 0,
         tail: Promise.resolve(),
       };
       entry.intent = desired;
+      entry.intentAt = desired
+        ? priorAt || new Date().toISOString()
+        : undefined;
+      const addedAt = entry.intentAt;
       const version = ++entry.version;
       saves.current.set(key, entry);
       setSnapshot((previous) =>
@@ -264,6 +282,13 @@ function useMusicController() {
                 ...previous.library,
                 [kind]: savedIds(previous.library[kind], id, desired),
               },
+              libraryEntries: datedSave(
+                previous.libraryEntries,
+                kind,
+                id,
+                desired,
+                addedAt,
+              ),
             }
           : previous,
       );
@@ -274,6 +299,7 @@ function useMusicController() {
         try {
           await data.save(kind, id, desired);
           entry.confirmed = desired;
+          entry.confirmedAt = desired ? addedAt : undefined;
         } catch (error) {
           if (
             version === entry.version &&
@@ -291,6 +317,13 @@ function useMusicController() {
                         entry.confirmed,
                       ),
                     },
+                    libraryEntries: datedSave(
+                      previous.libraryEntries,
+                      kind,
+                      id,
+                      entry.confirmed,
+                      entry.confirmedAt,
+                    ),
                   }
                 : previous,
             );

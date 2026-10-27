@@ -67,6 +67,18 @@ function validSnapshot(value: unknown): value is Snapshot {
       ids(library[kind]),
     ) &&
     ids(value.recents) &&
+    (value.libraryEntries === undefined ||
+      rows(
+        value.libraryEntries,
+        (entry) =>
+          record(entry) &&
+          id(entry.id) &&
+          ["tracks", "albums", "artists", "playlists"].includes(
+            String(entry.kind),
+          ) &&
+          text(entry.addedAt) &&
+          Number.isFinite(Date.parse(entry.addedAt)),
+      )) &&
     typeof value.preferences.explicitAllowed === "boolean" &&
     text(value.preferences.locale) &&
     ["recent", "title", "creator"].includes(
@@ -148,6 +160,11 @@ export function createSnapshotCache(
           },
           catalog: value.catalog,
           library: value.library,
+          libraryEntries: value.libraryEntries?.map((entry) => ({
+            kind: entry.kind,
+            id: entry.id,
+            addedAt: entry.addedAt,
+          })),
           preferences: value.preferences,
           recents: value.recents,
           playlists: value.playlists,

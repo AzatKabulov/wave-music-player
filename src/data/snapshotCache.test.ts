@@ -29,6 +29,32 @@ function storage() {
   };
 }
 
+test("cache preserves validated library dates and excludes extra entry properties", async () => {
+  const store = storage(),
+    cache = createSnapshotCache(store);
+  const entry = {
+    kind: "albums" as const,
+    id: owner,
+    addedAt: "2026-01-02T00:00:00Z",
+    token: "secret-order-token",
+  };
+  const value = { ...snapshot(), libraryEntries: [entry] };
+  assert.equal(await cache.write(a, value), true);
+  assert.deepEqual((await cache.read(a))?.libraryEntries, [
+    { kind: "albums", id: owner, addedAt: entry.addedAt },
+  ]);
+  assert.ok(
+    !store.values.get(snapshotCacheKey)?.includes("secret-order-token"),
+  );
+  assert.equal(
+    await cache.write(a, {
+      ...value,
+      libraryEntries: [{ ...entry, addedAt: "invalid date" }],
+    }),
+    false,
+  );
+});
+
 test("the metadata cache binds to one session scope and excludes account secrets", async () => {
   const store = storage(),
     cache = createSnapshotCache(store);

@@ -63,6 +63,11 @@ export type Library = {
   playlists: string[];
   artists: string[];
 };
+export type LibraryEntry = {
+  kind: keyof Library;
+  id: string;
+  addedAt: string;
+};
 export type QueueEntry = PlaylistItem & { origin: "context" | "explicit" };
 export type QueueState = {
   revision: string;
@@ -101,6 +106,7 @@ export type Snapshot = {
   profile: Profile | null;
   catalog: Catalog;
   library: Library;
+  libraryEntries?: LibraryEntry[];
   preferences: Preferences;
   recents: string[];
   playlists: Playlist[];

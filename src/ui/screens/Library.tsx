@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { useMusic } from "../../data/MusicProvider";
 import { deviceStorage } from "../../data/storage";
+import { orderedLibrary } from "../../data/libraryState";
 import { Artwork } from "../../design/Artwork";
 import { Touch } from "../../design/Motion";
 import {
@@ -23,18 +24,40 @@ import { theme as t } from "../../design/theme";
 import { Shell, go, ui } from "../Shell";
 
 export function LibraryScreen() {
-  const { tx } = useLocale();
+  const { tx, locale } = useLocale();
   const m = useMusic(),
     sn = m.snapshot!;
   const [filter, setFilter] = useState("All");
   const [sort, setSort] = useState(sn.preferences.librarySort);
   const [sorting, setSorting] = useState(false);
   const [grid, setGrid] = useState(false);
+  const layoutKey = `musify.library.grid.${sn.profile!.id}`;
   useEffect(() => {
+    let active = true;
     void deviceStorage
-      .getItem("musify.library.grid")
-      .then((value) => setGrid(value === "1"));
-  }, []);
+      .getItem(layoutKey)
+      .then((value) => {
+        if (active) setGrid(value === "1");
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [layoutKey]);
+  const albumsById = new Map(sn.catalog.albums.map((item) => [item.id, item]));
+  const artistsById = new Map(
+    sn.catalog.artists.map((item) => [item.id, item]),
+  );
+  const playlistsById = new Map(
+    sn.catalog.playlists.map((item) => [item.id, item]),
+  );
+  const ownedIds = new Set(sn.playlists.map((item) => item.id));
+  const dates = new Map(
+    (sn.libraryEntries || []).map((item) => [
+      `${item.kind}:${item.id}`,
+      item.addedAt,
+    ]),
+  );
   const entries = [
     ...sn.playlists.map((p) => ({
       id: p.id,
@@ -47,7 +70,8 @@ export function LibraryScreen() {
       creator: sn.profile?.displayName || "",
     })),
     ...sn.library.playlists
-      .map((id) => sn.catalog.playlists.find((p) => p.id === id))
+      .filter((id) => !ownedIds.has(id))
+      .map((id) => playlistsById.get(id))
       .filter((p) => !!p)
       .map((p) => ({
         id: p.id,
@@ -60,7 +84,7 @@ export function LibraryScreen() {
         creator: "",
       })),
     ...sn.library.albums
-      .map((id) => sn.catalog.albums.find((a) => a.id === id))
+      .map((id) => albumsById.get(id))
       .filter((a) => !!a)
       .map((a) => ({
         id: a.id,
@@ -73,25 +97,25 @@ export function LibraryScreen() {
         creator: a.artist,
       })),
     ...sn.library.artists
-      .map((id) => sn.catalog.artists.find((a) => a.id === id))
+      .map((id) => artistsById.get(id))
       .filter((a) => !!a)
       .map((a) => ({
         id: a.id,
         title: a.name,
         subtitle: tx("Artist"),
         palette: a.palette,
-        artworkUrl: undefined,
+        artworkUrl: a.artworkUrl,
         kind: "Artists",
         path: `/artist/${a.id}`,
         creator: a.name,
       })),
-  ].filter((item) => filter === "All" || item.kind === filter);
-  if (sort !== "recent")
-    entries.sort((a, b) =>
-      (sort === "title" ? a.title : a.creator).localeCompare(
-        sort === "title" ? b.title : b.creator,
-      ),
-    );
+  ]
+    .filter((item) => filter === "All" || item.kind === filter)
+    .map((item) => ({
+      ...item,
+      addedAt: dates.get(`${item.kind.toLowerCase()}:${item.id}`),
+    }));
+  const ordered = orderedLibrary(entries, sort, locale);
   return (
     <Shell
       title="Your library"
@@ -131,6 +155,7 @@ export function LibraryScreen() {
           }
           icon={ArrowDownUp}
           variant="quiet"
+          disabled={m.pending}
           onPress={() => setSorting(!sorting)}
         />
         <IconButton
@@ -138,7 +163,9 @@ export function LibraryScreen() {
           label={grid ? "Show list" : "Show grid"}
           onPress={() => {
             setGrid(!grid);
-            void deviceStorage.setItem("musify.library.grid", grid ? "0" : "1");
+            void deviceStorage
+              .setItem(layoutKey, grid ? "0" : "1")
+              .catch(() => {});
           }}
         />
       </View>
@@ -159,9 +186,18 @@ export function LibraryScreen() {
               onPress={() => {
                 setSort(value);
                 setSorting(false);
-                void m.run(() =>
-                  m.data.preferences({ ...sn.preferences, librarySort: value }),
-                );
+                const previous = sort;
+                void m
+                  .run(async () => {
+                    await m.data.preferences({
+                      ...sn.preferences,
+                      librarySort: value,
+                    });
+                    return true;
+                  })
+                  .then((saved) => {
+                    if (!saved) setSort(previous);
+                  });
               }}
             />
           ))}
@@ -169,7 +205,7 @@ export function LibraryScreen() {
       ) : null}
       <FlatList
         key={grid ? "grid" : "list"}
-        data={entries}
+        data={ordered}
         numColumns={grid ? 2 : 1}
         keyExtractor={(item) => `${item.kind}:${item.id}`}
         ListHeaderComponent={
