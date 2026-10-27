@@ -1,0 +1,13 @@
+# V04 — bootstrap baseline and safe next slice
+
+The next measured bottleneck is the initial snapshot carrying collection graphs that Home does not need. A disposable in-memory database with 150 owned playlists, 500 saved artists and five 1,000-item collections returned **676,369 bytes**, compared with the proposed 250 KiB (256,000-byte) budget. It returned 5,000 playlist items and 506 artists, made 14 user queries, and took 126.4 ms in one API-injection sample. This is a local synthetic baseline, not p95 or a native launch measurement. The real personal database and its 58 recordings were never opened. Raw evidence: `evidence/v2/performance/bootstrap-before-v2.json`. Reproducer: `../../work/measure-bootstrap-v2.mjs`.
+
+Do not truncate the current snapshot and silently lose saved/queued identities. Older 0.2.1/0.2.2 installers depend on its detailed contract. The full V04 acceptance remains open.
+
+The first implementation should be an opt-in summary projection while retaining the legacy response. Playlist summaries need explicit completeness plus real item count; an empty summary must never mean an empty collection. Opening playback, edit or queue-all must await authorized detail. In particular, PlaylistForm currently seeds from snapshot items: allowing it to save an unhydrated summary could erase a real playlist. Its loading/error/save gate is part of the same slice, not a later cosmetic fix.
+
+Refresh and catalog merges must distinguish summaries from complete details. A summary cannot replace a matching detailed revision with an empty item list. A changed revision must invalidate stale detail and its resolve-cache entry before edit/play. Library must use the server count while summary metadata is shown. Native cache must retain the discriminator, and the cold-restart edit path needs a regression.
+
+Verify the summary path on the baseline above, full playlist detail/play/edit/queue-all, missing/withdrawn/private collections, refreshed revisions, cold cache and another account. Preserve all legacy-contract tests. Record bytes/query count before and after; a summary-only improvement is V04.1, not proof of a bound independent of arbitrary saved counts.
+
+The later full bound requires independent cursor pages for library/Home, membership resolution for newly opened entities, and authorized active/neighbor queue metadata hydration. Title/creator/recent Library ordering and Library search must cover the complete library through the server once paging is introduced; the new local search must not accidentally become first-page-only. V04/V11 cannot be marked complete until those identity and flow guarantees are tested.

@@ -403,6 +403,8 @@ The order below satisfies dependencies. Phase letters refer to the main plan; ca
 
 ### [ ] V04 — Bound bootstrap and Home metadata
 
+**Execution:** Baseline measured in a disposable database: 150 playlists, 500 saves and five 1k-item collections produce 676,369 bytes and 14 user queries, exceeding the proposed 250KiB budget. See `bootstrap-baseline-v2.md` for evidence and the required summary/detail/edit safety boundary. No truncation or fake completion applied.
+
 **Phase:** B. **Dependencies:** V01,C02. **Scope:** M: 3–5 source/test files, or S for an evidence-only task.
 
 **Work:** Introduce versioned summary/page contracts so initial Home does not embed every saved playlist's track graph.
