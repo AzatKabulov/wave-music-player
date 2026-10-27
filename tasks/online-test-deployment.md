@@ -13,6 +13,7 @@ The owner confirmed Supabase organization **kabulov** (`sgsgxcjvhejgdykjsptb`) a
 - Application migrations 001–004 applied through Supabase. A separate runtime migration ledger contains the original file checksums, with application roles denied access and RLS enabled.
 - Security advisor returned no findings after application migrations. No local database, accounts or recordings have been uploaded yet.
 - No Render service or Git remote has been created. No EAS Update has been published. No replacement online APK has been submitted.
+- After adding the private runtime ledger, the security advisor reports one **INFO** notice: `music.schema_migrations` has RLS enabled without an application policy. This is intentional fail-closed behavior: all application-role grants are revoked and only the migration owner accesses it. No ERROR or WARN findings. [Advisor explanation](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
 
 ## Prepared code
 
