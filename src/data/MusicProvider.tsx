@@ -28,7 +28,7 @@ import {
 import { deviceStorage } from "./storage";
 import { sourceUpdate } from "./sourceUpdate";
 import { sourcePatch } from "./sourcePatch";
-import { savedIds, datedSave } from "./libraryState";
+import { savedIds, datedSave, withPin } from "./libraryState";
 import { mergeCatalog, refreshCatalog } from "./catalogCache";
 import { createLatestWriter } from "./latestWriter";
 import { playbackTiming } from "./playbackTiming";
@@ -40,6 +40,7 @@ import type {
   QueueState,
   Snapshot,
   Track,
+  PinKind,
   PlaybackSource,
 } from "./types";
 
@@ -194,6 +195,23 @@ function useMusicController() {
       }
     >(),
   );
+  // In-flight pin writes, merged into refreshed snapshots like pending saves.
+  const pins = useRef(
+    new Map<
+      string,
+      {
+        owner: string;
+        kind: PinKind;
+        id: string;
+        intent: boolean;
+        confirmed: boolean;
+        confirmedAt?: string;
+        intentAt?: string;
+        version: number;
+        tail: Promise<void>;
+      }
+    >(),
+  );
   const engine = useAudioPlaylist({
       sources: [],
       updateInterval: 500,
@@ -236,6 +254,18 @@ function useMusicController() {
             entry.id,
             entry.intent,
             entry.intentAt,
+          ),
+        };
+    }
+    for (const entry of pins.current.values()) {
+      if (entry.owner === value.profile?.id)
+        value = {
+          ...value,
+          libraryEntries: withPin(
+            value.libraryEntries,
+            entry.kind,
+            entry.id,
+            entry.intent ? entry.intentAt : undefined,
           ),
         };
     }
@@ -343,6 +373,81 @@ function useMusicController() {
     },
     [],
   );
+  const pin = useCallback((kind: PinKind, id: string, desired: boolean) => {
+    const current = snapshotRef.current;
+    if (!current?.profile) return;
+    const owner = current.profile.id;
+    const prior = current.libraryEntries?.find(
+      (entry) => entry.kind === kind && entry.id === id,
+    )?.pinnedAt;
+    const key = `${owner}:${kind}:${id}`;
+    const entry = pins.current.get(key) || {
+      owner,
+      kind,
+      id,
+      intent: desired,
+      confirmed: !!prior,
+      confirmedAt: prior,
+      intentAt: prior,
+      version: 0,
+      tail: Promise.resolve(),
+    };
+    const pinnedAt = desired ? prior || new Date().toISOString() : undefined;
+    entry.intent = desired;
+    entry.intentAt = pinnedAt;
+    const version = ++entry.version;
+    pins.current.set(key, entry);
+    setSnapshot((previous) =>
+      previous?.profile?.id === owner
+        ? {
+            ...previous,
+            libraryEntries: withPin(
+              previous.libraryEntries,
+              kind,
+              id,
+              pinnedAt,
+            ),
+          }
+        : previous,
+    );
+    entry.tail = entry.tail.then(async () => {
+      // A sign-out/account switch must not send an old user's queued pin
+      // with the next user's credentials.
+      if (snapshotRef.current?.profile?.id !== owner) return;
+      try {
+        await data.pin(kind, id, desired);
+        entry.confirmed = desired;
+        entry.confirmedAt = pinnedAt;
+      } catch (error) {
+        if (
+          version === entry.version &&
+          snapshotRef.current?.profile?.id === owner
+        ) {
+          setSnapshot((previous) =>
+            previous
+              ? {
+                  ...previous,
+                  libraryEntries: withPin(
+                    previous.libraryEntries,
+                    kind,
+                    id,
+                    entry.confirmed ? entry.confirmedAt : undefined,
+                  ),
+                }
+              : previous,
+          );
+          setError(
+            error instanceof Error
+              ? error.message
+              : "Could not update the pin. Try again.",
+          );
+        }
+      } finally {
+        if (version === entry.version) pins.current.delete(key);
+      }
+    });
+    return entry.tail;
+  }, []);
   const run = useCallback(
     async <T,>(
       operation: () => Promise<T>,
@@ -754,6 +859,7 @@ function useMusicController() {
       run,
       refresh,
       save,
+      pin,
       retryPlayback: () => {
         lease.current = "";
         return command((q) => q, true);
@@ -866,7 +972,9 @@ function useMusicController() {
         run(async () => {
           await pipeline.current;
           await Promise.all(
-            [...saves.current.values()].map((entry) => entry.tail),
+            [...saves.current.values(), ...pins.current.values()].map(
+              (entry) => entry.tail,
+            ),
           );
           stop();
           await positions.current?.idle();
@@ -876,7 +984,9 @@ function useMusicController() {
         run(async () => {
           await pipeline.current;
           await Promise.all(
-            [...saves.current.values()].map((entry) => entry.tail),
+            [...saves.current.values(), ...pins.current.values()].map(
+              (entry) => entry.tail,
+            ),
           );
           stop();
           await positions.current?.idle();
@@ -895,6 +1005,7 @@ function useMusicController() {
       run,
       refresh,
       save,
+      pin,
       playTracks,
       enqueueTracks,
       seek,

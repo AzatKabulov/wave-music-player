@@ -70,7 +70,10 @@ export type LibraryEntry = {
   kind: keyof Library;
   id: string;
   addedAt: string;
+  // Present only while the collection is pinned to the top of the Library.
+  pinnedAt?: string;
 };
+export type PinKind = "albums" | "artists" | "playlists";
 export type QueueEntry = PlaylistItem & { origin: "context" | "explicit" };
 export type PlaybackSource =
   | { kind: "album" | "artist" | "playlist"; id: string }
@@ -139,6 +142,7 @@ export interface MusicData {
   ): Promise<string | void>;
   signOut(): Promise<void>;
   save(kind: keyof Library, id: string, saved: boolean): Promise<void>;
+  pin(kind: PinKind, id: string, pinned: boolean): Promise<void>;
   createPlaylist(
     title: string,
     description: string,

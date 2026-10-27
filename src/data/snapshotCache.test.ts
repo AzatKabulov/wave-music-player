@@ -55,6 +55,30 @@ test("cache preserves validated library dates and excludes extra entry propertie
   );
 });
 
+test("cache keeps a valid pin time and refuses a malformed one", async () => {
+  const store = storage(),
+    cache = createSnapshotCache(store);
+  const entry = {
+    kind: "artists" as const,
+    id: owner,
+    addedAt: "2026-01-02T00:00:00Z",
+    pinnedAt: "2026-02-03T00:00:00Z",
+  };
+  const value = { ...snapshot(), libraryEntries: [entry] };
+  assert.equal(await cache.write(a, value), true);
+  assert.deepEqual((await cache.read(a))?.libraryEntries, [entry]);
+  for (const pinnedAt of ["invalid date", "", 5]) {
+    assert.equal(
+      await cache.write(a, {
+        ...value,
+        libraryEntries: [{ ...entry, pinnedAt: pinnedAt as string }],
+      }),
+      false,
+      String(pinnedAt),
+    );
+  }
+});
+
 test("cache retains playlist summary completeness and requires an honest item count", async () => {
   const store = storage(),
     cache = createSnapshotCache(store);

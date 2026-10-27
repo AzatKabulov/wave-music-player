@@ -229,6 +229,13 @@ export const http: MusicData = {
   async save(kind, id, saved) {
     await request(`/v1/library/${kind}/${id}`, saved ? "PUT" : "DELETE", {});
   },
+  async pin(kind, id, pinned) {
+    await request(
+      `/v1/library/pins/${kind}/${id}`,
+      pinned ? "PUT" : "DELETE",
+      {},
+    );
+  },
   async createPlaylist(title, description, key) {
     return request("/v1/playlists", "POST", { title, description }, key);
   },

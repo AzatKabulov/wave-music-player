@@ -5,6 +5,8 @@ import {
   datedSave,
   orderedLibrary,
   libraryMatches,
+  pinCount,
+  withPin,
 } from "./libraryState.ts";
 test("saving is idempotent and keeps recent saves first", () => {
   assert.deepEqual(savedIds(["old"], "new", true), ["new", "old"]);
@@ -90,4 +92,84 @@ test("unsaving changes only the selected item and preserves its input", () => {
   const previous = ["first", "second", "third"];
   assert.deepEqual(savedIds(previous, "second", false), ["first", "third"]);
   assert.deepEqual(previous, ["first", "second", "third"]);
+});
+
+test("pinned collections lead every sort, newest pin first, and unpinned rows keep their order", () => {
+  const row = (
+    id: string,
+    title: string,
+    addedAt: string,
+    pinnedAt?: string,
+  ) => ({
+    id,
+    kind: "Albums",
+    title,
+    creator: title,
+    addedAt,
+    ...(pinnedAt ? { pinnedAt } : {}),
+  });
+  const entries = [
+    row("old", "Alpha", "2026-01-01T00:00:00Z"),
+    row("new", "Bravo", "2026-01-09T00:00:00Z"),
+    row("pinA", "Zulu", "2026-01-02T00:00:00Z", "2026-02-01T00:00:00Z"),
+    row("pinB", "Yankee", "2026-01-03T00:00:00Z", "2026-02-05T00:00:00Z"),
+    row("junk", "Charlie", "2026-01-04T00:00:00Z", "not a date"),
+  ];
+  assert.deepEqual(
+    orderedLibrary(entries, "recent").map((x) => x.id),
+    ["pinB", "pinA", "new", "junk", "old"],
+  );
+  assert.deepEqual(
+    orderedLibrary(entries, "title").map((x) => x.id),
+    ["pinB", "pinA", "old", "new", "junk"],
+  );
+  assert.deepEqual(
+    orderedLibrary(entries, "creator").map((x) => x.id),
+    ["pinB", "pinA", "old", "new", "junk"],
+  );
+  assert.equal(entries[0].id, "old");
+});
+
+test("saving keeps an existing pin and leaving the library drops it", () => {
+  const pinnedAt = "2026-02-01T00:00:00Z";
+  const entries = withPin(
+    datedSave([], "albums", "a", true, "2026-01-01T00:00:00Z"),
+    "albums",
+    "a",
+    pinnedAt,
+  );
+  assert.equal(entries[0].pinnedAt, pinnedAt);
+  assert.equal(
+    datedSave(entries, "albums", "a", true, "2026-01-01T00:00:00Z")[0].pinnedAt,
+    pinnedAt,
+  );
+  const removed = datedSave(entries, "albums", "a", false);
+  assert.deepEqual(removed, []);
+  assert.equal(
+    datedSave(removed, "albums", "a", true, "2026-01-05T00:00:00Z")[0].pinnedAt,
+    undefined,
+  );
+});
+
+test("pinning changes only the matching kind and identity without mutating its input", () => {
+  const initial = [
+    ...datedSave([], "albums", "same", true, "2026-01-01T00:00:00Z"),
+    ...datedSave([], "artists", "same", true, "2026-01-02T00:00:00Z"),
+  ];
+  const pinned = withPin(initial, "artists", "same", "2026-02-01T00:00:00Z");
+  assert.equal(pinned.find((x) => x.kind === "albums")?.pinnedAt, undefined);
+  assert.equal(
+    pinned.find((x) => x.kind === "artists")?.pinnedAt,
+    "2026-02-01T00:00:00Z",
+  );
+  assert.equal(initial.find((x) => x.kind === "artists")?.pinnedAt, undefined);
+  assert.equal(pinCount(pinned), 1);
+  const cleared = withPin(pinned, "artists", "same");
+  assert.equal(pinCount(cleared), 0);
+  assert.ok(!("pinnedAt" in cleared.find((x) => x.kind === "artists")!));
+  assert.deepEqual(
+    withPin(undefined, "albums", "none", "2026-02-01T00:00:00Z"),
+    [],
+  );
+  assert.equal(pinCount(withPin(pinned, "artists", "same", "bad date")), 0);
 });

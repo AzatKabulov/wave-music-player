@@ -1,6 +1,6 @@
 import { randomUUID } from "./uuid";
 import catalog from "./catalog.json";
-import { datedSave } from "./libraryState";
+import { datedSave, maxLibraryPins, pinCount, withPin } from "./libraryState";
 import type {
   MusicData,
   Playlist,
@@ -97,6 +97,24 @@ export const mock: MusicData = {
     snapshot.library[kind] = saved
       ? [...new Set([...snapshot.library[kind], id])]
       : snapshot.library[kind].filter((x) => x !== id);
+  },
+  async pin(kind, id, pinned) {
+    const entry = snapshot.libraryEntries?.find(
+      (item) => item.kind === kind && item.id === id,
+    );
+    if (!entry) throw Error("This item is unavailable.");
+    if (
+      pinned &&
+      !entry.pinnedAt &&
+      pinCount(snapshot.libraryEntries) >= maxLibraryPins
+    )
+      throw Error(`You can pin up to ${maxLibraryPins} Library items.`);
+    snapshot.libraryEntries = withPin(
+      snapshot.libraryEntries,
+      kind,
+      id,
+      pinned ? entry.pinnedAt || new Date().toISOString() : undefined,
+    );
   },
   async createPlaylist(title, description) {
     const p: Playlist = {

@@ -88,7 +88,10 @@ function validSnapshot(value: unknown): value is Snapshot {
             String(entry.kind),
           ) &&
           text(entry.addedAt) &&
-          Number.isFinite(Date.parse(entry.addedAt)),
+          Number.isFinite(Date.parse(entry.addedAt)) &&
+          (entry.pinnedAt === undefined ||
+            (text(entry.pinnedAt) &&
+              Number.isFinite(Date.parse(entry.pinnedAt)))),
       )) &&
     typeof value.preferences.explicitAllowed === "boolean" &&
     text(value.preferences.locale) &&
@@ -175,6 +178,7 @@ export function createSnapshotCache(
             kind: entry.kind,
             id: entry.id,
             addedAt: entry.addedAt,
+            ...(entry.pinnedAt ? { pinnedAt: entry.pinnedAt } : {}),
           })),
           preferences: value.preferences,
           recents: value.recents,
