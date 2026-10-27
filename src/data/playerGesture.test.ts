@@ -5,8 +5,10 @@ import { artworkSwipe, dismissPlayer, seekPosition } from "./playerGesture.ts";
 test("artwork follows the owner's right-next / left-previous direction and ignores tentative gestures", () => {
   assert.equal(artworkSwipe(120, 0, 340), 1);
   assert.equal(artworkSwipe(-120, 0, 340), -1);
-  assert.equal(artworkSwipe(18, 800, 340), 1);
-  assert.equal(artworkSwipe(-18, -800, 340), -1);
+  assert.equal(artworkSwipe(45, 900, 340), 1);
+  assert.equal(artworkSwipe(-45, -900, 340), -1);
+  assert.equal(artworkSwipe(18, 1200, 340), 0);
+  assert.equal(artworkSwipe(-18, -1200, 340), 0);
   assert.equal(artworkSwipe(8, 900, 340), 0);
   assert.equal(artworkSwipe(30, 0, 340), 0);
   assert.equal(artworkSwipe(40, -900, 340), 0);

@@ -1,6 +1,9 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+} from "react-native-safe-area-context";
 import { MusicProvider } from "../data/MusicProvider";
 import { MotionProvider, useMotion } from "../design/Motion";
 import { NavigationFrame } from "../ui/Shell";
@@ -9,7 +12,7 @@ import { LocaleProvider } from "../i18n/LocaleProvider";
 import { theme } from "../design/theme";
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <LocaleProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <MotionProvider>

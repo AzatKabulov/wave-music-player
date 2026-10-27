@@ -7,8 +7,8 @@ export function artworkSwipe(
   const threshold = Math.max(56, Math.min(96, width * 0.23));
   if (Math.abs(distance) >= threshold) return distance > 0 ? 1 : -1;
   if (
-    Math.abs(distance) >= 12 &&
-    Math.abs(velocity) >= 650 &&
+    Math.abs(distance) >= 36 &&
+    Math.abs(velocity) >= 800 &&
     distance * velocity > 0
   )
     return distance > 0 ? 1 : -1;

@@ -1,5 +1,5 @@
 import { useLocale } from "../../i18n/LocaleProvider";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { artworkSurface } from "../../data/artworkColor";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -22,11 +22,11 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useMusic, usePlaybackStatus } from "../../data/MusicProvider";
-import { PlayerArtwork } from "./PlayerArtwork";
+import { PlayerArtwork, type PlayerArtworkHandle } from "./PlayerArtwork";
 import { Touch } from "../../design/Motion";
 import { Button, IconButton, Label, StateView } from "../../design/Primitives";
 import { theme as t } from "../../design/theme";
@@ -78,6 +78,8 @@ export function Player() {
   const { tx } = useLocale();
   const status = usePlaybackStatus();
   const { width, height, fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const artwork = useRef<PlayerArtworkHandle>(null);
   const atmosphere = useMemo(
     () =>
       artworkSurface(
@@ -112,7 +114,11 @@ export function Player() {
   const size = Math.min(
     400,
     width - 48,
-    Math.max(200, (height * 0.42) / Math.max(1, fontScale * 0.8)),
+    Math.max(
+      200,
+      ((height - insets.top - insets.bottom) * 0.42) /
+        Math.max(1, fontScale * 0.8),
+    ),
   );
   return (
     <Animated.View
@@ -125,11 +131,21 @@ export function Player() {
         locations={[0, 0.85]}
         style={s.root}
       >
-        <SafeAreaView edges={["top", "bottom", "left", "right"]} style={s.root}>
+        <View
+          style={[
+            s.root,
+            {
+              paddingTop: insets.top + 8,
+              paddingBottom: insets.bottom,
+              paddingLeft: insets.left,
+              paddingRight: insets.right,
+            },
+          ]}
+        >
           <View style={s.root}>
             <GestureDetector gesture={surface.pan}>
               <Animated.View testID="player-drag-area" style={s.dragArea}>
-                <View style={s.header}>
+                <View testID="player-header" style={s.header}>
                   <IconButton
                     icon={ChevronDown}
                     label="Close player"
@@ -162,6 +178,7 @@ export function Player() {
                 {track ? (
                   <View style={s.art}>
                     <PlayerArtwork
+                      ref={artwork}
                       current={{ id: m.activeEntry?.id || track.id, track }}
                       previous={neighbor(-1)}
                       next={neighbor(1)}
@@ -231,7 +248,9 @@ export function Player() {
                     icon={SkipBack}
                     size="lg"
                     label="Previous track"
-                    onPress={m.previous}
+                    onPress={() =>
+                      neighbor(-1) ? artwork.current?.step(-1) : m.seek(0)
+                    }
                   />
                   <Touch
                     haptic
@@ -250,7 +269,8 @@ export function Player() {
                     icon={SkipForward}
                     size="lg"
                     label="Next track"
-                    onPress={m.next}
+                    disabled={!neighbor(1)}
+                    onPress={() => artwork.current?.step(1)}
                   />
                   <IconButton
                     icon={m.queue.repeat === "single" ? Repeat1 : Repeat}
@@ -313,7 +333,7 @@ export function Player() {
               />
             )}
           </View>
-        </SafeAreaView>
+        </View>
       </LinearGradient>
     </Animated.View>
   );

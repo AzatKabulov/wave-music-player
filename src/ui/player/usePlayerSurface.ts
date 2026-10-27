@@ -33,8 +33,8 @@ export function usePlayerSurface(height: number, color: string) {
       else
         y.set(
           withTiming(0, {
-            duration: 260,
-            easing: Easing.bezier(0.22, 1, 0.36, 1),
+            duration: 440,
+            easing: Easing.bezier(0.2, 0.65, 0.3, 1),
           }),
         );
       opened.current = true;
@@ -56,13 +56,15 @@ export function usePlayerSurface(height: number, color: string) {
             height,
             {
               duration: Math.max(
-                110,
+                240,
                 Math.min(
-                  210,
-                  ((height - y.get()) / Math.max(1800, velocity)) * 1000,
+                  360,
+                  360 *
+                    Math.sqrt(Math.max(0, height - y.get()) / height) *
+                    (velocity > 1400 ? 0.9 : 1),
                 ),
               ),
-              easing: Easing.out(Easing.cubic),
+              easing: Easing.bezier(0.2, 0.65, 0.3, 1),
             },
             done,
           ),
@@ -94,7 +96,7 @@ export function usePlayerSurface(height: number, color: string) {
     },
     onUpdate: (event) => {
       "worklet";
-      y.set(Math.max(0, start.get() + event.translationY));
+      y.set(Math.min(height, Math.max(0, start.get() + event.translationY)));
     },
     onDeactivate: (event) => {
       "worklet";
@@ -106,9 +108,9 @@ export function usePlayerSurface(height: number, color: string) {
           reduced
             ? 0
             : withSpring(0, {
-                stiffness: 330,
-                damping: 34,
-                mass: 0.8,
+                stiffness: 180,
+                damping: 27,
+                mass: 1,
                 overshootClamping: true,
                 velocity: event.velocityY,
               }),
