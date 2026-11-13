@@ -2,6 +2,7 @@
 
 # dependencies
 node_modules/
+apps/api/node_modules/
 
 # Expo
 .expo/
@@ -9,14 +10,30 @@ dist/
 web-build/
 expo-env.d.ts
 
-# Native
+# Native & Builds
 .kotlin/
 *.orig.*
 *.jks
+*.keystore
 *.p8
 *.p12
 *.key
 *.mobileprovision
+*.apk
+*.aab
+*.ipa
+
+# Audio & Media (Never push commercial/personal audio)
+*.mp3
+*.m4a
+*.flac
+*.aac
+*.ogg
+
+# Local database files
+*.sqlite
+*.sqlite3
+*.db
 
 # Metro
 .metro-health-check*
