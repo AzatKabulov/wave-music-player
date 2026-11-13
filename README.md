@@ -1,4 +1,8 @@
-# Musify — regional music app prototype
+# Wave (Music Player)
+
+A modern cross-platform music streaming app prototype built with React Native and Expo, featuring a responsive dark theme, gesture-driven playback, and local/cloud backend synchronization.
+
+> **Disclaimer:** This project is an independent educational prototype inspired by modern music streaming interfaces. It is not affiliated with, sponsored by, or endorsed by Spotify AB or any of its affiliates. All trademarks, service marks, and trade names are the property of their respective owners.
 
 **Personal mobile test update (2026-10-25):** the app now displays the user's working name **Musify**. Run `npm run test:phones` for the isolated Wi-Fi test API and iPhone Expo Go preview. The `personal` EAS profile builds the Android test APK. Three selected popular recordings and their covers are available only in the private PC test data, not bundled in the source. See [personal testing](replica/personal-testing.md) for connection details, checks and remaining device acceptance. The original prototype notes below describe the baseline setup.
 
