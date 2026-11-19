@@ -1,5 +1,25 @@
 # Musify online personal test — 2026-10-27
 
+## Status update — 2026-11-19 (hosting API on AWS, data on Supabase)
+
+**Decision (owner):** keep Supabase for Postgres, login and private music storage; run only the Node API (`apps/api`) on AWS. Guidance level: medium. The earlier Render plan below is superseded for the API host; the Supabase/Render project IDs further down belonged to an older Supabase account and do not appear in the currently connected one.
+
+**Done — Supabase project `wave music player`** (ref `pkxnmxyhmotgsrlhvefj`, region `ap-southeast-2`, healthy, API URL `https://pkxnmxyhmotgsrlhvefj.supabase.co`):
+
+- Migrations 001–005 applied to the empty project via the Supabase connector, then recorded in `music.schema_migrations` with the LF-normalized SHA-256 of each file, so `npm run migrate` treats them as applied. The ledger has RLS enabled and no policies on purpose (one expected INFO advisor notice).
+- Verified: 29 `music` tables, all with RLS enabled (27 forced from 001, plus `library_pins`), 55 policies, `music_user` / `music_admin` exist as NOLOGIN, no auth users, no storage buckets. Security advisor: only the INFO above.
+
+**Not done yet:**
+
+1. **AWS access.** The AWS MCP connector is not installed in the Claude account, and the session's `AWS_*` variables are inert placeholders (`sts get-caller-identity` returns `InvalidClientTokenId`). The AWS Region and the plan (Free/Paid) are unconfirmed, and `docs.aws.amazon.com` is blocked by the session network policy. No AWS resource exists.
+2. **Runtime roles.** Create separate LOGIN roles for the API per `replica/backend.md` step 3 (grant `music_user` only to the listener login and `music_admin` only to the operator login). Their passwords belong in AWS-side secret storage, not in the repo.
+3. **Server env for the API:** `APP_MODE=supabase`, `API_PUBLIC_URL`, `APP_ORIGIN`, `DATABASE_USER_URL`, `DATABASE_ADMIN_URL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `PRIVATE_TEST_USER_IDS`, `MUSIFY_ONLINE_TEST=1`. Never put these in git or an `EXPO_PUBLIC_` variable.
+4. **Private buckets and data.** Create `musify-private-audio` and `musify-private-artwork` through the Storage API. The 58 recordings (~215 MB) and the owner account live only on the owner's Windows PC (`apps/api/data/personal-*`, gitignored), so the upload and the account transfer need that PC.
+5. **Host the API on AWS** (service choice depends on the confirmed Region/plan; the API needs one always-on process with HTTPS, see `replica/backend.md` step 7). Keep it in or near `ap-southeast-2` if the AWS Region allows.
+6. **Client:** set `EXPO_PUBLIC_API_URL` to the HTTPS API origin, build the `online-test` EAS profile, publish the Expo Go preview, and test on cellular with the PC off.
+
+Nothing in this repo is deployed yet; do not describe the app as online until step 6 passes.
+
 **Deferred by the owner:** “we will do deployment later let's stick with improvement firsty.” Stop hosting setup, source uploads, credential collection and new remote services. Resume the improvement plan and the uncommitted V19.2 player-context slice. Pending GitHub sign-in / Supabase credential questions are no longer required now. Retain the free project and prepared files as a checkpoint; do not claim deployment is live.
 
 ## Scope and authorization
