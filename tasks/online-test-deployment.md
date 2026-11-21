@@ -9,6 +9,8 @@
 - Migrations 001–005 applied to the empty project via the Supabase connector, then recorded in `music.schema_migrations` with the LF-normalized SHA-256 of each file, so `npm run migrate` treats them as applied. The ledger has RLS enabled and no policies on purpose (one expected INFO advisor notice).
 - Verified: 29 `music` tables, all with RLS enabled (27 forced from 001, plus `library_pins`), 55 policies, `music_user` / `music_admin` exist as NOLOGIN, no auth users, no storage buckets. Security advisor: only the INFO above.
 
+**Done — API container definition** (`apps/api/Dockerfile`, `apps/api/.dockerignore`, 2026-11-21): Node 24 slim image, production dependencies only, non-root user, listens on `PORT` (8080) with `APP_MODE=supabase`, `HOST=0.0.0.0` and `MUSIFY_ONLINE_TEST=1` defaults, `/health/live` health check, no secrets baked in. The image has **not been built**: this cloud session has no Docker daemon. Checked instead in a scratch copy: `npm ci --omit=dev --ignore-scripts` succeeds (0 vulnerabilities), all modules load including `sharp`, and hosted mode refuses non-HTTPS origins and missing database URLs. That check ran on Node 22; build and run the real image on Node 24 before relying on it.
+
 **Not done yet:**
 
 1. **AWS access.** The AWS MCP connector is not installed in the Claude account, and the session's `AWS_*` variables are inert placeholders (`sts get-caller-identity` returns `InvalidClientTokenId`). The AWS Region and the plan (Free/Paid) are unconfirmed, and `docs.aws.amazon.com` is blocked by the session network policy. No AWS resource exists.
